@@ -1,0 +1,140 @@
+.sidebar{
+    display: flex;
+    flex-direction: column;
+    flex: 0.25;
+    height: 100vh;
+    background-color: #2f3135;
+}
+
+.sidebar__top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.7rem;
+    background-color: #2f3135;
+    color: white;
+    border-bottom: 3px solid #26282c;
+    transition: 0.3s;
+}
+
+.sidebar__top:hover{
+    background-color: #363a3f;
+}
+
+.sidebar__top > .MuiSvgIcon-root {
+    transition: 0.3s;
+}
+
+.sidebar__top > .MuiSvgIcon-root:hover {
+    color: white;
+    cursor: pointer;
+}
+
+.sidebar__channels{
+    flex: 1;
+}
+
+.sidebar__channelsheader > .MuiSvgIcon-root:hover{
+    color: white;
+
+}
+
+.sidebar__channelsheader > .MuiSvgIcon-root{
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidebar__channelsheader{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem;
+    background-color: #2f3135;
+    color: gray;
+}
+
+.sidebar__header{
+    display: flex;
+    align-items: center;
+}
+
+.sidebarchannel > h4{
+    transition: 0.3s;
+    display: flex;
+    padding-left: 0.5rem;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sidebarchannel > h4 > span{
+    font-size: 2rem;
+    padding: 0.5rem;
+}
+
+.sidebarchannel:hover{
+    background-color: #40464b;
+}
+
+.notactivechannel {
+    background-color: #2f3135;
+    color: gray;
+    margin-left: 0.8rem;
+    margin-right: 0.8rem;
+    border-radius: 0.8rem;
+}
+
+.sidebarchannel {
+    transition: 0.3s;
+}
+
+.activechannel {
+    background-color: #40464b;
+    color:white;
+    margin-left: 0.8rem;
+    margin-right: 0.8rem;
+    border-radius: 0.8rem;
+}
+
+.sidebar__profile{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: gray;
+    background-color: #292a2e;
+    padding: 0.5rem;
+    -webkit-box-shadow: 0px -2px 0px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px -2px 0px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px -2px 0px 0px rgba(0,0,0,0.75);
+}
+
+.sidebar__profileinfo{
+    flex: 1;
+    padding: 1rem;
+}
+
+.sidebar__profileinfo > h3 {
+    color: white;
+}
+
+.sidebar__profileicons > .MuiSvgIcon-root {
+    padding: 0.5rem;
+}
+
+.sidebar__profile > .MuiAvatar-root:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.sidebar__profile > .MuiAvatar-root {
+    transition: 0.3s;
+}
+
+.sidebar__header > .MuiSvgIcon-root {
+    transition: 0.3s;
+}
+
+.sidebar__header > .MuiSvgIcon-root:hover {
+    color: white;
+    cursor: pointer;
+}
+

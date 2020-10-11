@@ -1,0 +1,61 @@
+.login {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color:  #2f3135;
+}
+
+.login > button {
+    background-color: #738adb;
+    color: #eff2f5;
+    font-weight: 800;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.login > button:hover {
+    background-color: white;
+    color: #738adb;
+}
+
+.login > div > img {
+    object-fit: contain;
+    height: 20%;
+    max-width: 80vw;
+}
+
+.login__language {
+    display: flex;
+    justify-content: center;
+}
+
+.login__language > img {
+    object-fit: contain;
+    width: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+    transition: 0.3s;
+}
+
+.login__languageimg:hover {
+    cursor: default;
+    -moz-transform:scale(1.04,1.04);
+    -webkit-transform:scale(1.04,1.04);
+    transform:scale(1.04,1.04);
+}
+
+.login__languageactive {
+    opacity: 0.5;
+    transition: 0.3s;
+}
+
+.login__languageactive:hover {
+    -moz-transform:scale(1.08,1.08);
+    -webkit-transform:scale(1.08,1.08);
+    transform:scale(1.08,1.08);
+    cursor: pointer;
+}
