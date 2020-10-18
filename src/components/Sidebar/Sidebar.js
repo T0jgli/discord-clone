@@ -1,84 +1,142 @@
 import React, { useEffect, useState } from 'react'
 import "./Sidebar.css"
+
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
-import AddIcon from "@material-ui/icons/Add"
 import MicIcon from "@material-ui/icons/Mic"
 import HeadsetIcon from "@material-ui/icons/Headset"
 import SettingsIcon from "@material-ui/icons/Settings"
+import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField } from '@material-ui/core'
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
-import SideBarChannel from './SideBarChannel'
-import { Avatar } from '@material-ui/core'
 import { selectUser } from '../../features/userSlice'
-import { useSelector } from 'react-redux'
+import { selectlanguage } from '../../features/AppSlice'
+import { useSelector, useDispatch } from 'react-redux'
 import db, { auth } from '../../firebase/firebase'
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import firebase from "firebase/app"
+import { Scrollbars } from 'react-custom-scrollbars';
 
-function Sidebar({ language, setsignouttoast }) {
+import CreateNewFolderIcon from '@material-ui/icons/CreateNewFolder';
+import Snackbars from '../Snackbars'
+import Userdialog from '../Userdialog/Userdialog'
+import SidebarCategories from "./SidebarCategories"
+
+function Sidebar({ setsignouttoast }) {
     const user = useSelector(selectUser)
-    const [channels, setchannel] = useState([])
-    const [hide, sethide] = useState(false)
+    const language = useSelector(selectlanguage)
+    const [categoriemenu, setcategoriemenu] = useState(false)
+    const [categoriecreated, setcategoriecreated] = useState(false)
+    const [categories, setcategories] = useState([])
+
+
+    const [channerror, setchannerror] = useState(false)
+    const [categoriename, setcategoriename] = useState("")
+
+    const [menu, setmenu] = useState(false)
+    const [dialog, setdialog] = useState(false)
+
 
     useEffect(() => {
-        db.collection("channels").onSnapshot((snapshot) =>
-            setchannel(
-                snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    channel: doc.data(),
-                }))
+        db.collection("categories").orderBy("created", "asc").onSnapshot(snapshot => {
+            setcategories(snapshot.docs.map(doc => ({
+                id: doc.id,
+                categorie: doc.data()
+            }))
             )
-        )
+        })
     }, [])
-    const handleaddchannel = () => {
-        let channelname;
-        if (language === "hun") {
-            channelname = prompt("Írj be egy új csatorna nevet")
+
+    const handleaddcategorie = () => {
+        if (categoriename) {
+            db.collection("categories").add({
+                categoriename: categoriename,
+                created: firebase.firestore.FieldValue.serverTimestamp(),
+                createdby: user.uid
+            })
+            setcategoriemenu(false)
+            setcategoriecreated(true)
         }
         else {
-            channelname = prompt("Enter a new channel name")
+            setchannerror(true)
         }
+        setcategoriename("")
 
-        if (channelname) {
-            db.collection("channels").add({
-                channelname: channelname
-            })
-        }
     }
-
-
     return (
-        <div className="sidebar">
-            <div className="sidebar__top">
-                <h3>Discord CLoNe by tojglEE</h3>
-                <ExpandMoreIcon />
-            </div>
-            <div className="sidebar__channels">
-                <div className="sidebar__channelsheader">
-                    <div className="sidebar__header" onClick={() => sethide(!hide)}>
-                        {hide ? (<KeyboardArrowRightIcon />) : (<ExpandMoreIcon />)}
-                        <h5>{language === "hun" ? ("SZÖVEG CSATORNÁK") : ("TEXT CHANNELS")}</h5>
-                    </div>
-                    <AddIcon onClick={handleaddchannel} />
-                </div>
-                <div className="sidebar__channelslist">
-                    {hide ? (null) : channels.map(({ id, channel }) => (
-                        <SideBarChannel key={id} channelname={channel.channelname} id={id} />
-                    ))}
+        <>
+            <div className="sidebar">
+                <div className="sidebar__top" onClick={() => setmenu(!menu)}>
+                    <h3 style={{ cursor: "pointer" }}>Discord CLoNe by tojglEE</h3>
+                    {menu ? (<KeyboardArrowLeftIcon />) : (<ExpandMoreIcon />)}
+                    <Menu anchorEl={menu} className="sidebar__menu" open={menu} onClose={() => setmenu(false)}>
+                        <MenuItem className="menu__itemflex" onClick={() => { setcategoriemenu(true) }}>
+                            <div className="menu__text">
+                                {language === "hun" ? ("Kategória létrehozása") : ("Create category")}
+                            </div>
+                            <CreateNewFolderIcon />
+                        </MenuItem>
+                        <MenuItem className="menu__itemflex" onClick={() => { auth.signOut(); setsignouttoast(true) }}>
+                            <div className="menu__text">
+                                {language === "hun" ? ("Kijelentkezés") : ("Sign out")}
+                            </div>
+                            <ExitToAppIcon />
+                        </MenuItem>
 
+                    </Menu>
+                </div>
+                <div className="sidebar__channels">
+                    <Scrollbars autoHide autoHideDuration={2000} renderThumbVertical={props => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
+                        {categories.map(categorie => (
+                            <SidebarCategories categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
+                                setcategoriename={setcategoriename} categoriemenu={categoriemenu}
+                                setcategoriemenu={setcategoriemenu} setchannerror={setchannerror} channerror={channerror} user={user} language={language} />
+
+                        ))}
+                    </Scrollbars>
+                </div>
+                <div className="sidebar__profile">
+                    <Avatar src={user.photo} onClick={() => setdialog(true)} />
+                    <div className="sidebar__profileinfo">
+                        <h3>{user.displayname}</h3>
+                        <p>#{user.uid.substring(0, 5)}</p>
+                    </div>
+                    <div className="sidebar__profileicons">
+                        <MicIcon />
+                        <HeadsetIcon />
+                        <SettingsIcon />
+                    </div>
                 </div>
             </div>
-            <div className="sidebar__profile">
-                <Avatar onClick={() => {auth.signOut(); setsignouttoast(true)}} src={user.photo} />
-                <div className="sidebar__profileinfo">
-                    <h3>{user.displayname}</h3>
-                    <p>#{user.uid.substring(0, 5)}</p>
-                </div>
-                <div className="sidebar__profileicons">
-                    <MicIcon />
-                    <HeadsetIcon />
-                    <SettingsIcon />
-                </div>
-            </div>
-        </div>
+
+
+
+            <Dialog open={categoriemenu} onClose={() => setcategoriemenu(false)}>
+                <DialogContent>
+                    <DialogTitle style={{ margin: "5px" }}>
+                        {language === "hun" ? ("Add meg a kategória nevét!") : ("Write a channel categorie name!")}
+                    </DialogTitle>
+                    <ArrowDropDownIcon />
+                    <form style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie(categoriename) }}>
+                        <TextField variant="filled" autoFocus value={categoriename} fullWidth onChange={(e) => setcategoriename(e.target.value)} label="Név" />
+                    </form>
+                </DialogContent>
+                <DialogActions >
+                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
+                        onClick={() => setcategoriemenu(false)}>{language === "hun" ? ("Mégse") : ("Cancel")}</Button>
+                    <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
+                        onClick={() => handleaddcategorie(categoriename)}>{language === "hun" ? ("Létrehoz") : ("Create")}</Button>
+                </DialogActions>
+            </Dialog>
+
+
+
+            <Userdialog dialog={dialog} setdialog={setdialog} user={user} avatar={true} />
+
+            <Snackbars categoriecreated={categoriecreated} setcategoriecreated={setcategoriecreated} channerror={channerror} setchannerror={setchannerror} />
+        </>
     )
 }
 

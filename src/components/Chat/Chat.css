@@ -7,6 +7,7 @@
     height: 100vh;
 }
 
+
 .chat__input {
     color: lightgray;
     display: flex;
@@ -73,12 +74,12 @@
 .chatheader__right {
     display: flex;
     align-items: center;
-    flex: 0.35;
+    flex: 0.25;
     justify-content: space-between;
 }
 
 .chatheader__right > .MuiSvgIcon-root {
-    padding: 2px;
+    margin: 5px;
     cursor: pointer;
     transition: 0.3s;
 }
@@ -123,17 +124,17 @@
     padding-top: 2px;
 }
 
-.message__info > h4 > span {
+.message__info > h4 > .time {
     color: gray;
     margin-left: 20px;
     font-size: x-small;
 }
 
-.message__info > h4 {
+.message__info > h4 > .name {
     transition: 0.3s;
 }
 
-.message__info > h4:hover {
+.message__info > h4 > .name:hover {
     cursor: pointer;
 }
 
@@ -148,14 +149,17 @@
 
 .message__info > img {
     object-fit: contain;
-    width: 25%;
+    max-width: 25%;
+    max-height: 25%;
     margin-top: 10px;
     transition: 0.3s;
 }
 
 .message__info > img:hover {
     cursor: pointer;
-    opacity: 0.8;
+    -webkit-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.75);
 }
 
 .message__info > a > button,
@@ -189,21 +193,6 @@
     color: white !important;
 }
 
-.MuiDialogContent-root > img {
-    border-radius: 0.6rem;
-    -webkit-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
-    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.75);
-    transition: 0.3s;
-    max-width: 300px;
-    object-fit: contain;
-}
-
-.MuiDialogContent-root > img:hover {
-    opacity: 0.8;
-}
-
-
 .MuiTypography-body1 {
     color: rgba(255, 255, 255, 0.85) !important;
 }
@@ -220,4 +209,22 @@
 
 .dialog__closeicon > button > span {
     color:rgba(235, 235, 235, 0.95);
+}
+
+.message__url {
+    text-decoration: none;
+    color: rgb(160, 160, 160);
+    transition: 0.3s;
+}
+
+.message__url:hover {
+    color: rgb(205, 205, 205);
+}
+
+.MuiDialogActions-root {
+    background-color: #363a3f;
+}
+
+.MuiDialogContent-root {
+    padding-bottom: 20px !important;
 }

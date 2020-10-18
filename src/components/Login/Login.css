@@ -59,3 +59,44 @@
     transform:scale(1.08,1.08);
     cursor: pointer;
 }
+
+.login__gifdiv {
+    margin: 30px;
+    width: 50%;
+}
+
+.login__gifdiv > div {
+    text-align: center;
+}
+
+.login__logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gif > img {
+    width: 75%;
+    object-fit: contain;
+}
+
+.googlelogindiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.googlelogindiv > img {
+    width: 8%;
+    transition: 0.3s;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.googlelogindiv > img:hover {
+    cursor: pointer;
+    -moz-transform:scale(1.04,1.04);
+    -webkit-transform:scale(1.04,1.04);
+    transform:scale(1.04,1.04);
+    font-size: larger;
+}
