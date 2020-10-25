@@ -34,61 +34,61 @@ function Snackbars({ copystate, setcopystate, channelcreated, setchannelcreated,
 
     return (
         <>
-            <Snackbar open={loginerror} autoHideDuration={6000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({...loginerror, open: false}) }}>
-                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({...loginerror, open: false}) }}
+            <Snackbar open={loginerror} autoHideDuration={6000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({ ...loginerror, open: false }) }}>
+                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({ ...loginerror, open: false }) }}
                     severity="error">{loginmessage}
                 </Alert>
             </Snackbar>
 
             <Snackbar open={signouttoast} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setsignouttoast(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setsignouttoast(false) }}
-                    severity="warning">{language === "hun" ? ("Sikeres kijelentkezés!") : ("Successful sign out!")}
+                    severity="warning">{language === "hu" ? ("Sikeres kijelentkezés!") : ("Successful sign out!")}
                 </Alert>
             </Snackbar>
 
             <Snackbar
                 open={logintoast} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setlogintoast(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setlogintoast(false) }}
-                    severity="success">{language === "hun" ? ("Sikeres bejelentkezés!") : ("Successful login!")}
+                    severity="success">{language === "hu" ? ("Sikeres bejelentkezés!") : ("Successful login!")}
                 </Alert>
             </Snackbar>
 
             <Snackbar
                 open={categoriecreated} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriecreated(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriecreated(false) }}
-                    severity="success">{language === "hun" ? ("Kategória létrehozva!") : ("Categorie created!")}
+                    severity="success">{language === "hu" ? ("Kategória létrehozva!") : ("Categorie created!")}
                 </Alert>
             </Snackbar>
 
             <Snackbar open={copystate} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcopystate(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcopystate(false) }}
-                    severity="info">{language === "hun" ? ("A link vágólapra másolva!") : ("Link copied to clipboard!")}
+                    severity="info">{language === "hu" ? ("A link vágólapra másolva!") : ("Link copied to clipboard!")}
                 </Alert>
             </Snackbar>
 
             <Snackbar open={channelcreated}
                 autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setchannelcreated(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setchannelcreated(false) }}
-                    severity="success">{language === "hun" ? ("Csatorna létrehozva!") : ("Channel created!")}
+                    severity="success">{language === "hu" ? ("Csatorna létrehozva!") : ("Channel created!")}
                 </Alert>
             </Snackbar>
 
             <Snackbar open={channeldeleted}
                 autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setchanneldeleted(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setchanneldeleted(false) }}
-                    severity="warning">{language === "hun" ? ("Csatorna sikeresen törölve!") : ("Channel deleted!")}
+                    severity="warning">{language === "hu" ? ("Csatorna sikeresen törölve!") : ("Channel deleted!")}
                 </Alert>
             </Snackbar>
 
             <Snackbar open={channerror} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setchannerror(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setchannerror(false) }}
-                    severity="error">{language === "hun" ? ("Azért ehhez meg kéne adni egy nevet is!") : ("I think you should write a name first!")}
+                    severity="error">{language === "hu" ? ("Azért ehhez meg kéne adni egy nevet is!") : ("I think you should write a name first!")}
                 </Alert>
             </Snackbar>
 
             <Snackbar open={filesizeerror} autoHideDuration={6000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfilesizeerror(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfilesizeerror(false) }}
-                    severity="error">{language === "hun" ? (`A fájl mérete ${converted}, amely meghaladja a maximális méretet (50 MB)!`) :
+                    severity="error">{language === "hu" ? (`A fájl mérete ${converted}, amely meghaladja a maximális méretet (50 MB)!`) :
                         (`File size is ${converted}, which exceeds the maximum size!`)}
                 </Alert>
             </Snackbar>

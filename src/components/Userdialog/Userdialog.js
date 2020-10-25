@@ -16,7 +16,7 @@ function Userdialog({ dialog, setdialog, user, counter, avatar, lastlogin }) {
     return (
         <Dialog open={dialog} onClose={() => setdialog(false)}>
             <DialogContent>
-                <img src={user.photo} style={{ borderRadius: "50%" }} />
+                <img src={user.photo} alt="userphoto" style={{ borderRadius: "50%" }} />
                 <DialogTitle>
                     <p style={{ fontWeight: "bold" }}>{user.displayname}</p>
                 </DialogTitle>
@@ -24,11 +24,11 @@ function Userdialog({ dialog, setdialog, user, counter, avatar, lastlogin }) {
                     <Link href={"mailto: " + user.email} color="inherit">{user.email}</Link>
                     <br />
                     <br />
-                    {!avatar && (language === "hun" ? (<p>Összes üzenete a csatornán: <span>{counter}</span></p>) :
+                    {!avatar && (language === "hu" ? (<p>Összes üzenete a csatornán: <span>{counter}</span></p>) :
                         (<p>All messages on the channel: <span>{counter}</span></p>))}
-                    {!avatar && (language === "hun" ?
-                        (<p style={{ marginTop: "10px", fontWeight: "bolder" }}>Utoljára bejelentkezve: <TimeAgo datetime={lastlogin} locale={language === "hun" ? ("hu") : ("en")} /></p>) :
-                        (<p style={{ marginTop: "10px", fontWeight: "bolder" }}>Last login: <TimeAgo datetime={lastlogin} locale={language === "hun" ? ("hu") : ("en")} /></p>))}
+                    {!avatar && (language === "hu" ?
+                        (<p style={{ marginTop: "10px", fontWeight: "bolder" }}>Utoljára bejelentkezve: <TimeAgo datetime={lastlogin} locale={language === "hu" ? ("hu") : ("en")} /></p>) :
+                        (<p style={{ marginTop: "10px", fontWeight: "bolder" }}>Last login: <TimeAgo datetime={lastlogin} locale={language === "hu" ? ("hu") : ("en")} /></p>))}
 
                 </DialogContentText>
                 {avatar && (<DialogContentText style={{ color: "gray", fontStyle: "italic" }}>

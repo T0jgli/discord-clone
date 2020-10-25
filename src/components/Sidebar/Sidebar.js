@@ -8,7 +8,7 @@ import SettingsIcon from "@material-ui/icons/Settings"
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Checkbox, FormControlLabel } from '@material-ui/core'
+import { Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Switch, FormControlLabel } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -90,13 +90,13 @@ function Sidebar({ setsignouttoast }) {
                     <Menu anchorEl={menu} className="sidebar__menu" open={menu} onClose={() => setmenu(false)}>
                         <MenuItem className="menu__itemflex" onClick={() => { setcategoriemenu(true) }}>
                             <div className="menu__text">
-                                {language === "hun" ? ("Kategória létrehozása") : ("Create category")}
+                                {language === "hu" ? ("Kategória létrehozása") : ("Create category")}
                             </div>
                             <CreateNewFolderIcon />
                         </MenuItem>
                         <MenuItem className="menu__itemflex" onClick={() => { auth.signOut(); setsignouttoast(true) }}>
                             <div className="menu__text">
-                                {language === "hun" ? ("Kijelentkezés") : ("Sign out")}
+                                {language === "hu" ? ("Kijelentkezés") : ("Sign out")}
                             </div>
                             <ExitToAppIcon />
                         </MenuItem>
@@ -110,7 +110,7 @@ function Sidebar({ setsignouttoast }) {
                                 return (
                                     <SidebarCategories categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
                                         setcategoriename={setcategoriename} categoriemenu={categoriemenu}
-                                        setcategoriemenu={setcategoriemenu} setchannerror={setchannerror} channerror={channerror} user={user} language={language} />
+                                        setcategoriemenu={setcategoriemenu} setchannerror={setchannerror} channerror={channerror} user={user} />
                                 )
                             }
                             else return null
@@ -136,22 +136,22 @@ function Sidebar({ setsignouttoast }) {
             <Dialog open={categoriemenu} onClose={() => setcategoriemenu(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
-                        {language === "hun" ? ("Add meg a kategória nevét!") : ("Write a channel categorie name!")}
+                        {language === "hu" ? ("Add meg a kategória nevét!") : ("Write a channel categorie name!")}
                     </DialogTitle>
                     <ArrowDropDownIcon />
                     <form style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie(categoriename) }}>
                         <TextField variant="filled" autoFocus value={categoriename} fullWidth onChange={(e) => setcategoriename(e.target.value)} label="Név" />
-                        <FormControlLabel style={{ marginTop: "15px" }} control={
-                            <Checkbox color="primary"
+                        <FormControlLabel style={{ marginTop: "15px", fontWeight: "bold" }} control={
+                            <Switch color="primary"
                                 checked={categorieprivate} onChange={() => setcategorieprivate(!categorieprivate)} />
-                        } label={language === "hun" ? ("Privát") : ("Private")} />
+                        } label={language === "hu" ? ("Privát") : ("Private")} />
                     </form>
                 </DialogContent>
                 <DialogActions >
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => setcategoriemenu(false)}>{language === "hun" ? ("Mégse") : ("Cancel")}</Button>
+                        onClick={() => setcategoriemenu(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>
                     <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={() => handleaddcategorie(categoriename)}>{language === "hun" ? ("Létrehoz") : ("Create")}</Button>
+                        onClick={() => handleaddcategorie(categoriename)}>{language === "hu" ? ("Létrehoz") : ("Create")}</Button>
                 </DialogActions>
             </Dialog>
 

@@ -44,12 +44,12 @@ function SideBarChannel({ id, channelname, createdby, user, setchanneldeleted, c
     }
 
     const editfunc = () => {
-        if (newname != channelname && newname.replace(/\s/g, '').length) {
+        if (newname !== channelname && newname.replace(/\s/g, '').length) {
             db.collection("categories").doc(categorieid).collection("channels").doc(id).update({
                 channelname: newname
             })
             dispatch(setChannelInfo({
-                channelName: newname, channelId: id, focus: true
+                channelName: newname, channelId: id, focus: true, categorieid: categorieid
             }))
         }
         setdialog(false)
@@ -63,7 +63,7 @@ function SideBarChannel({ id, channelname, createdby, user, setchanneldeleted, c
         }
         return () => { mounted = true };
 
-    }, [channel])
+    }, [channel, channelname])
 
     return (
         <>
@@ -89,13 +89,13 @@ function SideBarChannel({ id, channelname, createdby, user, setchanneldeleted, c
             }} open={dialog} onClose={() => setdialog(false)}>
                 <DialogContent>
                     <DialogTitle>
-                        {language === "hun" ? ("Csatorna szerkesztése") : ("Channel edit")}
+                        {language === "hu" ? ("Csatorna szerkesztése") : ("Channel edit")}
                     </DialogTitle>
                     <ArrowDropDownIcon />
                     <DialogContentText>
                         <form onSubmit={(e) => { e.preventDefault(); editfunc() }} style={{ marginTop: "20px" }}>
                             <TextField
-                                label={language === "hun" ? ("Név") : ("Name")}
+                                label={language === "hu" ? ("Név") : ("Name")}
                                 defaultValue={channelname}
                                 variant="outlined"
                                 value={newname} onChange={(e) => setnewname(e.target.value)}
@@ -109,9 +109,9 @@ function SideBarChannel({ id, channelname, createdby, user, setchanneldeleted, c
                 </DialogContent>
                 <DialogActions >
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => setdialog(false)}>{language === "hun" ? ("Mégse") : ("Cancel")}</Button>
+                        onClick={() => setdialog(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>
                     <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={async () => { await editfunc() }}>{language === "hun" ? ("Kész") : ("Done")}</Button>
+                        onClick={async () => { await editfunc() }}>{language === "hu" ? ("Kész") : ("Done")}</Button>
                 </DialogActions>
             </Dialog>
 
@@ -126,14 +126,14 @@ function SideBarChannel({ id, channelname, createdby, user, setchanneldeleted, c
             }} open={deleteprompt} onClose={() => setdeleteprompt(false)}>
                 <DialogContent>
                     <DialogTitle>
-                        {language === "hun" ? ("Biztosan törlöd a csatornát?") : ("Are you sure you want to delete this channel?")}
+                        {language === "hu" ? ("Biztosan törlöd a csatornát?") : ("Are you sure you want to delete this channel?")}
                     </DialogTitle>
                 </DialogContent>
                 <DialogActions >
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => { setdeleteprompt(false); setdialog(false) }}>{language === "hun" ? ("Nem") : ("No")}</Button>
+                        onClick={() => { setdeleteprompt(false); setdialog(false) }}>{language === "hu" ? ("Nem") : ("No")}</Button>
                     <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={async () => { await deletefunc() }}>{language === "hun" ? ("Igen") : ("Yes")}</Button>
+                        onClick={async () => { await deletefunc() }}>{language === "hu" ? ("Igen") : ("Yes")}</Button>
                 </DialogActions>
             </Dialog>
 

@@ -3,14 +3,14 @@ import { createSlice } from '@reduxjs/toolkit';
 export const appSlice = createSlice({
   name: 'app',
   initialState: {
-      channelId: null,
-      channelName: null,
-      categorieid: null,
-      focus: null,
-      language: "hun",
-      uploadvalue: 0,
-      filenamesinchannel: [],
-      imagenamesinchannel: []
+    channelId: null,
+    channelName: null,
+    categorieid: null,
+    focus: null,
+    language: "hu",
+    uploadvalue: 0,
+    filenamesinchannel: [],
+    imagenamesinchannel: []
   },
   reducers: {
     setChannelInfo: (state, action) => {

@@ -7,11 +7,13 @@ import Login from './components/Login/Login'
 import Loading from "./components/Loading/Loading"
 import Snackbars from "./components/Snackbars"
 import { getCookie, setCookie } from "./features/Cookiehelper"
-import firebase from "firebase"
+import firebase from "firebase/app"
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, login, logout } from "./features/userSlice"
 import { setlanguage } from "./features/AppSlice"
+import { ThemeProvider } from '@material-ui/core';
+import Theme from './components/Theme';
 
 function App() {
   const user = useSelector(selectUser)
@@ -40,8 +42,8 @@ function App() {
       }
     })
 
-    if (getCookie("language") === "hun") {
-      dispatch(setlanguage({ language: "hun" }))
+    if (localStorage.getItem("language") === "en") {
+      dispatch(setlanguage({ language: "en" }))
     }
 
   }, [dispatch])
@@ -52,12 +54,12 @@ function App() {
       setloading(false)
       const docref = db.collection("users").doc(user.uid)
       docref.get().then(doc => {
-        if(doc.exists) {
+        if (doc.exists) {
           db.collection("users").doc(user.uid).update({
             lastlogin: firebase.firestore.FieldValue.serverTimestamp(),
           })
         }
-        else{
+        else {
           db.collection("users").doc(user.uid).set({
             email: user.email,
             displayname: user.displayname,
@@ -76,12 +78,11 @@ function App() {
   return (
     <div className="app">
       {user ? (
-        <>
-
+        <ThemeProvider theme={Theme}>
           <Snackbars logintoast={logintoast} setlogintoast={setlogintoast} />
           <Sidebar setsignouttoast={setsignouttoast} />
           <Chat />
-        </>
+        </ThemeProvider>
       ) : loading ? (<Loading />) : (<Login settoast={setlogintoast} getCookie={getCookie} setCookie={setCookie} />)}
 
       <Snackbars signouttoast={signouttoast} setsignouttoast={setsignouttoast} />

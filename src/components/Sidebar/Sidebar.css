@@ -184,3 +184,7 @@
 .delicon {
     color: gray
 }
+
+.MuiFormControlLabel-label {
+    font-weight: bold !important;
+}

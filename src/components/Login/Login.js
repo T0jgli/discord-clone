@@ -16,7 +16,7 @@ function Login({ getCookie, setCookie, settoast }) {
     const [langtoast, setlangtoast] = useState(false)
     const [counter, setcounter] = useState(3)
     const [open, setopen] = useState(false)
-    const [error, seterror] = useState({open: false, message: ""})
+    const [error, seterror] = useState({ open: false, message: "" })
     const [logindata, setlogindata] = useState({ email: "", password: "" })
     const language = useSelector(selectlanguage)
 
@@ -27,7 +27,7 @@ function Login({ getCookie, setCookie, settoast }) {
 
     const signin = () => {
         auth.signInWithEmailAndPassword(logindata.email, logindata.password).catch(error => {
-            seterror({open: true, message: error.message}); setlogindata({email: "", password: ""})
+            seterror({ open: true, message: error.message }); setlogindata({ email: "", password: "" })
         })
     }
 
@@ -50,25 +50,25 @@ function Login({ getCookie, setCookie, settoast }) {
                 <div className="login__logo">
                     <img src="/dclogo.png" alt="" />
                     <div className="login__gifdiv">
-                        <Giphy tag="doggy"/>
+                        <Giphy tag="doggy" />
                     </div>
                 </div>
                 <div className="login__language">
 
                     <img src="/hu.png"
-                        className={getCookie("language") === "hun" ? ("login__languageimg") : ("login__languageactive")}
-                        onClick={() => { setCookie("language", "hun", 365); setlangtoast(true); counterinterval() }} alt="huimage" />
+                        className={localStorage.getItem("language") === "hu" ? ("login__languageimg") : ("login__languageactive")}
+                        onClick={() => { localStorage.setItem("language", "hu", 365); setlangtoast(true); counterinterval() }} alt="huimage" />
                     <img src="/uk.png"
-                        className={getCookie("language") !== "hun" ? ("login__languageimg") : ("login__languageactive")}
-                        onClick={() => { setCookie("language", "eng", 365); setlangtoast(true); counterinterval() }} alt="ukimage" />
+                        className={localStorage.getItem("language") !== "hu" ? ("login__languageimg") : ("login__languageactive")}
+                        onClick={() => { localStorage.setItem("language", "en", 365); setlangtoast(true); counterinterval() }} alt="ukimage" />
 
                 </div>
-                <Button onClick={() => setopen(true)}>{language === "hun" ? ("Bejelentkezés") : ("Sign In")}</Button>
+                <Button onClick={() => setopen(true)}>{language === "hu" ? ("Bejelentkezés") : ("Sign In")}</Button>
 
                 <Snackbar open={langtoast} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setlangtoast(false) }}>
-                    <SnackbarContent message={language === "hun" ? ("Nyelv sikeresen beállítva...") : ("Language set...")}
+                    <SnackbarContent message={language === "hu" ? ("Nyelv sikeresen beállítva...") : ("Language set...")}
                         action={<Button style={{ color: "white", fontWeight: "bold" }}
-                            onClick={() => { window.location.reload(false) }}>{language === "hun" ? ("Újratöltés " + counter) : ("Reload " + counter)}</Button>} />
+                            onClick={() => { window.location.reload(false) }}>{language === "hu" ? ("Újratöltés " + counter) : ("Reload " + counter)}</Button>} />
                 </Snackbar>
 
             </div>
@@ -76,30 +76,30 @@ function Login({ getCookie, setCookie, settoast }) {
             <Dialog open={open} onClose={() => setopen(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "10px", fontWeight: "bold", fontSize: "larger" }}>
-                        {language === "hun" ? ("Bejelentkezés") : ("Sign In!")}
+                        {language === "hu" ? ("Bejelentkezés") : ("Sign In!")}
                     </DialogTitle>
                     <ArrowDropDownIcon />
-                    <form onKeyPress={(e) => {if(e.key === "Enter"){signin()}}}>
+                    <form onKeyPress={(e) => { if (e.key === "Enter") { signin() } }}>
                         <TextField variant="filled" autoFocus style={{ margin: "10px" }}
                             value={logindata.email} fullWidth type="email" name="email"
-                            onChange={(e) => setlogindata({ ...logindata, email: e.target.value })} label={language === "hun" ? ("Email cím") : ("Email address")} />
+                            onChange={(e) => setlogindata({ ...logindata, email: e.target.value })} label={language === "hu" ? ("Email cím") : ("Email address")} />
                         <TextField variant="filled" style={{ margin: "10px" }}
                             value={logindata.password} fullWidth type="password" name="password"
-                            onChange={(e) => setlogindata({ ...logindata, password: e.target.value })} label={language === "hun" ? ("Jelszó") : ("Password")} />
+                            onChange={(e) => setlogindata({ ...logindata, password: e.target.value })} label={language === "hu" ? ("Jelszó") : ("Password")} />
                     </form>
                 </DialogContent>
-                    <div className="googlelogindiv">
-                    <img onClick={signinwithgoogle} src="/googleicon.png"/>
+                <div className="googlelogindiv">
+                    <img alt="googleicon" onClick={signinwithgoogle} src="/googleicon.png" />
 
-                    </div>
+                </div>
                 <DialogActions>
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => setopen(false)}>{language === "hun" ? ("Mégse") : ("Cancel")}</Button>
+                        onClick={() => setopen(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>
                     <Button onClick={signin} style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                    >{language === "hun" ? ("Mehet") : ("Let's go")}</Button>
+                    >{language === "hu" ? ("Mehet") : ("Let's go")}</Button>
                 </DialogActions>
             </Dialog>
-            <Snackbars loginerror={error.open} setloginerror={seterror} loginmessage={error.message}/>
+            <Snackbars loginerror={error.open} setloginerror={seterror} loginmessage={error.message} />
 
         </>
     )

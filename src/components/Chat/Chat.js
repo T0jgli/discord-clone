@@ -54,7 +54,6 @@ const Chat = () => {
     const todaysdate = new Date().toLocaleString("hu-HU").replace(/\s/g, '').split('.').join("").split(':').join("")
 
     useEffect(() => {
-
         if (channelid) {
             db.collection("categories").doc(categorieid).collection("channels")
                 .doc(channelid)
@@ -67,14 +66,14 @@ const Chat = () => {
                 chatmessage.current.focus()
             }
         }
-    }, [channelid])
+    }, [channelid, categorieid, focus])
     useEffect(() => {
         if (channelname) {
             if (focus) {
                 chatmessage.current.focus()
             }
         }
-    }, [channelname])
+    }, [channelname, focus])
 
     useEffect(() => {
         if (messages) {
@@ -177,8 +176,8 @@ const Chat = () => {
                     <AddCircleIcon className={channelid ? ("chat__inputfilebutton") : ("")} fontSize="large" onClick={() => hiddenFileInput.current.click()} />
                     <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage(e) } }}>
                         <input value={input} ref={chatmessage}
-                            placeholder={image ? (image.name) : channelid ? language === "hun" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
-                                language === "hun" ? ("Válassz csatornát") : ("Select a channel")}
+                            placeholder={image ? (image.name) : channelid ? language === "hu" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
+                                language === "hu" ? ("Válassz csatornát") : ("Select a channel")}
                             disabled={!channelid} onChange={(e) => setinput(e.target.value)} />
                         <input disabled={!channelid} type="file"
                             ref={hiddenFileInput} onChange={(e) => { if (e.target.files[0]) { setimage(e.target.files[0]) } }} style={{ display: "none" }} />

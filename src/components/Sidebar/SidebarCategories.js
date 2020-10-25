@@ -5,15 +5,17 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import AddIcon from "@material-ui/icons/Add"
 import SidebarChannelList from './SidebarChannelList';
 import db from '../../firebase/firebase';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import firebase from "firebase/app"
-import { setChannelInfo } from '../../features/AppSlice';
+import { selectlanguage, setChannelInfo } from '../../features/AppSlice';
 import Snackbars from '../Snackbars';
 
-function SidebarCategories({ user, language, setchannerror, categorie, channerror, categorieid }) {
+function SidebarCategories({ user, setchannerror, categorie, channerror, categorieid }) {
+    const language = useSelector(selectlanguage)
+
     const [channels, setchannel] = useState([])
     const [promptstate, setpromptstate] = useState(false)
     const [channelcreated, setchannelcreated] = useState(false)
@@ -34,7 +36,7 @@ function SidebarCategories({ user, language, setchannerror, categorie, channerro
                 }))
             )
         )
-    }, [])
+    }, [categorieid])
 
     const handleaddchannel = () => {
         if (channelname) {
@@ -62,10 +64,6 @@ function SidebarCategories({ user, language, setchannerror, categorie, channerro
 
     }
 
-    const handledeletecategore = () => {
-
-    }
-
     return (
         <>
             <div className="sidebar__channelsheader">
@@ -81,7 +79,7 @@ function SidebarCategories({ user, language, setchannerror, categorie, channerro
             <Dialog open={promptstate} onClose={() => setpromptstate(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
-                        {language === "hun" ? ("Add meg a csatorna nevét!") : ("Write a channel name!")}
+                        {language === "hu" ? ("Add meg a csatorna nevét!") : ("Write a channel name!")}
                     </DialogTitle>
                     <ArrowDropDownIcon />
                     <form style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddchannel(channelname) }}>
@@ -90,9 +88,9 @@ function SidebarCategories({ user, language, setchannerror, categorie, channerro
                 </DialogContent>
                 <DialogActions >
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => setpromptstate(false)}>{language === "hun" ? ("Mégse") : ("Cancel")}</Button>
+                        onClick={() => setpromptstate(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>
                     <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={() => handleaddchannel(channelname)}>{language === "hun" ? ("Létrehoz") : ("Create")}</Button>
+                        onClick={() => handleaddchannel(channelname)}>{language === "hu" ? ("Létrehoz") : ("Create")}</Button>
                 </DialogActions>
             </Dialog>
 
@@ -100,14 +98,14 @@ function SidebarCategories({ user, language, setchannerror, categorie, channerro
             <Dialog open={categoriedeleteprompt} onClose={() => setcategoriedeleteprompt(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
-                        {language === "hun" ? ("Biztosan törlöd a kategóriát?") : ("Are you sure you want to delete this category?")}
+                        {language === "hu" ? ("Biztosan törlöd a kategóriát?") : ("Are you sure you want to delete this category?")}
                     </DialogTitle>
                 </DialogContent>
                 <DialogActions >
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => setcategoriedeleteprompt(false)}>{language === "hun" ? ("Mégse") : ("Cancel")}</Button>
+                        onClick={() => setcategoriedeleteprompt(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>
                     <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={() => handleaddchannel(channelname)}>{language === "hun" ? ("Létrehoz") : ("Create")}</Button>
+                        onClick={() => handleaddchannel(channelname)}>{language === "hu" ? ("Létrehoz") : ("Create")}</Button>
                 </DialogActions>
             </Dialog>
 

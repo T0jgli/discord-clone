@@ -1,12 +1,10 @@
 import React, { forwardRef, useState } from 'react'
 
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
-import CloseIcon from '@material-ui/icons/Close';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import Link from '@material-ui/core/Link';
-import { Avatar, Button, IconButton, Dialog, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core'
+import { Avatar, Button, IconButton } from '@material-ui/core'
 
-import { selectcategorieid, selectChannelId, selectlanguage} from '../../features/AppSlice'
+import { selectcategorieid, selectChannelId, selectlanguage } from '../../features/AppSlice'
 import db from '../../firebase/firebase'
 import { useSelector } from 'react-redux'
 
@@ -61,13 +59,13 @@ function geturl(message) {
         }
         for (let index = messageendindex + 1; index < message.length; index++) {
             messageafterurl += message[index]
-            
+
         }
     }
     newmessage.push(messageurl)
     newmessage.push(messagebeforeurl)
     newmessage.push(messageafterurl)
-    if(exactprefix) {
+    if (exactprefix) {
         return newmessage
     }
     else {
@@ -75,7 +73,7 @@ function geturl(message) {
     }
 }
 
-const Message = forwardRef(({ timestamp, user, message, imageurl, fileurl, filename, setlightbox}, ref) => {
+const Message = forwardRef(({ timestamp, user, message, imageurl, fileurl, filename, setlightbox }, ref) => {
     const [dialog, setdialog] = useState(false)
     const [runned, setrunned] = useState(false)
     const [lastlogin, setlastlogin] = useState(null)
@@ -99,10 +97,10 @@ const Message = forwardRef(({ timestamp, user, message, imageurl, fileurl, filen
                     return null
                 }))
             db.collection("users")
-            .doc(user.uid).get().then(doc => {
-                let lastlogintime = new Date(doc.data().lastlogin?.toDate()); 
-                setlastlogin(lastlogintime.toLocaleString("hu-HU"))
-            }).then(() => {setdialog(true); setrunned(true)})
+                .doc(user.uid).get().then(doc => {
+                    let lastlogintime = new Date(doc.data().lastlogin?.toDate());
+                    setlastlogin(lastlogintime.toLocaleString("hu-HU"))
+                }).then(() => { setdialog(true); setrunned(true) })
         }
         else {
             setdialog(true)
@@ -120,7 +118,7 @@ const Message = forwardRef(({ timestamp, user, message, imageurl, fileurl, filen
         document.execCommand("copy");
         setcopystate(true)
     }
-    
+
 
     const messageswithurl = geturl(message)
     const getdayfunc = getdays(messagetime)
@@ -132,19 +130,19 @@ const Message = forwardRef(({ timestamp, user, message, imageurl, fileurl, filen
                     <h4>
                         <span onClick={() => { countfunc() }} className="name">{user.displayname}</span>
                         {timestamp && (<span className="time">{getdayfunc === "Today" ?
-                            language === "hun" ? ("Ma " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
+                            language === "hu" ? ("Ma " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
                                 ("Today " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
                             getdayfunc === "Yesterday" ?
-                                language === "hun" ? ("Tegnap " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
+                                language === "hu" ? ("Tegnap " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
                                     ("Yesterday " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
                                 (messagetime?.toLocaleString('hu-HU'))}</span>)}
-                        </h4>
+                    </h4>
 
                     <p>{messageswithurl ?
                         (messageswithurl[1]) :
                         (message)}{messageswithurl ?
                             (<a rel="noopener noreferrer" href={messageswithurl[0]} className="message__url" target="_blank" >{messageswithurl[0]}</a>) :
-                        (null)}{messageswithurl ? (messageswithurl[2]) : (null)}</p>
+                            (null)}{messageswithurl ? (messageswithurl[2]) : (null)}</p>
 
                     {imageurl && (<img alt="messageImage" onClick={() => setlightbox({ toggler: true, url: imageurl, user: user.displayname, timestamp: timestamp })} src={imageurl} />)}
                     {fileurl && (
@@ -161,7 +159,7 @@ const Message = forwardRef(({ timestamp, user, message, imageurl, fileurl, filen
                 </div>
             </div>
 
-            <Userdialog lastlogin={lastlogin} dialog={dialog} setdialog={setdialog} user={user} counter={counter}/>
+            <Userdialog lastlogin={lastlogin} dialog={dialog} setdialog={setdialog} user={user} counter={counter} />
             <Snackbars copystate={copystate} language={language} setcopystate={setcopystate} />
         </>
     )
