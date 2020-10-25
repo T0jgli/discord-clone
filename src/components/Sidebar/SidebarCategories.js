@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-import firebase from "firebase"
+import firebase from "firebase/app"
 import { setChannelInfo } from '../../features/AppSlice';
 import Snackbars from '../Snackbars';
 

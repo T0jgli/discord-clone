@@ -8,13 +8,13 @@ import SettingsIcon from "@material-ui/icons/Settings"
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField } from '@material-ui/core'
+import { Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Checkbox, FormControlLabel } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { selectUser } from '../../features/userSlice'
 import { selectlanguage } from '../../features/AppSlice'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import db, { auth } from '../../firebase/firebase'
 import firebase from "firebase/app"
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -29,6 +29,8 @@ function Sidebar({ setsignouttoast }) {
     const language = useSelector(selectlanguage)
     const [categoriemenu, setcategoriemenu] = useState(false)
     const [categoriecreated, setcategoriecreated] = useState(false)
+    const [categorieprivate, setcategorieprivate] = useState(false)
+
     const [categories, setcategories] = useState([])
 
 
@@ -41,10 +43,23 @@ function Sidebar({ setsignouttoast }) {
 
     useEffect(() => {
         db.collection("categories").orderBy("created", "asc").onSnapshot(snapshot => {
-            setcategories(snapshot.docs.map(doc => ({
-                id: doc.id,
-                categorie: doc.data()
-            }))
+            setcategories(snapshot.docs.map(doc => {
+                if (doc.data().private === true) {
+                    if (doc.data().createdby === user.uid) {
+                        return ({
+                            id: doc.id,
+                            categorie: doc.data()
+                        })
+                    }
+                    else return null
+                }
+                else {
+                    return ({
+                        id: doc.id,
+                        categorie: doc.data()
+                    })
+                }
+            })
             )
         })
     }, [])
@@ -54,7 +69,8 @@ function Sidebar({ setsignouttoast }) {
             db.collection("categories").add({
                 categoriename: categoriename,
                 created: firebase.firestore.FieldValue.serverTimestamp(),
-                createdby: user.uid
+                createdby: user.uid,
+                private: categorieprivate
             })
             setcategoriemenu(false)
             setcategoriecreated(true)
@@ -89,12 +105,16 @@ function Sidebar({ setsignouttoast }) {
                 </div>
                 <div className="sidebar__channels">
                     <Scrollbars autoHide autoHideDuration={2000} renderThumbVertical={props => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
-                        {categories.map(categorie => (
-                            <SidebarCategories categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
-                                setcategoriename={setcategoriename} categoriemenu={categoriemenu}
-                                setcategoriemenu={setcategoriemenu} setchannerror={setchannerror} channerror={channerror} user={user} language={language} />
-
-                        ))}
+                        {categories.map(categorie => {
+                            if (categorie) {
+                                return (
+                                    <SidebarCategories categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
+                                        setcategoriename={setcategoriename} categoriemenu={categoriemenu}
+                                        setcategoriemenu={setcategoriemenu} setchannerror={setchannerror} channerror={channerror} user={user} language={language} />
+                                )
+                            }
+                            else return null
+                        })}
                     </Scrollbars>
                 </div>
                 <div className="sidebar__profile">
@@ -121,6 +141,10 @@ function Sidebar({ setsignouttoast }) {
                     <ArrowDropDownIcon />
                     <form style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie(categoriename) }}>
                         <TextField variant="filled" autoFocus value={categoriename} fullWidth onChange={(e) => setcategoriename(e.target.value)} label="Név" />
+                        <FormControlLabel style={{ marginTop: "15px" }} control={
+                            <Checkbox color="primary"
+                                checked={categorieprivate} onChange={() => setcategorieprivate(!categorieprivate)} />
+                        } label={language === "hun" ? ("Privát") : ("Private")} />
                     </form>
                 </DialogContent>
                 <DialogActions >
