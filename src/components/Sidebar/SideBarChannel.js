@@ -53,7 +53,7 @@ function SideBarChannel({ id, channelname, createdby, user, setchanneldeleted, c
             }))
         }
         setdialog(false)
-        setnewname(channelname)
+        setnewname(newname)
     }
 
     useEffect(() => {
