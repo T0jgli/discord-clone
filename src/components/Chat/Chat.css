@@ -106,6 +106,7 @@
 
 .message {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     padding: 20px;
     color: white;
@@ -118,6 +119,7 @@
 
 .message__info {
     margin-left: 20px;
+    flex: 1
 }
 
 .message__info > p {
@@ -227,4 +229,12 @@
 
 .MuiDialogContent-root {
     padding-bottom: 20px !important;
+}
+
+.message__delicon {
+    visibility: hidden;
+}
+
+.message:hover > .message__delicon {
+    visibility: visible;
 }

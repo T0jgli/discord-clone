@@ -47,6 +47,8 @@ const Chat = () => {
     const [messages, setmessages] = useState([]);
     const [image, setimage] = useState(null);
     const [loading, setloading] = useState(false)
+    const [copystate, setcopystate] = useState(false)
+    const [delmessagesuccess, setdelmessagesuccess] = useState(false)
     const [lightbox, setlightbox] = useState({
         toggler: false, url: null, user: null, timestamp: null
     })
@@ -59,8 +61,13 @@ const Chat = () => {
                 .doc(channelid)
                 .collection("messages")
                 .orderBy('timestamp', 'desc')
-                .onSnapshot((snapshot) =>
-                    setmessages(snapshot.docs.map((doc) => doc.data()))
+                .onSnapshot((snapshot) => {
+                    setmessages(snapshot.docs.map((doc) => {
+                        return (
+                            doc.data()
+                        )
+                    }))
+                }
                 )
             if (focus) {
                 chatmessage.current.focus()
@@ -107,12 +114,14 @@ const Chat = () => {
                         dispatch(setuploadvalue({ uploadvalue: (snapshot.bytesTransferred / image.size) * 100 }))
                     }, error => console.log(error), () => {
                         storage.ref("images").child(image.name + "__" + todaysdate).getDownloadURL().then(url => {
-                            db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").add({
+                            let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc()
+                            ref.set({
                                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                 message: input,
                                 user: user,
                                 imageurl: url,
-                                imagename: image.name + "__" + todaysdate
+                                imagename: image.name + "__" + todaysdate,
+                                id: ref.id
                             })
                         }).then(() => setloading(false))
                     })
@@ -125,25 +134,29 @@ const Chat = () => {
                         dispatch(setuploadvalue({ uploadvalue: (snapshot.bytesTransferred / image.size) * 100 }))
                     }, error => console.log(error), () => {
                         storage.ref("files").child(image.name).getDownloadURL().then(url => {
-                            db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").add({
+                            let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc()
+                            ref.set({
                                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                 message: input,
                                 user: user,
                                 fileurl: url,
                                 filename: image.name,
+                                id: ref.id
                             })
                         }).then(() => setloading(false))
                     })
                 }
-
             }
         }
         else {
-            db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").add({
+            let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc()
+            ref.set({
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 message: input,
                 user: user,
+                id: ref.id
             })
+
         }
         setimage(null)
         setinput("");
@@ -162,7 +175,8 @@ const Chat = () => {
                         <FlipMove enterAnimation="fade" leaveAnimation="none">
                             {messages.map(message => {
                                 return (
-                                    <Message setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
+                                    <Message setcopystate={setcopystate} setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
+                                        id={message.id} delmessagesuccess={delmessagesuccess} setdelmessagesuccess={setdelmessagesuccess}
                                         imageurl={message.imageurl} key={message.timestamp} message={message.message}
                                         timestamp={message.timestamp} user={message.user} imagename={message.imagename}
                                     />
@@ -188,7 +202,8 @@ const Chat = () => {
                     </div>
                 </div>
             </div>
-            <Snackbars filesize={image?.size} setfilesizeerror={setfilesizeerror} filesizeerror={filesizeerror} />
+            <Snackbars delmessagesuccess={delmessagesuccess} setdelmessagesuccess={setdelmessagesuccess} copystate={copystate} setcopystate={setcopystate}
+                filesize={image?.size} setfilesizeerror={setfilesizeerror} filesizeerror={filesizeerror} />
             <Fslightboxes channelname={channelname} lightbox={lightbox} setlightbox={setlightbox} />
         </>
     )

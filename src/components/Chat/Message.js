@@ -2,14 +2,16 @@ import React, { forwardRef, useState } from 'react'
 
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import { Avatar, Button, IconButton } from '@material-ui/core'
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import { selectcategorieid, selectChannelId, selectlanguage } from '../../features/AppSlice'
-import db from '../../firebase/firebase'
+import db, { storage } from '../../firebase/firebase'
 import { useSelector } from 'react-redux'
 
 import Snackbars from '../Snackbars';
 import Userdialog from '../Userdialog/Userdialog';
+import { selectUser } from '../../features/userSlice';
 
 function getdays(messagetime) {
     let today = new Date()
@@ -73,12 +75,15 @@ function geturl(message) {
     }
 }
 
-const Message = forwardRef(({ timestamp, user, message, imageurl, fileurl, filename, setlightbox }, ref) => {
+const Message = forwardRef(({ timestamp, user,
+    setcopystate, delmessagesuccess, setdelmessagesuccess, message, imageurl, imagename, fileurl, filename, id, setlightbox }, ref) => {
     const [dialog, setdialog] = useState(false)
     const [runned, setrunned] = useState(false)
+    const [deleteprompt, setdeleteprompt] = useState(false)
     const [lastlogin, setlastlogin] = useState(null)
     const [counter, setcounter] = useState(0)
-    const [copystate, setcopystate] = useState(false)
+
+    const userloggedin = useSelector(selectUser)
     const channelid = useSelector(selectChannelId)
     const categorieid = useSelector(selectcategorieid)
 
@@ -119,7 +124,20 @@ const Message = forwardRef(({ timestamp, user, message, imageurl, fileurl, filen
         setcopystate(true)
     }
 
-
+    const deletefunc = () => {
+        if (imageurl) {
+            let ref = storage.ref().child(`images/${imagename}`)
+            ref.delete()
+        }
+        if (fileurl) {
+            let ref = storage.ref().child(`files/${filename}`)
+            ref.delete()
+        }
+        db.collection("categories").doc(categorieid)
+            .collection("channels").doc(channelid)
+            .collection("messages").doc(id).delete();
+        setdelmessagesuccess(true)
+    }
     const messageswithurl = geturl(message)
     const getdayfunc = getdays(messagetime)
     return (
@@ -157,10 +175,38 @@ const Message = forwardRef(({ timestamp, user, message, imageurl, fileurl, filen
                             </IconButton>
                         </>)}
                 </div>
+                {user.uid === userloggedin.uid && (
+                    <div className="message__delicon">
+                        <IconButton>
+                            <DeleteIcon style={{ color: "grey" }} onClick={() => setdeleteprompt(true)} />
+                        </IconButton>
+                    </div>
+                )}
+
             </div>
 
+            <Dialog onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                    deletefunc()
+                }
+                if (e.key === "Escape" || e.key === "Backspace") {
+                    setdeleteprompt(false)
+                }
+            }} open={deleteprompt} onClose={() => setdeleteprompt(false)}>
+                <DialogContent>
+                    <DialogTitle>
+                        {language === "hu" ? ("Biztosan törlöd az üzenetet?") : ("Are you sure you want to delete this message?")}
+                    </DialogTitle>
+                </DialogContent>
+                <DialogActions >
+                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
+                        onClick={() => { setdeleteprompt(false) }}>{language === "hu" ? ("Nem") : ("No")}</Button>
+                    <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
+                        onClick={async () => { await deletefunc() }}>{language === "hu" ? ("Igen") : ("Yes")}</Button>
+                </DialogActions>
+            </Dialog>
+
             <Userdialog lastlogin={lastlogin} dialog={dialog} setdialog={setdialog} user={user} counter={counter} />
-            <Snackbars copystate={copystate} language={language} setcopystate={setcopystate} />
         </>
     )
 })

@@ -20,7 +20,7 @@ function formatBytes(bytes, decimals = 1) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-function Snackbars({ copystate, setcopystate, channelcreated, setchannelcreated, channeldeleted,
+function Snackbars({ copystate, delmessagesuccess, setdelmessagesuccess, setcopystate, channelcreated, setchannelcreated, channeldeleted,
     setchanneldeleted, channerror, setchannerror, filesizeerror, setfilesizeerror, filesize,
     signouttoast, setsignouttoast, logintoast, setlogintoast, loginerror, setloginerror, loginmessage, categoriecreated, setcategoriecreated }) {
     const language = useSelector(selectlanguage)
@@ -77,6 +77,13 @@ function Snackbars({ copystate, setcopystate, channelcreated, setchannelcreated,
                 autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setchanneldeleted(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setchanneldeleted(false) }}
                     severity="warning">{language === "hu" ? ("Csatorna sikeresen törölve!") : ("Channel deleted!")}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={delmessagesuccess}
+                autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setdelmessagesuccess(false) }}>
+                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setdelmessagesuccess(false) }}
+                    severity="warning">{language === "hu" ? ("Üzenet sikeresen törölve!") : ("Message deleted!")}
                 </Alert>
             </Snackbar>
 
