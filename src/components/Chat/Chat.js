@@ -7,6 +7,7 @@ import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions'
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
+import { Fade, Tooltip } from '@material-ui/core'
 
 import { selectUser } from '../../features/userSlice'
 import { selectChannelId, selectChannelName, selectfocus, selectlanguage, selectuploadvalue, setuploadvalue, setfilenamesinchannel, selectcategorieid } from '../../features/AppSlice'
@@ -20,6 +21,7 @@ import ChatHeader from "./ChatHeader"
 import Message from './Message'
 import Snackbars from '../Snackbars'
 import Fslightboxes from "./Fslightboxes"
+import Emoji from "./Emoji"
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -47,6 +49,7 @@ const Chat = () => {
     const [messages, setmessages] = useState([]);
     const [image, setimage] = useState(null);
     const [loading, setloading] = useState(false)
+    const [emojidialog, setemojidialog] = useState(false)
     const [copystate, setcopystate] = useState(false)
     const [delmessagesuccess, setdelmessagesuccess] = useState(false)
     const [lightbox, setlightbox] = useState({
@@ -61,14 +64,8 @@ const Chat = () => {
                 .doc(channelid)
                 .collection("messages")
                 .orderBy('timestamp', 'desc')
-                .onSnapshot((snapshot) => {
-                    setmessages(snapshot.docs.map((doc) => {
-                        return (
-                            doc.data()
-                        )
-                    }))
-                }
-                )
+                .onSnapshot(snapshot =>
+                    setmessages(snapshot.docs.map(doc => doc.data())))
             if (focus) {
                 chatmessage.current.focus()
             }
@@ -128,19 +125,19 @@ const Chat = () => {
                 }
                 else {
                     setloading(true)
-                    const uploadtask = storage.ref(`files/${image.name}`).put(image)
+                    const uploadtask = storage.ref(`files/${image.name + "__" + todaysdate}`).put(image)
 
                     uploadtask.on("state_changed", snapshot => {
                         dispatch(setuploadvalue({ uploadvalue: (snapshot.bytesTransferred / image.size) * 100 }))
                     }, error => console.log(error), () => {
-                        storage.ref("files").child(image.name).getDownloadURL().then(url => {
+                        storage.ref("files").child(image.name + "__" + todaysdate).getDownloadURL().then(url => {
                             let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc()
                             ref.set({
                                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                 message: input,
                                 user: user,
                                 fileurl: url,
-                                filename: image.name,
+                                filename: image.name + "__" + todaysdate,
                                 id: ref.id
                             })
                         }).then(() => setloading(false))
@@ -163,7 +160,12 @@ const Chat = () => {
     }
     return (
         <>
-            <div className="chat">
+            {emojidialog && (
+                <Emoji fade={emojidialog} input={input} setinput={setinput} />
+
+            )}
+
+            <div className="chat" onClick={() => { if (emojidialog) setemojidialog(false) }}>
                 {loading && (
                     <Backdrop className={classes.backdrop} open={loading}>
                         <CircularProgress color="inherit" variant="static" value={uploadvalue} />
@@ -176,7 +178,7 @@ const Chat = () => {
                             {messages.map(message => {
                                 return (
                                     <Message setcopystate={setcopystate} setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
-                                        id={message.id} delmessagesuccess={delmessagesuccess} setdelmessagesuccess={setdelmessagesuccess}
+                                        id={message.id} setdelmessagesuccess={setdelmessagesuccess}
                                         imageurl={message.imageurl} key={message.timestamp} message={message.message}
                                         timestamp={message.timestamp} user={message.user} imagename={message.imagename}
                                     />
@@ -187,7 +189,14 @@ const Chat = () => {
                     <div ref={endchat} style={{ overflowX: "hidden" }}></div>
                 </Scrollbars>
                 <div className="chat__input">
-                    <AddCircleIcon className={channelid ? ("chat__inputfilebutton") : ("")} fontSize="large" onClick={() => hiddenFileInput.current.click()} />
+                    <Tooltip title={language === "hu" ? ("Fájl hozzáadása") : ("Add file")}
+                        disableHoverListener={!channelid}
+                        disableFocusListener={!channelid}
+                        disableTouchListener={!channelid}
+                        placement="top"
+                    >
+                        <AddCircleIcon className={channelid ? ("chat__inputfilebutton") : ("")} fontSize="large" onClick={() => hiddenFileInput.current.click()} />
+                    </Tooltip>
                     <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage(e) } }}>
                         <input value={input} ref={chatmessage}
                             placeholder={image ? (image.name) : channelid ? language === "hu" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
@@ -198,7 +207,7 @@ const Chat = () => {
                     </form>
                     <div className="chat__inputicons">
                         <GifIcon fontSize="large" />
-                        <EmojiEmotionsIcon fontSize="large" />
+                        <EmojiEmotionsIcon fontSize="large" onClick={() => { if (channelid) setemojidialog(true) }} />
                     </div>
                 </div>
             </div>

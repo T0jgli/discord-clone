@@ -4,7 +4,7 @@
 - Google authentication
 - Image & file upload
 - Category create
-- Channel modify
+- Channel modify & delete
 - User information panel
 - Real time sync
 - Firebase backend

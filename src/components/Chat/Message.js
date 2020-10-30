@@ -2,14 +2,13 @@ import React, { forwardRef, useState } from 'react'
 
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@material-ui/core'
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Tooltip } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { selectcategorieid, selectChannelId, selectlanguage } from '../../features/AppSlice'
 import db, { storage } from '../../firebase/firebase'
 import { useSelector } from 'react-redux'
 
-import Snackbars from '../Snackbars';
 import Userdialog from '../Userdialog/Userdialog';
 import { selectUser } from '../../features/userSlice';
 
@@ -76,7 +75,7 @@ function geturl(message) {
 }
 
 const Message = forwardRef(({ timestamp, user,
-    setcopystate, delmessagesuccess, setdelmessagesuccess, message, imageurl, imagename, fileurl, filename, id, setlightbox }, ref) => {
+    setcopystate, setdelmessagesuccess, message, imageurl, imagename, fileurl, filename, id, setlightbox }, ref) => {
     const [dialog, setdialog] = useState(false)
     const [runned, setrunned] = useState(false)
     const [deleteprompt, setdeleteprompt] = useState(false)
@@ -177,9 +176,12 @@ const Message = forwardRef(({ timestamp, user,
                 </div>
                 {user.uid === userloggedin.uid && (
                     <div className="message__delicon">
-                        <IconButton>
-                            <DeleteIcon style={{ color: "grey" }} onClick={() => setdeleteprompt(true)} />
-                        </IconButton>
+                        <Tooltip title={language === "hu" ? ("Üzenet törlése") : ("Delete message")} placement="left">
+                            <IconButton onClick={() => setdeleteprompt(true)}>
+                                <DeleteIcon style={{ color: "grey" }} />
+                            </IconButton>
+
+                        </Tooltip>
                     </div>
                 )}
 

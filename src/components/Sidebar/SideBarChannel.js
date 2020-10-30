@@ -75,11 +75,10 @@ function SideBarChannel({ id, channelname, createdby, user, setchanneldeleted, c
                 }}>
                 <h4><span>#</span>{channelname}</h4>
                 {delbutton && createdby === user.uid ? (
-                    <>
-                        <IconButton onClick={() => setdialog(true)} className="delicon" style={{ color: "gray" }}>
-                            <EditIcon />
-                        </IconButton>
-                    </>) : (null)}
+                    <IconButton onClick={() => setdialog(true)} className="delicon" style={{ color: "gray" }}>
+                        <EditIcon />
+                    </IconButton>
+                ) : (null)}
 
             </div>
             <Dialog onKeyDown={(e) => {

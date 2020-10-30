@@ -6,7 +6,7 @@ import AddIcon from "@material-ui/icons/Add"
 import SidebarChannelList from './SidebarChannelList';
 import db from '../../firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import firebase from "firebase/app"
@@ -71,8 +71,9 @@ function SidebarCategories({ user, setchannerror, categorie, channerror, categor
                     {hide ? (<KeyboardArrowRightIcon />) : (<ExpandMoreIcon />)}
                     <h5>{categorie.categoriename}</h5>
                 </div>
-                <AddIcon onClick={() => setpromptstate(true)} />
-
+                <Tooltip title="Csatorna létrehozása">
+                    <AddIcon onClick={() => setpromptstate(true)} />
+                </Tooltip>
             </div>
             <SidebarChannelList categorieid={categorieid} channels={channels} hide={hide} user={user} setchanneldeleted={setchanneldeleted} />
 

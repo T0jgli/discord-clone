@@ -2,13 +2,11 @@ import React, { useEffect, useState } from 'react'
 import "./Sidebar.css"
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
-import MicIcon from "@material-ui/icons/Mic"
-import HeadsetIcon from "@material-ui/icons/Headset"
 import SettingsIcon from "@material-ui/icons/Settings"
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Switch, FormControlLabel } from '@material-ui/core'
+import { Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Switch, FormControlLabel, Fade } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -120,17 +118,14 @@ function Sidebar({ setsignouttoast }) {
                 <div className="sidebar__profile">
                     <Avatar src={user.photo} onClick={() => setdialog(true)} />
                     <div className="sidebar__profileinfo">
-                        <h3>{user.displayname}</h3>
+                        <h3 style={{ cursor: "pointer" }} onClick={() => setdialog(true)}>{user.displayname}</h3>
                         <p>#{user.uid.substring(0, 5)}</p>
                     </div>
                     <div className="sidebar__profileicons">
-                        <MicIcon />
-                        <HeadsetIcon />
                         <SettingsIcon />
                     </div>
                 </div>
             </div>
-
 
 
             <Dialog open={categoriemenu} onClose={() => setcategoriemenu(false)}>
@@ -154,6 +149,7 @@ function Sidebar({ setsignouttoast }) {
                         onClick={() => handleaddcategorie(categoriename)}>{language === "hu" ? ("Létrehoz") : ("Create")}</Button>
                 </DialogActions>
             </Dialog>
+
 
 
 

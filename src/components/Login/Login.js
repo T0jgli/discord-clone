@@ -3,7 +3,7 @@ import "./Login.css"
 import { selectlanguage } from "../../features/AppSlice"
 import { useSelector } from 'react-redux'
 
-import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField } from '@material-ui/core'
+import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip } from '@material-ui/core'
 
 import Snackbar from '@material-ui/core/Snackbar';
 import Giphy from "react-hooks-giphy";
@@ -54,20 +54,33 @@ function Login({ getCookie, setCookie, settoast }) {
                     </div>
                 </div>
                 <div className="login__language">
+                    <Tooltip title="Hungarian"
+                        disableHoverListener={language !== "en" ? (true) : (false)}
+                        disableFocusListener={language !== "en" ? (true) : (false)}
+                        disableTouchListener={language !== "en" ? (true) : (false)}
+                    >
+                        <img src="/hu.png"
+                            className={localStorage.getItem("language") === "hu" ? ("login__languageimg") : ("login__languageactive")}
+                            onClick={() => { localStorage.setItem("language", "hu", 365); setlangtoast(true); counterinterval() }} alt="huimage" />
+                    </Tooltip>
+                    <Tooltip title="Angol"
+                        disableHoverListener={language === "en" ? (true) : (false)}
+                        disableFocusListener={language === "en" ? (true) : (false)}
+                        disableTouchListener={language === "en" ? (true) : (false)}
 
-                    <img src="/hu.png"
-                        className={localStorage.getItem("language") === "hu" ? ("login__languageimg") : ("login__languageactive")}
-                        onClick={() => { localStorage.setItem("language", "hu", 365); setlangtoast(true); counterinterval() }} alt="huimage" />
-                    <img src="/uk.png"
-                        className={localStorage.getItem("language") !== "hu" ? ("login__languageimg") : ("login__languageactive")}
-                        onClick={() => { localStorage.setItem("language", "en", 365); setlangtoast(true); counterinterval() }} alt="ukimage" />
+                    >
+                        <img src="/uk.png"
+                            className={localStorage.getItem("language") !== "hu" ? ("login__languageimg") : ("login__languageactive")}
+                            onClick={() => { localStorage.setItem("language", "en", 365); setlangtoast(true); counterinterval() }} alt="ukimage" />
+
+                    </Tooltip>
 
                 </div>
                 <Button onClick={() => setopen(true)}>{language === "hu" ? ("Bejelentkezés") : ("Sign In")}</Button>
 
                 <Snackbar open={langtoast} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setlangtoast(false) }}>
                     <SnackbarContent message={language === "hu" ? ("Nyelv sikeresen beállítva...") : ("Language set...")}
-                        action={<Button style={{ color: "white", fontWeight: "bold" }}
+                        action={<Button style={{ color: "white", fontWeight: "bold", backgroundColor: "#424242", margin: "5px" }}
                             onClick={() => { window.location.reload(false) }}>{language === "hu" ? ("Újratöltés " + counter) : ("Reload " + counter)}</Button>} />
                 </Snackbar>
 
@@ -89,9 +102,11 @@ function Login({ getCookie, setCookie, settoast }) {
                     </form>
                 </DialogContent>
                 <div className="googlelogindiv">
-                    <img alt="googleicon" onClick={signinwithgoogle} src="/googleicon.png" />
-
+                    <Tooltip arrow title={language === "hu" ? ("Bejelentkezés Google-vel") : ("Sign in with Google")}>
+                        <img alt="googleicon" onClick={signinwithgoogle} src="/googleicon.png" />
+                    </Tooltip>
                 </div>
+
                 <DialogActions>
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
                         onClick={() => setopen(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>

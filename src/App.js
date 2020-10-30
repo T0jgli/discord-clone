@@ -7,13 +7,13 @@ import Login from './components/Login/Login'
 import Loading from "./components/Loading/Loading"
 import Snackbars from "./components/Snackbars"
 import { getCookie, setCookie } from "./features/Cookiehelper"
+import Theme from './components/Theme';
 import firebase from "firebase/app"
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, login, logout } from "./features/userSlice"
 import { setlanguage } from "./features/AppSlice"
 import { ThemeProvider } from '@material-ui/core';
-import Theme from './components/Theme';
 
 function App() {
   const user = useSelector(selectUser)
@@ -83,7 +83,11 @@ function App() {
           <Sidebar setsignouttoast={setsignouttoast} />
           <Chat />
         </ThemeProvider>
-      ) : loading ? (<Loading />) : (<Login settoast={setlogintoast} getCookie={getCookie} setCookie={setCookie} />)}
+      ) : loading ? (<Loading />) : (
+        <ThemeProvider theme={Theme}>
+          <Login settoast={setlogintoast} getCookie={getCookie} setCookie={setCookie} />
+        </ThemeProvider>
+      )}
 
       <Snackbars signouttoast={signouttoast} setsignouttoast={setsignouttoast} />
 
