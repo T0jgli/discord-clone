@@ -75,7 +75,7 @@ function geturl(message) {
 }
 
 const Message = forwardRef(({ timestamp, user,
-    setcopystate, setdelmessagesuccess, message, imageurl, imagename, fileurl, filename, id, setlightbox }, ref) => {
+    setcopystate, setdelmessagesuccess, message, imageurl, imagename, fileurl, filename, id, setlightbox, searched }, ref) => {
     const [dialog, setdialog] = useState(false)
     const [runned, setrunned] = useState(false)
     const [deleteprompt, setdeleteprompt] = useState(false)
@@ -141,7 +141,7 @@ const Message = forwardRef(({ timestamp, user,
     const getdayfunc = getdays(messagetime)
     return (
         <>
-            <div ref={ref} className="message">
+            <div ref={ref} className={searched ? ("message searched") : ("message")}>
                 <Avatar onClick={() => { countfunc() }} src={user.photo} />
                 <div className="message__info">
                     <h4>
@@ -159,7 +159,8 @@ const Message = forwardRef(({ timestamp, user,
                         (messageswithurl[1]) :
                         (message)}{messageswithurl ?
                             (<a rel="noopener noreferrer" href={messageswithurl[0]} className="message__url" target="_blank" >{messageswithurl[0]}</a>) :
-                            (null)}{messageswithurl ? (messageswithurl[2]) : (null)}</p>
+                            (null)}{messageswithurl ? (messageswithurl[2]) : (null)}
+                    </p>
 
                     {imageurl && (<img alt="messageImage" onClick={() => setlightbox({ toggler: true, url: imageurl, user: user.displayname, timestamp: timestamp })} src={imageurl} />)}
                     {fileurl && (
@@ -204,7 +205,7 @@ const Message = forwardRef(({ timestamp, user,
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
                         onClick={() => { setdeleteprompt(false) }}>{language === "hu" ? ("Nem") : ("No")}</Button>
                     <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={async () => { await deletefunc() }}>{language === "hu" ? ("Igen") : ("Yes")}</Button>
+                        onClick={() => { deletefunc() }}>{language === "hu" ? ("Igen") : ("Yes")}</Button>
                 </DialogActions>
             </Dialog>
 

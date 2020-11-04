@@ -106,18 +106,18 @@ const Chat = () => {
             } else {
                 if (image.type.includes("image")) {
                     setloading(true)
-                    const uploadtask = storage.ref(`images/${image.name + "__" + todaysdate}`).put(image);
+                    const uploadtask = storage.ref(`images/${image.name.replace(".", "__" + todaysdate + ".")}`).put(image);
                     uploadtask.on("state_changed", snapshot => {
                         dispatch(setuploadvalue({ uploadvalue: (snapshot.bytesTransferred / image.size) * 100 }))
                     }, error => console.log(error), () => {
-                        storage.ref("images").child(image.name + "__" + todaysdate).getDownloadURL().then(url => {
+                        storage.ref("images").child(image.name.replace(".", "__" + todaysdate + ".")).getDownloadURL().then(url => {
                             let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc()
                             ref.set({
                                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                 message: input,
                                 user: user,
                                 imageurl: url,
-                                imagename: image.name + "__" + todaysdate,
+                                imagename: image.name.replace(".", "__" + todaysdate + "."),
                                 id: ref.id
                             })
                         }).then(() => setloading(false))
@@ -125,19 +125,19 @@ const Chat = () => {
                 }
                 else {
                     setloading(true)
-                    const uploadtask = storage.ref(`files/${image.name + "__" + todaysdate}`).put(image)
+                    const uploadtask = storage.ref(`files/${image.name.replace(".", "__" + todaysdate + ".")}`).put(image)
 
                     uploadtask.on("state_changed", snapshot => {
                         dispatch(setuploadvalue({ uploadvalue: (snapshot.bytesTransferred / image.size) * 100 }))
                     }, error => console.log(error), () => {
-                        storage.ref("files").child(image.name + "__" + todaysdate).getDownloadURL().then(url => {
+                        storage.ref("files").child(image.name.replace(".", "__" + todaysdate + ".")).getDownloadURL().then(url => {
                             let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc()
                             ref.set({
                                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                                 message: input,
                                 user: user,
                                 fileurl: url,
-                                filename: image.name + "__" + todaysdate,
+                                filename: image.name.replace(".", "__" + todaysdate + "."),
                                 id: ref.id
                             })
                         }).then(() => setloading(false))

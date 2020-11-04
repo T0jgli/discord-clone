@@ -45,7 +45,6 @@ function App() {
     if (localStorage.getItem("language") === "en") {
       dispatch(setlanguage({ language: "en" }))
     }
-
   }, [dispatch])
 
 

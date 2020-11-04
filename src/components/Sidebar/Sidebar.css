@@ -188,3 +188,7 @@
 .MuiFormControlLabel-label {
     font-weight: bold !important;
 }
+
+.muted {
+    opacity: 0.3;
+}
