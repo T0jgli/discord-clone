@@ -12,7 +12,7 @@ import { useSelector } from 'react-redux'
 import Userdialog from '../Userdialog/Userdialog';
 import { selectUser } from '../../features/userSlice';
 
-function getdays(messagetime) {
+function getdays (messagetime) {
     let today = new Date()
     let yesterday = new Date();
     yesterday.setDate(today.getDate() - 1)
@@ -31,7 +31,7 @@ function getdays(messagetime) {
 
 }
 
-function geturl(message) {
+function geturl (message) {
     let exactprefix;
     let prefixes = ["www.", "https://", "http://"]
     let messagebeforeurl = "";
@@ -166,13 +166,24 @@ const Message = forwardRef(({ timestamp, user,
                     {fileurl && (
                         <>
                             <a href={fileurl} download>
-                                <Button variant="contained">
-                                    <InsertDriveFileIcon style={{ marginRight: "5px" }} /> {filename}
-                                </Button>
+                                <Tooltip title={filename}
+                                    disableHoverListener={filename.length < 50}
+                                    disableFocusListener={filename.length < 50}
+                                    disableTouchListener={filename.length < 50}
+                                >
+                                    <Button variant="contained">
+                                        <InsertDriveFileIcon style={{ marginRight: "5px" }} />
+                                        {filename.length > 50 ? (
+                                            filename.slice(0, 50)
+                                        ) : (filename)}
+                                    </Button>
+                                </Tooltip>
                             </a>
-                            <IconButton style={{ background: "transparent" }} color="default" onClick={copy}>
-                                <FileCopyIcon />
-                            </IconButton>
+                            <Tooltip title={language === "hu" ? ("Fájl URL másolása") : ("Copy file URL")} placement="right">
+                                <IconButton style={{ background: "transparent" }} color="default" onClick={copy}>
+                                    <FileCopyIcon />
+                                </IconButton>
+                            </Tooltip>
                         </>)}
                 </div>
                 {user.uid === userloggedin.uid && (

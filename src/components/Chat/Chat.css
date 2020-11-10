@@ -19,13 +19,30 @@
     background-color: #474b53;
 }
 
+.chat__filediv {
+    color: lightgray;
+    display: flex;
+    align-items: center;
+    width: max-content;
+    justify-content: space-between;
+    padding: .5rem 0 .5rem .5rem;
+    border-radius: 8px;
+    margin: 0 1.2rem 0 1.2rem;
+    background-color: rgb(71, 75, 83, 0.5);
+}
+
 .chat__input > form {
     flex: 1;
     margin-right: 0.5rem;
 }
 
+.chat__inputicons {
+    display: flex;
+    align-items: center;
+}
+
 .chat__inputicons > .MuiSvgIcon-root {
-    padding: 5px;
+    padding: 5px 10px 5px 10px;
     transition: 0.3s;
 }
 
@@ -79,7 +96,7 @@
 }
 
 .chatheader__right > .MuiSvgIcon-root {
-    margin: 5px;
+    margin: 10px;
     cursor: pointer;
     transition: 0.3s;
 }
@@ -102,6 +119,7 @@
     outline-width: 0;
     color: white;
     border: none;
+    transition: 0.3s;
 }
 
 .message {
@@ -263,6 +281,10 @@
 
 .search__closeicon:hover {
     opacity: 1;
+}
+
+.chat__disabledsendbtn {
+    opacity: 0.2;
 }
 
 .searched {

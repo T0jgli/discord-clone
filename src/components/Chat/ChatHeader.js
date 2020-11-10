@@ -4,10 +4,9 @@ import { useSelector } from 'react-redux'
 
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded'
-import SendRoundedIcon from '@material-ui/icons/SendRounded'
 import HelpRoundedIcon from '@material-ui/icons/HelpRounded'
 
-function ChatHeader({ channelname }) {
+function ChatHeader ({ channelname }) {
     const language = useSelector(selectlanguage)
     return (
         <div className="chatheader">
@@ -20,7 +19,6 @@ function ChatHeader({ channelname }) {
                     <input placeholder={language === "hu" ? ("Keresés") : ("Search")} />
                     <SearchRoundedIcon />
                 </div>
-                <SendRoundedIcon />
                 <HelpRoundedIcon onClick={() => window.open("https://support.discord.com/hc/en-us", "_blank")} />
             </div>
         </div>

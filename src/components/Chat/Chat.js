@@ -4,10 +4,14 @@ import "./Chat.css"
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import GifIcon from '@material-ui/icons/Gif'
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions'
+import SendRoundedIcon from '@material-ui/icons/SendRounded'
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
-import { Fade, Tooltip } from '@material-ui/core'
+import { IconButton, Tooltip, Grow } from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete';
+import AttachmentIcon from '@material-ui/icons/Attachment';
+import ImageIcon from '@material-ui/icons/Image';
 
 import { selectUser } from '../../features/userSlice'
 import { selectChannelId, selectChannelName, selectfocus, selectlanguage, selectuploadvalue, setuploadvalue, setfilenamesinchannel, selectcategorieid } from '../../features/AppSlice'
@@ -98,7 +102,7 @@ const Chat = () => {
 
     }, [messages, dispatch])
 
-    const sendmessage = e => {
+    const sendmessage = () => {
         if (image) {
             if (image.size > 52428800) {
                 setfilesizeerror(true)
@@ -162,7 +166,6 @@ const Chat = () => {
         <>
             {emojidialog && (
                 <Emoji fade={emojidialog} input={input} setinput={setinput} />
-
             )}
 
             <div className="chat" onClick={() => { if (emojidialog) setemojidialog(false) }}>
@@ -188,8 +191,25 @@ const Chat = () => {
                     </div>
                     <div ref={endchat} style={{ overflowX: "hidden" }}></div>
                 </Scrollbars>
+                {image && (
+                    <Grow in={image}>
+                        <div className="chat__filediv">
+                            <Tooltip title={image.name}>
+                                {image?.type.includes("image") ? (
+                                    <ImageIcon />
+                                ) : (<AttachmentIcon />)}
+                            </Tooltip>
+                            <Tooltip title={language === "hu" ? ("Fájl törlése") : ("Delete file")} placement="right">
+                                <IconButton onClick={() => setimage(null)}>
+                                    <DeleteIcon style={{ color: "lightgray" }} />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+                    </Grow>
+                )}
+
                 <div className="chat__input">
-                    <Tooltip title={language === "hu" ? ("Fájl hozzáadása") : ("Add file")}
+                    <Tooltip title={language === "hu" ? image ? ("Fájl lecserélése") : ("Fájl hozzáadása") : image ? ("Replace file") : ("Add file")}
                         disableHoverListener={!channelid}
                         disableFocusListener={!channelid}
                         disableTouchListener={!channelid}
@@ -197,7 +217,7 @@ const Chat = () => {
                     >
                         <AddCircleIcon className={channelid ? ("chat__inputfilebutton") : ("")} fontSize="large" onClick={() => hiddenFileInput.current.click()} />
                     </Tooltip>
-                    <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage(e) } }}>
+                    <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage() } }}>
                         <input value={input} ref={chatmessage}
                             placeholder={image ? (image.name) : channelid ? language === "hu" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
                                 language === "hu" ? ("Válassz csatornát") : ("Select a channel")}
@@ -206,7 +226,8 @@ const Chat = () => {
                             ref={hiddenFileInput} onChange={(e) => { if (e.target.files[0]) { setimage(e.target.files[0]) } }} style={{ display: "none" }} />
                     </form>
                     <div className="chat__inputicons">
-                        <GifIcon fontSize="large" />
+                        <SendRoundedIcon className={input || image ? "" : ("chat__disabledsendbtn")}
+                            onClick={(e) => { if (input || image) { sendmessage() } }} />
                         <EmojiEmotionsIcon fontSize="large" onClick={() => { if (channelid) setemojidialog(true) }} />
                     </div>
                 </div>

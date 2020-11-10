@@ -13,7 +13,7 @@ import firebase from "firebase/app"
 import { selectlanguage, setChannelInfo } from '../../features/AppSlice';
 import Snackbars from '../Snackbars';
 
-function SidebarCategories({ user, setchannerror, categorie, channerror, categorieid }) {
+function SidebarCategories ({ user, setchannerror, categorie, channerror, categorieid }) {
     const language = useSelector(selectlanguage)
 
     const [channels, setchannel] = useState([])
@@ -71,9 +71,7 @@ function SidebarCategories({ user, setchannerror, categorie, channerror, categor
                     {hide ? (<KeyboardArrowRightIcon />) : (<ExpandMoreIcon />)}
                     <h5>{categorie.categoriename}</h5>
                 </div>
-                <Tooltip title="Csatorna létrehozása">
-                    <AddIcon onClick={() => setpromptstate(true)} />
-                </Tooltip>
+                <AddIcon onClick={() => setpromptstate(true)} />
             </div>
             <SidebarChannelList categorieid={categorieid} channels={channels} hide={hide} user={user} setchanneldeleted={setchanneldeleted} />
 

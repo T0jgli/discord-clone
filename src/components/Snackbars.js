@@ -4,11 +4,11 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { selectlanguage } from "../features/AppSlice"
 import { useSelector } from 'react-redux'
 
-function Alert(props) {
+function Alert (props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-function formatBytes(bytes, decimals = 1) {
+function formatBytes (bytes, decimals = 1) {
     if (bytes === 0) return '0 Bytes';
 
     const k = 1024;
@@ -20,7 +20,7 @@ function formatBytes(bytes, decimals = 1) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
-function Snackbars({ copystate, delmessagesuccess, setdelmessagesuccess, setcopystate, channelcreated, setchannelcreated, channeldeleted,
+function Snackbars ({ copystate, delmessagesuccess, setdelmessagesuccess, setcopystate, channelcreated, setchannelcreated, channeldeleted,
     setchanneldeleted, channerror, setchannerror, filesizeerror, setfilesizeerror, filesize,
     signouttoast, setsignouttoast, logintoast, setlogintoast, loginerror, setloginerror, loginmessage, categoriecreated, setcategoriecreated }) {
     const language = useSelector(selectlanguage)
@@ -34,7 +34,7 @@ function Snackbars({ copystate, delmessagesuccess, setdelmessagesuccess, setcopy
 
     return (
         <>
-            <Snackbar open={loginerror} autoHideDuration={6000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({ ...loginerror, open: false }) }}>
+            <Snackbar open={loginerror} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({ ...loginerror, open: false }) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({ ...loginerror, open: false }) }}
                     severity="error">{loginmessage}
                 </Alert>
@@ -93,7 +93,7 @@ function Snackbars({ copystate, delmessagesuccess, setdelmessagesuccess, setcopy
                 </Alert>
             </Snackbar>
 
-            <Snackbar open={filesizeerror} autoHideDuration={6000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfilesizeerror(false) }}>
+            <Snackbar open={filesizeerror} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfilesizeerror(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfilesizeerror(false) }}
                     severity="error">{language === "hu" ? (`A fájl mérete ${converted}, amely meghaladja a maximális méretet (50 MB)!`) :
                         (`File size is ${converted}, which exceeds the maximum size!`)}
