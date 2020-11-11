@@ -6,7 +6,7 @@ import AddIcon from "@material-ui/icons/Add"
 import SidebarChannelList from './SidebarChannelList';
 import db from '../../firebase/firebase';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import firebase from "firebase/app"

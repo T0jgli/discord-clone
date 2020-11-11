@@ -15,7 +15,7 @@ import { selectUser, login, logout } from "./features/userSlice"
 import { setlanguage } from "./features/AppSlice"
 import { ThemeProvider } from '@material-ui/core';
 
-function App() {
+function App () {
   const user = useSelector(selectUser)
 
   const dispatch = useDispatch();

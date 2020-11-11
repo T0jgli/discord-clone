@@ -21,22 +21,32 @@ function formatBytes (bytes, decimals = 1) {
 }
 
 function Snackbars ({ copystate, delmessagesuccess, setdelmessagesuccess, setcopystate, channelcreated, setchannelcreated, channeldeleted,
-    setchanneldeleted, channerror, setchannerror, filesizeerror, setfilesizeerror, filesize,
-    signouttoast, setsignouttoast, logintoast, setlogintoast, loginerror, setloginerror, loginmessage, categoriecreated, setcategoriecreated }) {
+    setchanneldeleted, channerror, setchannerror, filesizeerror, setfilesizeerror,
+    signouttoast, setsignouttoast, logintoast, setlogintoast, loginerror, setloginerror, loginmessage, categoriecreated, setcategoriecreated,
+    setfiledelete, filedelete
+}) {
     const language = useSelector(selectlanguage)
     const [converted, setconverted] = useState(null)
 
     useEffect(() => {
-        if (filesize) {
-            setconverted(formatBytes(filesize))
+        if (filesizeerror) {
+            setconverted(formatBytes(filesizeerror.size))
         }
-    }, [filesize])
+    }, [filesizeerror])
 
     return (
         <>
-            <Snackbar open={loginerror} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({ ...loginerror, open: false }) }}>
+            <Snackbar open={loginerror?.open} autoHideDuration={3000}
+                onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({ ...loginerror, open: false }) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setloginerror({ ...loginerror, open: false }) }}
                     severity="error">{loginmessage}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={filedelete?.prompt} autoHideDuration={3000}
+                onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfiledelete({ ...filedelete, prompt: false }) }}>
+                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfiledelete({ ...filedelete, prompt: false }) }}
+                    severity="warning"> {language === "hu" ? (`${filedelete?.type} sikeresen eltávolítva!`) : (`${filedelete?.type} sucessfully deleted!`)}
                 </Alert>
             </Snackbar>
 
@@ -93,8 +103,9 @@ function Snackbars ({ copystate, delmessagesuccess, setdelmessagesuccess, setcop
                 </Alert>
             </Snackbar>
 
-            <Snackbar open={filesizeerror} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfilesizeerror(false) }}>
-                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfilesizeerror(false) }}
+            <Snackbar open={filesizeerror?.prompt} autoHideDuration={5000}
+                onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfilesizeerror({ ...filesizeerror, prompt: false }) }}>
+                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfilesizeerror({ ...filesizeerror, prompt: false }) }}
                     severity="error">{language === "hu" ? (`A fájl mérete ${converted}, amely meghaladja a maximális méretet (50 MB)!`) :
                         (`File size is ${converted}, which exceeds the maximum size!`)}
                 </Alert>

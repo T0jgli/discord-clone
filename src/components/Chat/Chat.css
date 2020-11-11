@@ -76,6 +76,35 @@
     box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.75);
 }
 
+@media (max-width: 768px) {
+    .chatheader {
+        flex-direction: column;
+    }
+    .chat {
+        flex: 1 !important;
+    }
+    .chatheader__sidebarbtn {
+        position: absolute;
+        color: gray;
+        padding: 10px;
+        top: 3px;
+        display: flex !important;
+        align-items: center;
+        align-self: flex-start;
+    }
+    .message__info > img {
+        max-width: 50% !important;
+        max-height: 50% !important;
+    }   
+    .ril__caption {
+        justify-content: center !important;
+    }     
+}
+
+.chatheader__sidebarbtn {
+    display: none;
+}
+
 .chatheader__left > h3 > span{
     color: gray;
     font-size: 30px;
@@ -84,14 +113,21 @@
 
 .chatheader__left > h3 {
     display: flex;
+    margin-right: 10px;
     align-items: center;
     color: white;
+}
+
+.chatheader__left {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .chatheader__right {
     display: flex;
     align-items: center;
-    flex: 0.22;
+    flex: 0.20;
     justify-content: space-between;
 }
 
@@ -285,6 +321,7 @@
 
 .chat__disabledsendbtn {
     opacity: 0.2;
+    cursor: default !important;
 }
 
 .searched {
@@ -292,3 +329,27 @@
     -moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
     box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
 }
+
+.search__notfound {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 30px;
+    color: lightgray;
+}
+
+.search__notfound > p {
+    opacity: 0.5;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.search__notfound:hover > p {
+    opacity: 0.8;
+}
+  
+  .file-drop > .file-drop-target.file-drop-dragging-over-target {
+    /* turn stuff orange when we are dragging over the target */
+    color: gray;
+    box-shadow: 0 0 13px 3px rgba(0,0,0,0.5);
+  }

@@ -3,16 +3,15 @@ import "./Sidebar.css"
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import SettingsIcon from "@material-ui/icons/Settings"
-import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Switch, FormControlLabel, Fade } from '@material-ui/core'
+import { Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Switch, FormControlLabel } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 
 import { selectUser } from '../../features/userSlice'
-import { selectlanguage } from '../../features/AppSlice'
-import { useSelector } from 'react-redux'
+import { selectlanguage, selectsidebarmobile, setsidebarmobile } from '../../features/AppSlice'
+import { useDispatch, useSelector } from 'react-redux'
 import db, { auth } from '../../firebase/firebase'
 import firebase from "firebase/app"
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -22,11 +21,13 @@ import Snackbars from '../Snackbars'
 import Userdialog from '../Userdialog/Userdialog'
 import SidebarCategories from "./SidebarCategories"
 
-function Sidebar({ setsignouttoast }) {
+function Sidebar ({ setsignouttoast }) {
     const user = useSelector(selectUser)
     const language = useSelector(selectlanguage)
+    const sidebarmobile = useSelector(selectsidebarmobile)
     const [categoriemenu, setcategoriemenu] = useState(false)
     const [categoriecreated, setcategoriecreated] = useState(false)
+    const [mobile, setmobile] = useState(false)
     const [categorieprivate, setcategorieprivate] = useState(false)
 
     const [categories, setcategories] = useState([])
@@ -34,6 +35,7 @@ function Sidebar({ setsignouttoast }) {
 
     const [channerror, setchannerror] = useState(false)
     const [categoriename, setcategoriename] = useState("")
+    const dispatch = useDispatch()
 
     const [menu, setmenu] = useState(false)
     const [dialog, setdialog] = useState(false)
@@ -60,7 +62,14 @@ function Sidebar({ setsignouttoast }) {
             })
             )
         })
-    }, [])
+        if (window.innerWidth < 768) {
+            dispatch(setsidebarmobile({
+                sidebarmobile: true
+            }))
+            setmobile(true)
+        }
+
+    }, [dispatch, user.uid])
 
     const handleaddcategorie = () => {
         if (categoriename) {
@@ -81,52 +90,59 @@ function Sidebar({ setsignouttoast }) {
     }
     return (
         <>
-            <div className="sidebar">
-                <div className="sidebar__top" onClick={() => setmenu(!menu)}>
-                    <h3 style={{ cursor: "pointer" }}>Discord CLoNe by tojglEE</h3>
-                    {menu ? (<KeyboardArrowLeftIcon />) : (<ExpandMoreIcon />)}
-                    <Menu anchorEl={menu} className="sidebar__menu" open={menu} onClose={() => setmenu(false)}>
-                        <MenuItem className="menu__itemflex" onClick={() => { setcategoriemenu(true) }}>
-                            <div className="menu__text">
-                                {language === "hu" ? ("Kategória létrehozása") : ("Create category")}
-                            </div>
-                            <CreateNewFolderIcon />
-                        </MenuItem>
-                        <MenuItem className="menu__itemflex" onClick={() => { auth.signOut(); setsignouttoast(true) }}>
-                            <div className="menu__text">
-                                {language === "hu" ? ("Kijelentkezés") : ("Sign out")}
-                            </div>
-                            <ExitToAppIcon />
-                        </MenuItem>
+            <div className={mobile ? sidebarmobile ? ("sidebar__mobile sidebar__div") : ("sidebar__mobileopen sidebar__div") : ("")} style={{ flex: mobile ? ("0") : ("0.25") }}>
+                <div className={"sidebar"}>
+                    <div className="sidebar__top" onClick={() => setmenu(!menu)}>
+                        <h3 style={{ cursor: "pointer" }}>Discord CLoNe by tojglEE</h3>
+                        <ExpandMoreIcon className={menu ? ("sidebar__menuiconshowed sidebar__menuicon") : ("sidebar__menuicon")} />
+                        <Menu anchorEl={menu} className="sidebar__menu" open={menu} onClose={() => setmenu(false)}>
+                            <MenuItem className="menu__itemflex" onClick={() => { setcategoriemenu(true) }}>
+                                <div className="menu__text">
+                                    {language === "hu" ? ("Kategória létrehozása") : ("Create category")}
+                                </div>
+                                <CreateNewFolderIcon />
+                            </MenuItem>
+                            <MenuItem className="menu__itemflex" onClick={() => { auth.signOut(); setsignouttoast(true) }}>
+                                <div className="menu__text">
+                                    {language === "hu" ? ("Kijelentkezés") : ("Sign out")}
+                                </div>
+                                <ExitToAppIcon />
+                            </MenuItem>
 
-                    </Menu>
-                </div>
-                <div className="sidebar__channels">
-                    <Scrollbars autoHide autoHideDuration={2000} renderThumbVertical={props => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
-                        {categories.map(categorie => {
-                            if (categorie) {
-                                return (
-                                    <SidebarCategories categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
-                                        setcategoriename={setcategoriename} categoriemenu={categoriemenu}
-                                        setcategoriemenu={setcategoriemenu} setchannerror={setchannerror} channerror={channerror} user={user} />
-                                )
-                            }
-                            else return null
-                        })}
-                    </Scrollbars>
-                </div>
-                <div className="sidebar__profile">
-                    <Avatar src={user.photo} onClick={() => setdialog(true)} />
-                    <div className="sidebar__profileinfo">
-                        <h3 style={{ cursor: "pointer" }} onClick={() => setdialog(true)}>{user.displayname}</h3>
-                        <p>#{user.uid.substring(0, 5)}</p>
+                        </Menu>
                     </div>
-                    <div className="sidebar__profileicons">
-                        <SettingsIcon />
+                    <div onClick={() => {
+                        if (window.innerWidth < 768 && !sidebarmobile) {
+                            dispatch(setsidebarmobile({
+                                sidebarmobile: true
+                            }))
+                        }
+                    }} className="sidebar__channels">
+                        <Scrollbars autoHide autoHideDuration={2000} renderThumbVertical={props => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
+                            {categories.map(categorie => {
+                                if (categorie) {
+                                    return (
+                                        <SidebarCategories categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
+                                            setcategoriename={setcategoriename} categoriemenu={categoriemenu}
+                                            setcategoriemenu={setcategoriemenu} setchannerror={setchannerror} channerror={channerror} user={user} />
+                                    )
+                                }
+                                else return null
+                            })}
+                        </Scrollbars>
+                    </div>
+                    <div className="sidebar__profile">
+                        <Avatar src={user.photo} onClick={() => setdialog(true)} />
+                        <div className="sidebar__profileinfo">
+                            <h3 style={{ cursor: "pointer" }} onClick={() => setdialog(true)}>{user.displayname}</h3>
+                            <p>#{user.uid.substring(0, 5)}</p>
+                        </div>
+                        <div className="sidebar__profileicons">
+                            <SettingsIcon />
+                        </div>
                     </div>
                 </div>
             </div>
-
 
             <Dialog open={categoriemenu} onClose={() => setcategoriemenu(false)}>
                 <DialogContent>

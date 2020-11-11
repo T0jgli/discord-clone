@@ -10,7 +10,8 @@ export const appSlice = createSlice({
     language: "hu",
     uploadvalue: 0,
     filenamesinchannel: [],
-    imagenamesinchannel: []
+    imagenamesinchannel: [],
+    sidebarmobile: false
   },
   reducers: {
     setChannelInfo: (state, action) => {
@@ -30,14 +31,18 @@ export const appSlice = createSlice({
       state.filenamesinchannel = action.payload.filenamesinchannel;
       state.imagenamesinchannel = action.payload.imagenamesinchannel;
     },
+    setsidebarmobile: (state, action) => {
+      state.sidebarmobile = action.payload.sidebarmobile;
+    }
   },
 });
 
-export const { setChannelInfo, setlanguage, setuploadvalue, setfilenamesinchannel } = appSlice.actions;
+export const { setChannelInfo, setsidebarmobile, setlanguage, setuploadvalue, setfilenamesinchannel } = appSlice.actions;
 
 export const selectChannelId = state => state.app.channelId;
 export const selectChannelName = state => state.app.channelName;
 export const selectcategorieid = state => state.app.categorieid;
+export const selectsidebarmobile = state => state.app.sidebarmobile;
 
 export const selectfocus = state => state.app.focus;
 export const selectlanguage = state => state.app.language;
