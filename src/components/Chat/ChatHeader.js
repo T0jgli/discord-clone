@@ -28,7 +28,6 @@ function ChatHeader ({ channelname, searchtext, setsearchtext }) {
                     <h3>
                         <span>#</span>{channelname}
                     </h3>
-                    <NotificationsIcon />
                 </div>
                 <div className="chatheader__right">
                     <div className="chatheader__search">
@@ -40,6 +39,7 @@ function ChatHeader ({ channelname, searchtext, setsearchtext }) {
                             )}
 
                     </div>
+                    <NotificationsIcon />
                     <HelpRoundedIcon onClick={() => window.open("https://support.discord.com/hc/en-us", "_blank")} />
                 </div>
             </div>

@@ -1,6 +1,6 @@
 {
   "name": "discord-cloneee-by-tojgleeee",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "homepage": ".",
   "dependencies": {
     "@material-ui/core": "^4.11.0",

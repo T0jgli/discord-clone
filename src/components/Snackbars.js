@@ -23,7 +23,7 @@ function formatBytes (bytes, decimals = 1) {
 function Snackbars ({ copystate, delmessagesuccess, setdelmessagesuccess, setcopystate, channelcreated, setchannelcreated, channeldeleted,
     setchanneldeleted, channerror, setchannerror, filesizeerror, setfilesizeerror,
     signouttoast, setsignouttoast, logintoast, setlogintoast, loginerror, setloginerror, loginmessage, categoriecreated, setcategoriecreated,
-    setfiledelete, filedelete
+    setfiledelete, filedelete, categoriedeleted, setcategoriedeleted, categoriedeletederror, setcategoriedeletederror
 }) {
     const language = useSelector(selectlanguage)
     const [converted, setconverted] = useState(null)
@@ -67,6 +67,21 @@ function Snackbars ({ copystate, delmessagesuccess, setdelmessagesuccess, setcop
                 open={categoriecreated} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriecreated(false) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriecreated(false) }}
                     severity="success">{language === "hu" ? ("Kategória létrehozva!") : ("Categorie created!")}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar
+                open={categoriedeletederror} autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriedeletederror(false) }}>
+                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriedeletederror(false) }}
+                    severity="error">{language === "hu" ? ("Kategória nem üres, előbb töröld a csatornáit!") : ("Categorie is not empty, first delete the channels!")}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar
+                open={categoriedeleted?.prompt} autoHideDuration={3000}
+                onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriedeleted({ prompt: false }) }}>
+                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriedeleted({ prompt: false }) }}
+                    severity="warning">{language === "hu" ? ("Kategória sikeresen törölve!") : ("Categorie deleted!")}
                 </Alert>
             </Snackbar>
 

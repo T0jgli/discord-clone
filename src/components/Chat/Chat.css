@@ -353,3 +353,11 @@
     color: gray;
     box-shadow: 0 0 13px 3px rgba(0,0,0,0.5);
   }
+
+.emoji-mart-anchor-selected {
+    color: #4caf50 !important;
+}
+
+.emoji-mart-anchor-bar {
+    background-color: #4caf50 !important;
+}

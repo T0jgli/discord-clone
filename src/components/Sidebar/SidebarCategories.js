@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import "./Sidebar.css"
-import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import { useDispatch, useSelector } from 'react-redux';
+
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import AddIcon from "@material-ui/icons/Add"
-import SidebarChannelList from './SidebarChannelList';
-import db from '../../firebase/firebase';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
+import db from '../../firebase/firebase';
 import firebase from "firebase/app"
 import { selectlanguage, setChannelInfo } from '../../features/AppSlice';
+import SidebarChannelList from './SidebarChannelList';
 import Snackbars from '../Snackbars';
 
-function SidebarCategories ({ user, setchannerror, categorie, channerror, categorieid }) {
+function SidebarCategories ({ user, setchannerror, categorie, channerror, categorieid, mobile }) {
     const language = useSelector(selectlanguage)
 
     const [channels, setchannel] = useState([])
     const [promptstate, setpromptstate] = useState(false)
     const [channelcreated, setchannelcreated] = useState(false)
+
     const [hide, sethide] = useState(false)
-    const [categoriedeleteprompt, setcategoriedeleteprompt] = useState(false)
 
     const [channeldeleted, setchanneldeleted] = useState(false)
 
@@ -68,7 +68,7 @@ function SidebarCategories ({ user, setchannerror, categorie, channerror, catego
         <>
             <div className="sidebar__channelsheader">
                 <div className="sidebar__header" onClick={() => sethide(!hide)}>
-                    {hide ? (<KeyboardArrowRightIcon />) : (<ExpandMoreIcon />)}
+                    <ExpandMoreIcon className={hide ? ("sidebar__categorieiconshowed sidebar__menuicon") : ("sidebar__menucion")} />
                     <h5>{categorie.categoriename}</h5>
                 </div>
                 <AddIcon onClick={() => setpromptstate(true)} />
@@ -82,7 +82,8 @@ function SidebarCategories ({ user, setchannerror, categorie, channerror, catego
                     </DialogTitle>
                     <ArrowDropDownIcon />
                     <form style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddchannel(channelname) }}>
-                        <TextField variant="filled" autoFocus value={channelname} fullWidth onChange={(e) => setchannelname(e.target.value)} label="Név" />
+                        <TextField variant="filled" autoFocus={mobile ? false : true} value={channelname} fullWidth
+                            onChange={(e) => setchannelname(e.target.value)} label="Név" />
                     </form>
                 </DialogContent>
                 <DialogActions >
@@ -94,19 +95,6 @@ function SidebarCategories ({ user, setchannerror, categorie, channerror, catego
             </Dialog>
 
 
-            <Dialog open={categoriedeleteprompt} onClose={() => setcategoriedeleteprompt(false)}>
-                <DialogContent>
-                    <DialogTitle style={{ margin: "5px" }}>
-                        {language === "hu" ? ("Biztosan törlöd a kategóriát?") : ("Are you sure you want to delete this category?")}
-                    </DialogTitle>
-                </DialogContent>
-                <DialogActions >
-                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => setcategoriedeleteprompt(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>
-                    <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={() => handleaddchannel(channelname)}>{language === "hu" ? ("Létrehoz") : ("Create")}</Button>
-                </DialogActions>
-            </Dialog>
 
             <Snackbars channelcreated={channelcreated} setchannelcreated={setchannelcreated} channeldeleted={channeldeleted}
                 setchanneldeleted={setchanneldeleted} channerror={channerror} setchannerror={setchannerror} />

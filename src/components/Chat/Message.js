@@ -173,9 +173,9 @@ const Message = forwardRef(({ timestamp, user,
                                 >
                                     <Button variant="contained">
                                         <InsertDriveFileIcon style={{ marginRight: "5px" }} />
-                                        {filename.length > 50 ? (
-                                            filename.slice(0, 50)
-                                        ) : (filename)}
+                                        {filename.split("__")[0]
+                                            //+ "." + filename.split(".").slice(-1)[0]
+                                        }
                                     </Button>
                                 </Tooltip>
                             </a>

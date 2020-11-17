@@ -190,6 +190,16 @@
     font-weight: bold !important;
 }
 
+.MuiDialogContent-root > .MuiPaper-root {
+    background-color: #40464b !important;
+    color: white !important;
+    border-radius: .8rem;
+}
+
+.MuiButton-root, .MuiTab-root {
+    border-radius: .8rem !important;
+}
+
 .muted {
     opacity: 0.3;
 }
@@ -213,4 +223,7 @@
 }
 .sidebar__menuiconshowed {
     transform: rotate(90deg);
+}
+.sidebar__categorieiconshowed {
+    transform: rotate(-90deg);
 }
