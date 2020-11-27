@@ -15,6 +15,8 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import EditIcon from '@material-ui/icons/Edit';
 import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/Delete';
+import CheckIcon from '@material-ui/icons/Check';
+import LockIcon from '@material-ui/icons/Lock';
 
 import { selectUser } from '../../features/userSlice'
 import { selectlanguage, selectsidebarmobile, setsidebarmobile } from '../../features/AppSlice'
@@ -36,10 +38,8 @@ function Sidebar ({ setsignouttoast }) {
     const [categoriedeletederror, setcategoriedeletederror] = useState(false)
 
     const [categoriecreated, setcategoriecreated] = useState(false)
-    const [categoriedeleted, setcategoriedeleted] = useState({
-        prompt: false,
-        id: null
-    })
+    const [categoriedeleted, setcategoriedeleted] = useState(false)
+
     const [categoriedeleteprompt, setcategoriedeleteprompt] = useState(false)
 
     const [mobile, setmobile] = useState(false)
@@ -87,22 +87,29 @@ function Sidebar ({ setsignouttoast }) {
     }, [dispatch, user.uid])
 
     const handleaddcategorie = () => {
-        if (categoriename) {
-            let ref = db.collection("categories").doc()
-            ref.set({
-                id: ref.id,
-                categoriename: categoriename,
-                created: firebase.firestore.FieldValue.serverTimestamp(),
-                createdby: user.uid,
-                private: categorieprivate
-            })
-            setcategoriemenu(false)
-            setcategoriecreated(true)
-        }
-        else {
-            setchannerror(true)
-        }
+        if (tab === 0)
+            if (categoriename) {
+                let ref = db.collection("categories").doc()
+                ref.set({
+                    id: ref.id,
+                    categoriename: categoriename,
+                    created: firebase.firestore.FieldValue.serverTimestamp(),
+                    createdby: user.uid,
+                    private: categorieprivate
+                })
+                setcategoriecreated(true)
+            }
+            else {
+                setchannerror(true)
+            }
+        setcategoriemenu(false)
         setcategoriename("")
+    }
+
+    const handleeditcategoriename = (e, id) => {
+        db.collection("categories").doc(id).update({
+            categoriename: e.target.value.replace(/\s\s+/g, ' ')
+        })
     }
 
     return (
@@ -208,10 +215,18 @@ function Sidebar ({ setsignouttoast }) {
                         <ArrowDropDownIcon />
                         {categories.map((categorie, index) => {
                             if (categorie && user.uid === categorie.categorie.createdby) {
+                                const id = categorie.categorie.id
                                 return (
-                                    <form style={{ margin: "10px" }}>
+                                    <form key={id} style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie() }}>
                                         <div style={{ margin: "10px 0 10px 0", display: "flex", justifyContent: "center" }}>
-                                            <TextField label="" variant="filled" value={categorie.categorie.categoriename} />
+                                            {categorie.categorie.private && (
+                                                <div style={{ position: "absolute", left: "0", marginTop: "6px" }}>
+                                                    <IconButton disabled style={{ color: "white", opacity: "0.4" }}>
+                                                        <LockIcon />
+                                                    </IconButton>
+                                                </div>
+                                            )}
+                                            <TextField label="" variant="filled" value={categorie.categorie.categoriename} onChange={(e) => handleeditcategoriename(e, id)} />
                                             <Tooltip title={language === "hu" ? ("Törlés") : ("Delete")}>
                                                 <IconButton style={{ color: "gray" }} onClick={() => setcategoriedeleteprompt({ prompt: true, id: categorie.categorie.id })}>
                                                     <DeleteIcon />
@@ -219,7 +234,6 @@ function Sidebar ({ setsignouttoast }) {
                                             </Tooltip>
                                         </div>
                                     </form>
-
                                 )
                             }
 

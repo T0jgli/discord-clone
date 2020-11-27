@@ -78,9 +78,9 @@ function Snackbars ({ copystate, delmessagesuccess, setdelmessagesuccess, setcop
             </Snackbar>
 
             <Snackbar
-                open={categoriedeleted?.prompt} autoHideDuration={3000}
-                onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriedeleted({ prompt: false }) }}>
-                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriedeleted({ prompt: false }) }}
+                open={categoriedeleted} autoHideDuration={3000}
+                onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriedeleted(false) }}>
+                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategoriedeleted(false) }}
                     severity="warning">{language === "hu" ? ("Kategória sikeresen törölve!") : ("Categorie deleted!")}
                 </Alert>
             </Snackbar>

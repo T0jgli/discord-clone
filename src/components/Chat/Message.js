@@ -2,6 +2,7 @@ import React, { forwardRef, useState } from 'react'
 
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import DescriptionIcon from '@material-ui/icons/Description';
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Tooltip } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -166,18 +167,16 @@ const Message = forwardRef(({ timestamp, user,
                     {fileurl && (
                         <>
                             <a href={fileurl} download>
-                                <Tooltip title={filename}
-                                    disableHoverListener={filename.length < 50}
-                                    disableFocusListener={filename.length < 50}
-                                    disableTouchListener={filename.length < 50}
-                                >
-                                    <Button variant="contained">
-                                        <InsertDriveFileIcon style={{ marginRight: "5px" }} />
-                                        {filename.split("__")[0]
-                                            //+ "." + filename.split(".").slice(-1)[0]
-                                        }
-                                    </Button>
-                                </Tooltip>
+                                <Button variant="contained">
+                                    {filename.split(".").slice(-1)[0] === "pdf" ? (
+                                        <DescriptionIcon style={{ marginRight: "5px" }} />
+                                    ) : (
+                                            <InsertDriveFileIcon style={{ marginRight: "5px" }} />
+                                        )}
+                                    {filename.split("__")[0]
+                                        //+ "." + filename.split(".").slice(-1)[0]
+                                    }
+                                </Button>
                             </a>
                             <Tooltip title={language === "hu" ? ("Fájl URL másolása") : ("Copy file URL")} placement="right">
                                 <IconButton style={{ background: "transparent" }} color="default" onClick={copy}>
