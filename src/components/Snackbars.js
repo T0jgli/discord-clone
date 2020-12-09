@@ -23,7 +23,8 @@ function formatBytes (bytes, decimals = 1) {
 function Snackbars ({ copystate, delmessagesuccess, setdelmessagesuccess, setcopystate, channelcreated, setchannelcreated, channeldeleted,
     setchanneldeleted, channerror, setchannerror, filesizeerror, setfilesizeerror,
     signouttoast, setsignouttoast, logintoast, setlogintoast, loginerror, setloginerror, loginmessage, categoriecreated, setcategoriecreated,
-    setfiledelete, filedelete, categoriedeleted, setcategoriedeleted, categoriedeletederror, setcategoriedeletederror
+    setfiledelete, filedelete, categoriedeleted, setcategoriedeleted, categoriedeletederror, setcategoriedeletederror, setcategorieprivateprompt,
+    categorieprivateprompt
 }) {
     const language = useSelector(selectlanguage)
     const [converted, setconverted] = useState(null)
@@ -47,6 +48,16 @@ function Snackbars ({ copystate, delmessagesuccess, setdelmessagesuccess, setcop
                 onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfiledelete({ ...filedelete, prompt: false }) }}>
                 <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setfiledelete({ ...filedelete, prompt: false }) }}
                     severity="warning"> {language === "hu" ? (`${filedelete?.type} sikeresen eltávolítva!`) : (`${filedelete?.type} sucessfully deleted!`)}
+                </Alert>
+            </Snackbar>
+
+            <Snackbar open={categorieprivateprompt?.prompt} autoHideDuration={3000}
+                onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategorieprivateprompt({ ...categorieprivateprompt, prompt: false }) }}>
+                <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; setcategorieprivateprompt({ ...categorieprivateprompt, prompt: false }) }}
+                    severity="info">
+                    {language === "hu" ? (categorieprivateprompt?.type === "public" ? ("A kategória mostantól publikus!") : ("A kategória mostantól privát!")) :
+                        ("Categorie successfully set to " + categorieprivateprompt?.type)
+                    }
                 </Alert>
             </Snackbar>
 

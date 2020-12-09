@@ -12,7 +12,7 @@ import { auth, googleprovider } from "../../firebase/firebase"
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Snackbars from '../Snackbars'
 
-function Login({ getCookie, setCookie, settoast }) {
+function Login ({ settoast }) {
     const [langtoast, setlangtoast] = useState(false)
     const [counter, setcounter] = useState(3)
     const [open, setopen] = useState(false)

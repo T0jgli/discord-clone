@@ -37,7 +37,6 @@
 
 .sidebar__channelsheader > .MuiSvgIcon-root:hover{
     color: white;
-
 }
 
 .sidebar__channelsheader > .MuiSvgIcon-root{
@@ -123,7 +122,9 @@
 }
 
 .sidebar__profileicons > .MuiSvgIcon-root {
-    padding: 0.5rem;
+    margin: 0.5rem;
+    transition: 0.3s;
+    cursor: pointer;
 }
 
 .sidebar__profile > .MuiAvatar-root:hover {
@@ -139,7 +140,7 @@
     transition: 0.3s;
 }
 
-.sidebar__header > .MuiSvgIcon-root:hover {
+.sidebar__header > .MuiSvgIcon-root:hover, .sidebar__profileicons > .MuiSvgIcon-root:hover {
     color: white;
     cursor: pointer;
 }
@@ -215,9 +216,9 @@
     }
     .sidebar__div {
         transition: width .3s;
-    }
-    
+    }   
 }
+
 .sidebar__menuicon {
     transition: transform .3s;
 }

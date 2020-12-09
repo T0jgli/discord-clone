@@ -205,32 +205,31 @@
 
 .message__info > img {
     object-fit: contain;
-    max-width: 25%;
-    max-height: 25%;
+    max-width: 22%;
+    max-height: 22%;
     margin-top: 10px;
     transition: 0.3s;
 }
 
 .message__info > img:hover {
     cursor: pointer;
-    -webkit-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.4);
-    -moz-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.4);
-    box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.4);
+    -webkit-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 12px 2px rgba(0,0,0,0.5);
 }
 
 .message__info > a > button,
 .message__info > button {
     margin-top: 10px;
-    background-color: rgb(78, 78, 78);
+    background-color: rgba(78, 78, 78, .65);
     color: white;
     transition: 0.3s;
-
 }
 
 .message__info > a > button:hover, 
 .message__info > button:hover {
     color: rgba(255, 255, 255, 0.8);
-    background-color: rgb(100, 100, 100);
+    background-color: rgba(100, 100, 100, .65);
 }
 
 .message > .MuiAvatar-root {
@@ -348,11 +347,10 @@
     opacity: 0.8;
 }
   
-  .file-drop > .file-drop-target.file-drop-dragging-over-target {
-    /* turn stuff orange when we are dragging over the target */
+.file-drop > .file-drop-target.file-drop-dragging-over-target {
     color: gray;
     box-shadow: 0 0 13px 3px rgba(0,0,0,0.5);
-  }
+}
 
 .emoji-mart-anchor-selected {
     color: #4caf50 !important;

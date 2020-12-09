@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { Button, IconButton, Dialog, DialogContent, DialogContentText, DialogTitle, DialogActions } from '@material-ui/core'
+import { Button, IconButton, Dialog, DialogContent, DialogTitle, DialogActions, Tooltip } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField';
 
 
@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectChannelName, setChannelInfo, selectlanguage, selectfilenamesinchannel, setfilenamesinchannel, selectimagenamesinchannel } from '../../features/AppSlice'
 import db, { storage } from '../../firebase/firebase'
 
-function SideBarChannel({ id, channelname, createdby, user, setchanneldeleted, categorieid }) {
+function SideBarChannel ({ id, channelname, createdby, user, setchanneldeleted, categorieid }) {
     const channel = useSelector(selectChannelName)
     const language = useSelector(selectlanguage)
     const filenamesinchannel = useSelector(selectfilenamesinchannel)
@@ -91,20 +91,20 @@ function SideBarChannel({ id, channelname, createdby, user, setchanneldeleted, c
                         {language === "hu" ? ("Csatorna szerkesztése") : ("Channel edit")}
                     </DialogTitle>
                     <ArrowDropDownIcon />
-                    <DialogContentText>
-                        <form onSubmit={(e) => { e.preventDefault(); editfunc() }} style={{ marginTop: "20px" }}>
-                            <TextField
-                                label={language === "hu" ? ("Név") : ("Name")}
-                                defaultValue={channelname}
-                                variant="outlined"
-                                value={newname} onChange={(e) => setnewname(e.target.value)}
-                            />
-                        </form>
-                        <br />
+                    <form onSubmit={(e) => { e.preventDefault(); editfunc() }} style={{ marginTop: "20px" }}>
+                        <TextField
+                            label={language === "hu" ? ("Név") : ("Name")}
+                            defaultValue={channelname}
+                            variant="outlined"
+                            value={newname} onChange={(e) => setnewname(e.target.value)}
+                        />
+                    </form>
+                    <br />
+                    <Tooltip title={language === "hu" ? ("Csatorna törlése") : ("Delete channel")}>
                         <IconButton onClick={() => setdeleteprompt(true)} style={{ backgroundColor: "red", margin: "20px", color: "rgb(225, 225, 225)" }}>
                             <DeleteIcon />
                         </IconButton>
-                    </DialogContentText>
+                    </Tooltip>
                 </DialogContent>
                 <DialogActions >
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}

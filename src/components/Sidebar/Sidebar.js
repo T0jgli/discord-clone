@@ -15,8 +15,10 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import EditIcon from '@material-ui/icons/Edit';
 import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CheckIcon from '@material-ui/icons/Check';
 import LockIcon from '@material-ui/icons/Lock';
+import LockOpenIcon from '@material-ui/icons/LockOpen';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
+import CloseIcon from '@material-ui/icons/Close';
 
 import { selectUser } from '../../features/userSlice'
 import { selectlanguage, selectsidebarmobile, setsidebarmobile } from '../../features/AppSlice'
@@ -29,22 +31,36 @@ import Snackbars from '../Snackbars'
 import Userdialog from '../Userdialog/Userdialog'
 import SidebarCategories from "./SidebarCategories"
 import { a11yProps, TabPanel } from "../../features/Tabhelper"
+import SwipeableViews from 'react-swipeable-views';
 
 function Sidebar ({ setsignouttoast }) {
     const user = useSelector(selectUser)
     const language = useSelector(selectlanguage)
     const sidebarmobile = useSelector(selectsidebarmobile)
     const [categoriemenu, setcategoriemenu] = useState(false)
+    const [deleteprompt, setdeleteprompt] = useState(false)
+    const [usersmenu, setusersmenu] = useState(false)
+
     const [categoriedeletederror, setcategoriedeletederror] = useState(false)
 
     const [categoriecreated, setcategoriecreated] = useState(false)
+    const [categorieprivateprompt, setcategorieprivateprompt] = useState({
+        prompt: false,
+        type: null
+    })
     const [categoriedeleted, setcategoriedeleted] = useState(false)
 
-    const [categoriedeleteprompt, setcategoriedeleteprompt] = useState(false)
+    const [settingsdialog, setsettingsdialog] = useState(false)
+
+    const [categoriedeleteprompt, setcategoriedeleteprompt] = useState({
+        prompt: false,
+        id: null
+    })
 
     const [mobile, setmobile] = useState(false)
     const [tab, settab] = useState(0)
     const [categorieprivate, setcategorieprivate] = useState(false)
+    const [newusername, setnewusername] = useState(user.displayname)
 
     const [categories, setcategories] = useState([])
 
@@ -52,7 +68,7 @@ function Sidebar ({ setsignouttoast }) {
     const [categoriename, setcategoriename] = useState("")
     const dispatch = useDispatch()
 
-    const [menu, setmenu] = useState(false)
+    const [menu, setmenu] = useState(null)
     const [dialog, setdialog] = useState(false)
 
 
@@ -106,24 +122,47 @@ function Sidebar ({ setsignouttoast }) {
         setcategoriename("")
     }
 
+
+    const u = firebase.auth().currentUser
     const handleeditcategoriename = (e, id) => {
         db.collection("categories").doc(id).update({
             categoriename: e.target.value.replace(/\s\s+/g, ' ')
         })
+    }
+    const handleeditusernamedone = () => {
+        if (newusername !== user.displayname) {
+            u.updateProfile({
+                displayName: newusername.replace(/\s\s+/g, ' ')
+            }).then(window.location.reload(false))
+            db.collection("users").doc(user.uid).update({
+                displayname: newusername.replace(/\s\s+/g, ' ')
+            })
+        }
+    }
+
+    const handlecategorieprivate = (what, id) => {
+        db.collection("categories").doc(id).update({
+            private: what === "public" ? (false) : (true)
+        }).then(setcategorieprivateprompt({ prompt: true, type: what }))
+    }
+
+    const handledeleteuser = async () => {
+        db.collection("users").doc(user.uid).delete().then(await u.delete())
+        window.close()
     }
 
     return (
         <>
             <div className={mobile ? sidebarmobile ? ("sidebar__mobile sidebar__div") : ("sidebar__mobileopen sidebar__div") : ("")} style={{ flex: mobile ? ("0") : ("0.25") }}>
                 <div className={"sidebar"}>
-                    <div className="sidebar__top" onClick={() => setmenu(!menu)}>
+                    <div className="sidebar__top" onClick={(e) => { if (Boolean(menu)) setmenu(null); else setmenu(e.currentTarget) }}>
                         <h3 style={{ cursor: "pointer" }}>Discord CLoNe by tojglEE</h3>
-                        <ExpandMoreIcon className={menu ? ("sidebar__menuiconshowed sidebar__menuicon") : ("sidebar__menuicon")} />
+                        <ExpandMoreIcon className={Boolean(menu) ? ("sidebar__menuiconshowed sidebar__menuicon") : ("sidebar__menuicon")} />
                         <Menu
                             anchorEl={menu}
                             className="sidebar__menu"
-                            open={menu}
-                            onClose={() => setmenu(false)}
+                            open={Boolean(menu)}
+                            onClose={() => setmenu(null)}
                         >
                             <MenuItem className="menu__itemflex" onClick={() => {
                                 if (mobile && !sidebarmobile) {
@@ -138,6 +177,20 @@ function Sidebar ({ setsignouttoast }) {
                                 </div>
                                 <FolderIcon />
                             </MenuItem>
+                            <MenuItem className="menu__itemflex" onClick={() => {
+                                if (mobile && !sidebarmobile) {
+                                    dispatch(setsidebarmobile({
+                                        sidebarmobile: true
+                                    }))
+                                }
+                                setusersmenu(true)
+                            }}>
+                                <div className="menu__text">
+                                    {language === "hu" ? ("Felhasználók") : ("Users")}
+                                </div>
+                                <PeopleAltIcon />
+                            </MenuItem>
+
                             <MenuItem className="menu__itemflex" onClick={() => { auth.signOut(); setsignouttoast(true) }}>
                                 <div className="menu__text">
                                     {language === "hu" ? ("Kijelentkezés") : ("Sign out")}
@@ -174,7 +227,7 @@ function Sidebar ({ setsignouttoast }) {
                             <p>#{user.uid.substring(0, 5)}</p>
                         </div>
                         <div className="sidebar__profileicons">
-                            <SettingsIcon />
+                            <SettingsIcon onClick={() => setsettingsdialog(true)} />
                         </div>
                     </div>
                 </div>
@@ -193,6 +246,12 @@ function Sidebar ({ setsignouttoast }) {
                             <Tab icon={<EditIcon />} label={language === "hu" ? ("Szerkesztés") : ("Edit")} {...a11yProps(1)} />
                         </Tabs>
                     </Paper>
+                </DialogContent>
+                <SwipeableViews
+                    axis="x"
+                    index={tab}
+                    onChangeIndex={(i) => settab(i)}
+                >
                     <TabPanel value={tab} index={0}>
                         <DialogTitle style={{ margin: "5px" }}>
                             {language === "hu" ? ("Add meg a kategória nevét!") : ("Write a channel categorie name!")}
@@ -218,16 +277,20 @@ function Sidebar ({ setsignouttoast }) {
                                 const id = categorie.categorie.id
                                 return (
                                     <form key={id} style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie() }}>
-                                        <div style={{ margin: "10px 0 10px 0", display: "flex", justifyContent: "center" }}>
-                                            {categorie.categorie.private && (
-                                                <div style={{ position: "absolute", left: "0", marginTop: "6px" }}>
-                                                    <IconButton disabled style={{ color: "white", opacity: "0.4" }}>
-                                                        <LockIcon />
-                                                    </IconButton>
-                                                </div>
-                                            )}
+                                        <div style={{ margin: "10px 0 10px 0", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                            <Tooltip placement="left" title={language === "hu" ? categorie.categorie.private ? ("Privát") : ("Publikus") :
+                                                categorie.categorie.private ? ("Private") : ("Public")}>
+                                                <IconButton style={{ color: "white", opacity: "0.5" }}>
+                                                    {categorie.categorie.private ? (
+                                                        <LockIcon onClick={() => handlecategorieprivate("public", id)} />
+                                                    ) : (
+                                                            <LockOpenIcon onClick={() => handlecategorieprivate("private", id)} />
+                                                        )}
+                                                </IconButton>
+                                            </Tooltip>
+
                                             <TextField label="" variant="filled" value={categorie.categorie.categoriename} onChange={(e) => handleeditcategoriename(e, id)} />
-                                            <Tooltip title={language === "hu" ? ("Törlés") : ("Delete")}>
+                                            <Tooltip placement="right" title={language === "hu" ? ("Törlés") : ("Delete")}>
                                                 <IconButton style={{ color: "gray" }} onClick={() => setcategoriedeleteprompt({ prompt: true, id: categorie.categorie.id })}>
                                                     <DeleteIcon />
                                                 </IconButton>
@@ -244,9 +307,8 @@ function Sidebar ({ setsignouttoast }) {
                             else return null
                         })}
                     </TabPanel>
+                </SwipeableViews>
 
-
-                </DialogContent>
                 <DialogActions >
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
                         onClick={() => setcategoriemenu(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>
@@ -286,6 +348,76 @@ function Sidebar ({ setsignouttoast }) {
                 </DialogActions>
             </Dialog>
 
+
+            <Dialog open={settingsdialog} onClose={() => setsettingsdialog(false)}>
+                <DialogContent>
+                    <DialogTitle style={{ margin: "5px" }}>
+                        {language === "hu" ? ("Beállítások") : ("Settings")}
+                    </DialogTitle>
+                    <ArrowDropDownIcon />
+                    <form style={{ marginTop: "20px" }} onSubmit={(e) => { e.preventDefault(); handleeditusernamedone(); setsettingsdialog(false) }}>
+                        <TextField label={language === "hu" ? ("Felhasználónév") : ("Username")}
+                            variant="outlined" value={newusername} onChange={(e) => { if (e.target.value) setnewusername(e.target.value) }} />
+                    </form>
+                    <br />
+                    <Tooltip title={language === "hu" ? ("Fiók törlése") : ("Delete account")}>
+                        <IconButton onClick={() => { setdeleteprompt(true) }} style={{ backgroundColor: "red", margin: "20px", color: "rgb(225, 225, 225)" }}>
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+
+                </DialogContent>
+                <DialogActions >
+                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
+                        onClick={() => setsettingsdialog(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}
+                    </Button>
+
+                    <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
+                        onClick={() => { handleeditusernamedone(); setsettingsdialog(false) }}>{language === "hu" ? ("Kész") : ("Done")}</Button>
+
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={usersmenu} onClose={() => setusersmenu(false)}>
+                <DialogContent>
+                    <DialogTitle>
+                        {language === "hu" ? ("Felhasználók") : ("Users")}
+                    </DialogTitle>
+                    <DialogContent>
+
+                    </DialogContent>
+                </DialogContent>
+                <div className="dialog__closeicon">
+                    <IconButton onClick={() => setusersmenu(false)}>
+                        <CloseIcon />
+                    </IconButton>
+                </div>
+
+            </Dialog>
+
+
+            <Dialog onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                    handledeleteuser()
+                }
+                if (e.key === "Escape" || e.key === "Backspace") {
+                    setdeleteprompt(false)
+                }
+            }} open={deleteprompt} onClose={() => setdeleteprompt(false)}>
+                <DialogContent>
+                    <DialogTitle>
+                        {language === "hu" ? ("Biztosan törlöd a felhasználói fiókot?") : ("Are you sure you want to delete this user account?")}
+                    </DialogTitle>
+                </DialogContent>
+                <DialogActions >
+                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
+                        onClick={() => { setdeleteprompt(false); setdialog(false) }}>{language === "hu" ? ("Nem") : ("No")}</Button>
+                    <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
+                        onClick={async () => handledeleteuser()}>{language === "hu" ? ("Igen") : ("Yes")}</Button>
+                </DialogActions>
+            </Dialog>
+
+
             <Userdialog dialog={dialog} setdialog={setdialog} user={user} avatar={true} />
 
             <Snackbars
@@ -297,7 +429,8 @@ function Sidebar ({ setsignouttoast }) {
                 setchannerror={setchannerror}
                 setcategoriedeleted={setcategoriedeleted}
                 categoriedeleted={categoriedeleted}
-
+                categorieprivateprompt={categorieprivateprompt}
+                setcategorieprivateprompt={setcategorieprivateprompt}
             />
         </>
     )

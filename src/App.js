@@ -12,11 +12,12 @@ import firebase from "firebase/app"
 
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, login, logout } from "./features/userSlice"
-import { setlanguage } from "./features/AppSlice"
+import { setlanguage, selectlanguage } from "./features/AppSlice"
 import { ThemeProvider } from '@material-ui/core';
 
 function App () {
   const user = useSelector(selectUser)
+  const language = useSelector(selectlanguage)
 
   const dispatch = useDispatch();
   const [loading, setloading] = useState(true)
@@ -45,7 +46,8 @@ function App () {
     if (localStorage.getItem("language") === "en") {
       dispatch(setlanguage({ language: "en" }))
     }
-  }, [dispatch])
+    window.document.documentElement.lang = language
+  }, [dispatch, language])
 
 
   useEffect(() => {

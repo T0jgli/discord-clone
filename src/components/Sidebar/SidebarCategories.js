@@ -41,7 +41,7 @@ function SidebarCategories ({ user, setchannerror, categorie, channerror, catego
     const handleaddchannel = () => {
         if (channelname) {
             db.collection("categories").doc(categorieid).collection("channels").add({
-                channelname: channelname,
+                channelname: channelname.replace(/\s\s+/g, ' '),
                 created: firebase.firestore.FieldValue.serverTimestamp(),
                 createdby: user.uid
             }).then(() => {

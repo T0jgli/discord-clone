@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useEffect, useState } from 'react'
 
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -75,6 +75,13 @@ function geturl (message) {
     }
 }
 
+function messagetimefunc (t) {
+    if (t < 10) {
+        return "0" + t
+    }
+    else return t
+}
+
 const Message = forwardRef(({ timestamp, user,
     setcopystate, setdelmessagesuccess, message, imageurl, imagename, fileurl, filename, id, setlightbox, searched }, ref) => {
     const [dialog, setdialog] = useState(false)
@@ -148,11 +155,15 @@ const Message = forwardRef(({ timestamp, user,
                     <h4>
                         <span onClick={() => { countfunc() }} className="name">{user.displayname}</span>
                         {timestamp && (<span className="time">{getdayfunc === "Today" ?
-                            language === "hu" ? ("Ma " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
-                                ("Today " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
+                            language === "hu" ? ("Ma " + messagetime?.getHours() + ":" + messagetimefunc(messagetime?.getMinutes()) +
+                                ":" + messagetimefunc(messagetime?.getSeconds())) :
+                                ("Today " + messagetimefunc(messagetime?.getHours()) + ":" + messagetimefunc(messagetime?.getMinutes()) +
+                                    ":" + messagetimefunc(messagetime?.getSeconds())) :
                             getdayfunc === "Yesterday" ?
-                                language === "hu" ? ("Tegnap " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
-                                    ("Yesterday " + messagetime?.getHours() + ":" + messagetime?.getMinutes() + ":" + messagetime?.getSeconds()) :
+                                language === "hu" ? ("Tegnap " + messagetimefunc(messagetime?.getHours()) + ":" + messagetimefunc(messagetime?.getMinutes()) +
+                                    ":" + messagetimefunc(messagetime?.getSeconds())) :
+                                    ("Yesterday " + messagetime?.getHours() + ":" + messagetimefunc(messagetime?.getMinutes()) +
+                                        ":" + messagetimefunc(messagetime?.getSeconds())) :
                                 (messagetime?.toLocaleString('hu-HU'))}</span>)}
                     </h4>
 
@@ -163,18 +174,19 @@ const Message = forwardRef(({ timestamp, user,
                             (null)}{messageswithurl ? (messageswithurl[2]) : (null)}
                     </p>
 
-                    {imageurl && (<img alt="messageImage" onClick={() => setlightbox({ toggler: true, url: imageurl, user: user.displayname, timestamp: timestamp })} src={imageurl} />)}
+                    {imageurl && (<img alt="messageImage"
+                        onClick={() => setlightbox({ toggler: true, url: imageurl, user: user.displayname, timestamp: timestamp })} src={imageurl} />)}
                     {fileurl && (
                         <>
-                            <a href={fileurl} download>
+                            <a href={fileurl} target={filename.split(".").slice(-1)[0] === "pdf" && ("_blank")} download>
                                 <Button variant="contained">
                                     {filename.split(".").slice(-1)[0] === "pdf" ? (
-                                        <DescriptionIcon style={{ marginRight: "5px" }} />
+                                        <DescriptionIcon fontSize="small" style={{ marginRight: "5px" }} />
                                     ) : (
-                                            <InsertDriveFileIcon style={{ marginRight: "5px" }} />
+                                            <InsertDriveFileIcon fontSize="small" style={{ marginRight: "5px" }} />
                                         )}
                                     {filename.split("__")[0]
-                                        //+ "." + filename.split(".").slice(-1)[0]
+                                        + "." + filename.split(".").slice(-1)[0]
                                     }
                                 </Button>
                             </a>
@@ -191,7 +203,6 @@ const Message = forwardRef(({ timestamp, user,
                             <IconButton onClick={() => setdeleteprompt(true)}>
                                 <DeleteIcon style={{ color: "grey" }} />
                             </IconButton>
-
                         </Tooltip>
                     </div>
                 )}

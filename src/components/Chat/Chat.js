@@ -13,7 +13,10 @@ import AttachmentIcon from '@material-ui/icons/Attachment';
 import ImageIcon from '@material-ui/icons/Image';
 
 import { selectUser } from '../../features/userSlice'
-import { selectChannelId, selectChannelName, selectfocus, selectlanguage, selectuploadvalue, setuploadvalue, setfilenamesinchannel, selectcategorieid, selectsidebarmobile, setsidebarmobile } from '../../features/AppSlice'
+import {
+    selectChannelId, selectChannelName, selectfocus, selectlanguage, selectuploadvalue, setuploadvalue, setfilenamesinchannel, selectcategorieid,
+    selectsidebarmobile, setsidebarmobile
+} from '../../features/AppSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import db, { storage } from '../../firebase/firebase'
 import firebase from "firebase/app"
@@ -197,7 +200,7 @@ const Chat = () => {
                             {messages.map((message, index) => {
                                 if (searchtext) {
                                     if (
-                                        message?.message.includes(searchtext.toString().toLowerCase()) ||
+                                        message?.message.toString().toLowerCase().includes(searchtext.toString().toLowerCase()) ||
                                         message?.user.displayname.toLowerCase().includes(searchtext.toString().toLowerCase()) ||
                                         message?.imagename?.toString().toLowerCase().includes(searchtext.toString().toLowerCase()) ||
                                         message?.filename?.toString().toLowerCase().includes(searchtext.toString().toLowerCase())
@@ -268,7 +271,8 @@ const Chat = () => {
                             disableTouchListener={!channelid}
                             placement="top"
                         >
-                            <AddCircleIcon className={channelid ? ("chat__inputfilebutton") : ("")} fontSize="large" onClick={() => hiddenFileInput.current.click()} />
+                            <AddCircleIcon className={channelid ? ("chat__inputfilebutton") : ("chat__disabledsendbtn")}
+                                fontSize="large" onClick={() => hiddenFileInput.current.click()} />
                         </Tooltip>
                         <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage() } }}>
                             <input value={input} ref={chatmessage}
@@ -293,7 +297,8 @@ const Chat = () => {
                         <div className="chat__inputicons">
                             <SendRoundedIcon className={input || image ? "" : ("chat__disabledsendbtn")}
                                 onClick={(e) => { if (input || image) { sendmessage() } }} />
-                            <EmojiEmotionsIcon fontSize="large" onClick={() => { if (channelid) setemojidialog(true) }} />
+                            <EmojiEmotionsIcon className={channelname ? "" : ("chat__disabledsendbtn")}
+                                fontSize="large" onClick={() => { if (channelid) setemojidialog(true) }} />
                         </div>
                     </div>
                 </FileDrop>
