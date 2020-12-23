@@ -2,7 +2,7 @@ import React from 'react'
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 
-function Fslightboxes ({ lightbox, setlightbox, channelname }) {
+const Fslightboxes = ({ lightbox, setlightbox }) => {
     return (
         <>
             {lightbox.toggler && (

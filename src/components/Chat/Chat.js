@@ -12,23 +12,23 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AttachmentIcon from '@material-ui/icons/Attachment';
 import ImageIcon from '@material-ui/icons/Image';
 
-import { selectUser } from '../../features/userSlice'
+import { selectUser } from '../../lib/userSlice'
 import {
     selectChannelId, selectChannelName, selectfocus, selectlanguage, selectuploadvalue, setuploadvalue, setfilenamesinchannel, selectcategorieid,
-    selectsidebarmobile, setsidebarmobile
-} from '../../features/AppSlice'
+    selectsidebarmobile, setsidebarmobile, setsnackbar
+} from '../../lib/AppSlice'
 import { useSelector, useDispatch } from 'react-redux'
-import db, { storage } from '../../firebase/firebase'
+import db, { storage } from '../../lib/firebase'
 import firebase from "firebase/app"
 import { Scrollbars } from 'react-custom-scrollbars';
 import FlipMove from 'react-flip-move';
 
 import ChatHeader from "./ChatHeader"
 import Message from './Message'
-import Snackbars from '../Snackbars'
 import Fslightboxes from "./Fslightboxes"
 import Emoji from "./Emoji"
 import { FileDrop } from 'react-file-drop'
+import { formatBytes } from '../../lib/FormatBytes'
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -38,42 +38,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Chat = () => {
+    const dispatch = useDispatch()
     const hiddenFileInput = React.useRef(null);
     const chatmessage = React.useRef(null)
     const endchat = React.useRef(null)
-    const dispatch = useDispatch()
+
     const user = useSelector(selectUser)
     const language = useSelector(selectlanguage)
     const sidebarmobile = useSelector(selectsidebarmobile)
     const channelid = useSelector(selectChannelId)
     const categorieid = useSelector(selectcategorieid)
-
     const channelname = useSelector(selectChannelName)
     const focus = useSelector(selectfocus)
     const uploadvalue = useSelector(selectuploadvalue)
+
     const classes = useStyles();
 
     const [input, setinput] = useState("");
     const [messages, setmessages] = useState([]);
     const [image, setimage] = useState(null);
     const [loading, setloading] = useState(false)
-    const [filedelete, setfiledelete] = useState({
-        prompt: false,
-        type: ""
-    })
-
     const [emojidialog, setemojidialog] = useState(false)
-    const [copystate, setcopystate] = useState(false)
-
-    const [delmessagesuccess, setdelmessagesuccess] = useState(false)
     const [searchtext, setsearchtext] = useState("")
     const [lightbox, setlightbox] = useState({
         toggler: false, url: null, user: null, timestamp: null
     })
-    const [filesizeerror, setfilesizeerror] = useState({
-        prompt: false,
-        size: null
-    })
+
     const todaysdate = new Date().toLocaleString("hu-HU").replace(/\s/g, '').split('.').join("").split(':').join("")
 
     useEffect(() => {
@@ -207,8 +197,8 @@ const Chat = () => {
                                     ) {
                                         vane = true
                                         return (
-                                            <Message setcopystate={setcopystate} setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
-                                                id={message.id} setdelmessagesuccess={setdelmessagesuccess}
+                                            <Message setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
+                                                id={message.id}
                                                 imageurl={message.imageurl} key={message.timestamp} message={message.message}
                                                 timestamp={message.timestamp} user={message.user} imagename={message.imagename}
                                                 searched
@@ -229,8 +219,8 @@ const Chat = () => {
                                 }
                                 else
                                     return (
-                                        <Message setcopystate={setcopystate} setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
-                                            id={message.id} setdelmessagesuccess={setdelmessagesuccess}
+                                        <Message setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
+                                            id={message.id}
                                             imageurl={message.imageurl} key={message.timestamp} message={message.message}
                                             timestamp={message.timestamp} user={message.user} imagename={message.imagename}
                                         />
@@ -251,10 +241,15 @@ const Chat = () => {
                             <Tooltip title={language === "hu" ? ("Fájl törlése") : ("Delete file")} placement="right">
                                 <IconButton onClick={() => {
                                     setimage(null)
-                                    setfiledelete({
-                                        prompt: true,
-                                        type: language === "hu" ? image?.type.includes("image") ? ("Fénykép") : ("Fájl") : image?.type.includes("image") ? ("Photo") : ("File")
-                                    })
+                                    dispatch(setsnackbar({
+                                        snackbar: {
+                                            open: true,
+                                            type: "info",
+                                            hu: image?.type.includes("image") ? (`Fénykép ${"sikeresen eltávolítva"}`) : (`Fájl ${"sikeresen eltávolítva"}`),
+                                            en: image?.type.includes("image") ? (`Fénykép ${"successfully deleted"}`) : (`Fájl ${"successfully deleted"}`),
+                                        }
+                                    }))
+
                                 }}>
                                     <DeleteIcon style={{ color: "lightgray" }} />
                                 </IconButton>
@@ -286,10 +281,15 @@ const Chat = () => {
                                             setimage(e.target.files[0])
                                         }
                                         else
-                                            setfilesizeerror({
-                                                prompt: true,
-                                                size: e.target.files[0].size
-                                            })
+                                            dispatch(setsnackbar({
+                                                snackbar: {
+                                                    open: true,
+                                                    type: "error",
+                                                    filesizeerror: true,
+                                                    hu: `A fájl mérete ${formatBytes(e.target.files[0].size)}, amely meghaladja a maximális méretet! (50 MB)`,
+                                                    en: `File size is ${formatBytes(e.target.files[0].size)}, which exceeds the maximum size! (50 MB)`,
+                                                }
+                                            }))
                                     }
 
                                 }} style={{ display: "none" }} />
@@ -303,9 +303,7 @@ const Chat = () => {
                     </div>
                 </FileDrop>
             </div>
-            <Snackbars filedelete={filedelete} setfiledelete={setfiledelete}
-                delmessagesuccess={delmessagesuccess} setdelmessagesuccess={setdelmessagesuccess} copystate={copystate} setcopystate={setcopystate}
-                setfilesizeerror={setfilesizeerror} filesizeerror={filesizeerror} />
+
             <Fslightboxes channelname={channelname} lightbox={lightbox} setlightbox={setlightbox} />
         </>
     )

@@ -69,7 +69,7 @@
     text-align: center;
 }
 
-.login__logo {
+.login__logo, .googlelogindiv {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -79,13 +79,6 @@
     width: 75%;
     object-fit: contain;
 }
-
-.googlelogindiv {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
 .googlelogindiv > img {
     width: 8%;
     transition: 0.3s;
@@ -100,3 +93,11 @@
     transform:scale(1.04,1.04);
     font-size: larger;
 }
+.MuiSnackbarContent-root {
+    border-radius: .6rem !important;
+    background-color:rgba(0,0,0,0.5) !important;
+    justify-content: center;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+  }
+  

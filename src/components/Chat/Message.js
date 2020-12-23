@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react'
+import React, { forwardRef, useState } from 'react'
 
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -6,12 +6,12 @@ import DescriptionIcon from '@material-ui/icons/Description';
 import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Tooltip } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { selectcategorieid, selectChannelId, selectlanguage } from '../../features/AppSlice'
-import db, { storage } from '../../firebase/firebase'
-import { useSelector } from 'react-redux'
+import { selectcategorieid, selectChannelId, selectlanguage, setsnackbar } from '../../lib/AppSlice'
+import db, { storage } from '../../lib/firebase'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Userdialog from '../Userdialog/Userdialog';
-import { selectUser } from '../../features/userSlice';
+import { selectUser } from '../../lib/userSlice';
 
 function getdays (messagetime) {
     let today = new Date()
@@ -83,18 +83,19 @@ function messagetimefunc (t) {
 }
 
 const Message = forwardRef(({ timestamp, user,
-    setcopystate, setdelmessagesuccess, message, imageurl, imagename, fileurl, filename, id, setlightbox, searched }, ref) => {
+    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched }, ref) => {
+    const dispatch = useDispatch()
+
+    const userloggedin = useSelector(selectUser)
+    const channelid = useSelector(selectChannelId)
+    const categorieid = useSelector(selectcategorieid)
+    const language = useSelector(selectlanguage)
+
     const [dialog, setdialog] = useState(false)
     const [runned, setrunned] = useState(false)
     const [deleteprompt, setdeleteprompt] = useState(false)
     const [lastlogin, setlastlogin] = useState(null)
     const [counter, setcounter] = useState(0)
-
-    const userloggedin = useSelector(selectUser)
-    const channelid = useSelector(selectChannelId)
-    const categorieid = useSelector(selectcategorieid)
-
-    const language = useSelector(selectlanguage)
 
     let messagetime = new Date(timestamp?.toDate())
     const countfunc = () => {
@@ -128,7 +129,14 @@ const Message = forwardRef(({ timestamp, user,
             navigator.clipboard.writeText(fileurl)
         }
         document.execCommand("copy");
-        setcopystate(true)
+        dispatch(setsnackbar({
+            snackbar: {
+                open: true,
+                type: "info",
+                hu: "A link vágólapra másolva!",
+                en: "Link copied to clipboard!"
+            }
+        }))
     }
 
     const deletefunc = () => {
@@ -143,7 +151,14 @@ const Message = forwardRef(({ timestamp, user,
         db.collection("categories").doc(categorieid)
             .collection("channels").doc(channelid)
             .collection("messages").doc(id).delete();
-        setdelmessagesuccess(true)
+        dispatch(setsnackbar({
+            snackbar: {
+                open: true,
+                type: "success",
+                hu: "Üzenet sikeresen törölve!",
+                en: "Message deleted!"
+            }
+        }))
     }
     const messageswithurl = geturl(message)
     const getdayfunc = getdays(messagetime)
@@ -178,7 +193,7 @@ const Message = forwardRef(({ timestamp, user,
                         onClick={() => setlightbox({ toggler: true, url: imageurl, user: user.displayname, timestamp: timestamp })} src={imageurl} />)}
                     {fileurl && (
                         <>
-                            <a href={fileurl} target={filename.split(".").slice(-1)[0] === "pdf" && ("_blank")} download>
+                            <a href={fileurl} target={filename.split(".").slice(-1)[0] === "pdf" ? ("_blank") : undefined} download>
                                 <Button variant="contained">
                                     {filename.split(".").slice(-1)[0] === "pdf" ? (
                                         <DescriptionIcon fontSize="small" style={{ marginRight: "5px" }} />

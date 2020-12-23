@@ -1,9 +1,7 @@
 import { Box, Typography } from "@material-ui/core";
 import React from "react"
 
-export function TabPanel (props) {
-    const { children, value, index, ...other } = props;
-
+export function TabPanel ({ children, value, index, ...other }) {
     return (
         <div
             role="tabpanel"
@@ -14,7 +12,7 @@ export function TabPanel (props) {
         >
             {value === index && (
                 <Box p={2}>
-                    <Typography>{children}</Typography>
+                    <Typography component="div">{children}</Typography>
                 </Box>
             )}
         </div>

@@ -8,15 +8,16 @@ import TextField from '@material-ui/core/TextField';
 
 
 import { useDispatch, useSelector } from 'react-redux'
-import { selectChannelName, setChannelInfo, selectlanguage, selectfilenamesinchannel, setfilenamesinchannel, selectimagenamesinchannel } from '../../features/AppSlice'
-import db, { storage } from '../../firebase/firebase'
+import { selectChannelName, setChannelInfo, selectlanguage, selectfilenamesinchannel, setfilenamesinchannel, selectimagenamesinchannel, setsnackbar } from '../../lib/AppSlice'
+import db, { storage } from '../../lib/firebase'
 
-function SideBarChannel ({ id, channelname, createdby, user, setchanneldeleted, categorieid }) {
+const SideBarChannel = ({ id, channelname, createdby, user, categorieid }) => {
+    const dispatch = useDispatch()
+
     const channel = useSelector(selectChannelName)
     const language = useSelector(selectlanguage)
     const filenamesinchannel = useSelector(selectfilenamesinchannel)
     const imagenamesinchannel = useSelector(selectimagenamesinchannel)
-    const dispatch = useDispatch()
 
     const [delbutton, setdelbutton] = useState(false)
     const [dialog, setdialog] = useState(false)
@@ -40,7 +41,14 @@ function SideBarChannel ({ id, channelname, createdby, user, setchanneldeleted, 
         dispatch(setChannelInfo({
             channelId: null, channelName: null
         }), setfilenamesinchannel({ filenamesinchannel: [], imagenamesinchannel: [] }))
-        setchanneldeleted(true)
+        dispatch(setsnackbar({
+            snackbar: {
+                open: true,
+                type: "warning",
+                hu: "Csatorna sikeresen törölve!",
+                en: "Channel deleted!"
+            }
+        }))
     }
 
     const editfunc = () => {
@@ -94,7 +102,6 @@ function SideBarChannel ({ id, channelname, createdby, user, setchanneldeleted, 
                     <form onSubmit={(e) => { e.preventDefault(); editfunc() }} style={{ marginTop: "20px" }}>
                         <TextField
                             label={language === "hu" ? ("Név") : ("Name")}
-                            defaultValue={channelname}
                             variant="outlined"
                             value={newname} onChange={(e) => setnewname(e.target.value)}
                         />

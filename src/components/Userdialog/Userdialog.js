@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "./Userdialog.css"
 import { useSelector } from 'react-redux';
-import { selectlanguage } from '../../features/AppSlice';
+import { selectlanguage } from '../../lib/AppSlice';
 
 import CloseIcon from '@material-ui/icons/Close';
 import Link from '@material-ui/core/Link';
@@ -9,7 +9,7 @@ import { IconButton, Dialog, DialogContent, DialogContentText, DialogTitle } fro
 import TimeAgo from 'timeago-react';
 import * as timeago from 'timeago.js';
 import hu from 'timeago.js/lib/lang/hu';
-import db from '../../firebase/firebase';
+import db from '../../lib/firebase';
 
 function Userdialog ({ dialog, setdialog, user, counter, avatar, lastlogin }) {
     const language = useSelector(selectlanguage)
@@ -20,7 +20,7 @@ function Userdialog ({ dialog, setdialog, user, counter, avatar, lastlogin }) {
         db.collection("users").doc(user.uid).get().then(u => {
             setusername(u.data().displayname)
         })
-    }, [])
+    }, [user.uid])
     return (
         <Dialog open={dialog} onClose={() => setdialog(false)}>
             <DialogContent>

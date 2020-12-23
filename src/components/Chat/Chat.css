@@ -359,3 +359,7 @@
 .emoji-mart-anchor-bar {
     background-color: #4caf50 !important;
 }
+
+.MuiDialog-container {
+    backdrop-filter: brightness(75%);
+}

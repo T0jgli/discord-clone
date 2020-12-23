@@ -2,7 +2,7 @@ import React from 'react'
 import "./Loading.css"
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-function Loading() {
+const Loading = () => {
     return (
         <div className="loading">
             <CircularProgress size={100} />

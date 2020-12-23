@@ -2,7 +2,7 @@ import React from "react"
 import 'emoji-mart/css/emoji-mart.css'
 
 import { Picker } from 'emoji-mart'
-import { selectlanguage } from '../../features/AppSlice'
+import { selectlanguage } from '../../lib/AppSlice'
 import { useSelector } from 'react-redux'
 import { Grow } from "@material-ui/core"
 

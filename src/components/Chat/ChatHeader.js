@@ -1,5 +1,5 @@
 import React from 'react'
-import { selectlanguage, selectsidebarmobile, setsidebarmobile } from "../../features/AppSlice"
+import { selectlanguage, selectsidebarmobile, setsidebarmobile } from "../../lib/AppSlice"
 import { useDispatch, useSelector } from 'react-redux'
 
 import NotificationsIcon from '@material-ui/icons/Notifications'
@@ -8,7 +8,7 @@ import HelpRoundedIcon from '@material-ui/icons/HelpRounded'
 import CloseIcon from '@material-ui/icons/Close';
 import { Sling as Hamburger } from 'hamburger-react'
 
-function ChatHeader ({ channelname, searchtext, setsearchtext }) {
+const ChatHeader = ({ channelname, searchtext, setsearchtext }) => {
     const language = useSelector(selectlanguage)
     const sidebarmobile = useSelector(selectsidebarmobile)
     const dispatch = useDispatch()

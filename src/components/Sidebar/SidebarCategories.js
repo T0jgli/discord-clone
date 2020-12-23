@@ -7,25 +7,20 @@ import AddIcon from "@material-ui/icons/Add"
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-import db from '../../firebase/firebase';
+import db from '../../lib/firebase';
 import firebase from "firebase/app"
-import { selectlanguage, setChannelInfo } from '../../features/AppSlice';
+import { selectlanguage, setChannelInfo, setsnackbar } from '../../lib/AppSlice';
 import SidebarChannelList from './SidebarChannelList';
-import Snackbars from '../Snackbars';
 
-function SidebarCategories ({ user, setchannerror, categorie, channerror, categorieid, mobile }) {
+const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
+    const dispatch = useDispatch()
+
     const language = useSelector(selectlanguage)
 
     const [channels, setchannel] = useState([])
     const [promptstate, setpromptstate] = useState(false)
-    const [channelcreated, setchannelcreated] = useState(false)
-
     const [hide, sethide] = useState(false)
-
-    const [channeldeleted, setchanneldeleted] = useState(false)
-
     const [channelname, setchannelname] = useState("")
-    const dispatch = useDispatch()
 
     useEffect(() => {
         db.collection("categories").doc(categorieid).collection("channels").orderBy("created", "desc").onSnapshot((snapshot) =>
@@ -54,12 +49,26 @@ function SidebarCategories ({ user, setchannerror, categorie, channerror, catego
                         }
                     }))
                 setchannelname("");
-                setchannelcreated(true)
+                dispatch(setsnackbar({
+                    snackbar: {
+                        open: true,
+                        type: "success",
+                        hu: "Csatorna létrehozva!",
+                        en: "Channel created!"
+                    }
+                }))
             })
             setpromptstate(false);
         }
         else {
-            setchannerror(true)
+            dispatch(setsnackbar({
+                snackbar: {
+                    open: true,
+                    type: "error",
+                    hu: "Azért ehhez meg kéne adni egy nevet is!",
+                    en: "I think you should write a name first!"
+                }
+            }))
         }
 
     }
@@ -73,7 +82,7 @@ function SidebarCategories ({ user, setchannerror, categorie, channerror, catego
                 </div>
                 <AddIcon onClick={() => setpromptstate(true)} />
             </div>
-            <SidebarChannelList categorieid={categorieid} channels={channels} hide={hide} user={user} setchanneldeleted={setchanneldeleted} />
+            <SidebarChannelList categorieid={categorieid} channels={channels} hide={hide} user={user} />
 
             <Dialog open={promptstate} onClose={() => setpromptstate(false)}>
                 <DialogContent>
@@ -93,12 +102,6 @@ function SidebarCategories ({ user, setchannerror, categorie, channerror, catego
                         onClick={() => handleaddchannel(channelname)}>{language === "hu" ? ("Létrehoz") : ("Create")}</Button>
                 </DialogActions>
             </Dialog>
-
-
-
-            <Snackbars channelcreated={channelcreated} setchannelcreated={setchannelcreated} channeldeleted={channeldeleted}
-                setchanneldeleted={setchanneldeleted} channerror={channerror} setchannerror={setchannerror} />
-
         </>
     )
 }

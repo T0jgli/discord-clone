@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import db, { auth } from "./firebase/firebase"
+import db, { auth } from "./lib/firebase"
 import "./App.css"
 import Sidebar from './components/Sidebar/Sidebar';
 import Chat from './components/Chat/Chat'
 import Login from './components/Login/Login'
 import Loading from "./components/Loading/Loading"
 import Snackbars from "./components/Snackbars"
-import { getCookie, setCookie } from "./features/Cookiehelper"
 import Theme from './components/Theme';
 import firebase from "firebase/app"
 
 import { useDispatch, useSelector } from 'react-redux';
-import { selectUser, login, logout } from "./features/userSlice"
-import { setlanguage, selectlanguage } from "./features/AppSlice"
+import { selectUser, login, logout } from "./lib/userSlice"
+import { selectlanguage } from "./lib/AppSlice"
 import { ThemeProvider } from '@material-ui/core';
 
-function App () {
+const App = () => {
+  const dispatch = useDispatch();
+
   const user = useSelector(selectUser)
   const language = useSelector(selectlanguage)
 
-  const dispatch = useDispatch();
   const [loading, setloading] = useState(true)
-  const [logintoast, setlogintoast] = useState(false)
-  const [signouttoast, setsignouttoast] = useState(false)
 
   useEffect(() => {
     auth.onAuthStateChanged((authuser) => {
@@ -42,10 +40,6 @@ function App () {
         dispatch(logout())
       }
     })
-
-    if (localStorage.getItem("language") === "en") {
-      dispatch(setlanguage({ language: "en" }))
-    }
     window.document.documentElement.lang = language
   }, [dispatch, language])
 
@@ -80,17 +74,16 @@ function App () {
     <div className="app">
       {user ? (
         <ThemeProvider theme={Theme}>
-          <Snackbars logintoast={logintoast} setlogintoast={setlogintoast} />
-          <Sidebar setsignouttoast={setsignouttoast} />
+          <Sidebar />
           <Chat />
         </ThemeProvider>
       ) : loading ? (<Loading />) : (
         <ThemeProvider theme={Theme}>
-          <Login settoast={setlogintoast} getCookie={getCookie} setCookie={setCookie} />
+          <Login />
         </ThemeProvider>
       )}
 
-      <Snackbars signouttoast={signouttoast} setsignouttoast={setsignouttoast} />
+      <Snackbars />
 
     </div>
   );

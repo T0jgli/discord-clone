@@ -20,54 +20,40 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import CloseIcon from '@material-ui/icons/Close';
 
-import { selectUser } from '../../features/userSlice'
-import { selectlanguage, selectsidebarmobile, setsidebarmobile } from '../../features/AppSlice'
+import { selectUser } from '../../lib/userSlice'
+import { selectlanguage, selectsidebarmobile, setsidebarmobile, setsnackbar } from '../../lib/AppSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import db, { auth } from '../../firebase/firebase'
+import db, { auth } from '../../lib/firebase'
 import firebase from "firebase/app"
 import { Scrollbars } from 'react-custom-scrollbars';
 
-import Snackbars from '../Snackbars'
 import Userdialog from '../Userdialog/Userdialog'
 import SidebarCategories from "./SidebarCategories"
-import { a11yProps, TabPanel } from "../../features/Tabhelper"
+import { a11yProps, TabPanel } from "../../lib/Tabhelper"
 import SwipeableViews from 'react-swipeable-views';
 
-function Sidebar ({ setsignouttoast }) {
+const Sidebar = () => {
+    const dispatch = useDispatch()
+
     const user = useSelector(selectUser)
     const language = useSelector(selectlanguage)
     const sidebarmobile = useSelector(selectsidebarmobile)
+
     const [categoriemenu, setcategoriemenu] = useState(false)
     const [deleteprompt, setdeleteprompt] = useState(false)
     const [usersmenu, setusersmenu] = useState(false)
-
-    const [categoriedeletederror, setcategoriedeletederror] = useState(false)
-
-    const [categoriecreated, setcategoriecreated] = useState(false)
-    const [categorieprivateprompt, setcategorieprivateprompt] = useState({
-        prompt: false,
-        type: null
-    })
-    const [categoriedeleted, setcategoriedeleted] = useState(false)
-
     const [settingsdialog, setsettingsdialog] = useState(false)
-
     const [categoriedeleteprompt, setcategoriedeleteprompt] = useState({
         prompt: false,
         id: null
     })
-
     const [mobile, setmobile] = useState(false)
     const [tab, settab] = useState(0)
     const [categorieprivate, setcategorieprivate] = useState(false)
     const [newusername, setnewusername] = useState(user.displayname)
-
     const [categories, setcategories] = useState([])
-
-    const [channerror, setchannerror] = useState(false)
+    const [users, setusers] = useState([])
     const [categoriename, setcategoriename] = useState("")
-    const dispatch = useDispatch()
-
     const [menu, setmenu] = useState(null)
     const [dialog, setdialog] = useState(false)
 
@@ -99,6 +85,9 @@ function Sidebar ({ setsignouttoast }) {
             }))
             setmobile(true)
         }
+        db.collection("users").onSnapshot(snapshot => {
+            setusers(snapshot.docs.map(snap => snap.data()))
+        })
 
     }, [dispatch, user.uid])
 
@@ -113,10 +102,24 @@ function Sidebar ({ setsignouttoast }) {
                     createdby: user.uid,
                     private: categorieprivate
                 })
-                setcategoriecreated(true)
+                dispatch(setsnackbar({
+                    snackbar: {
+                        open: true,
+                        type: "success",
+                        hu: "Kategória létrehozva!",
+                        en: "Categorie created!"
+                    }
+                }))
             }
             else {
-                setchannerror(true)
+                dispatch(setsnackbar({
+                    snackbar: {
+                        open: true,
+                        type: "error",
+                        hu: "Azért ehhez meg kéne adni egy nevet is!",
+                        en: "I think you should write a name first!"
+                    }
+                }))
             }
         setcategoriemenu(false)
         setcategoriename("")
@@ -133,17 +136,26 @@ function Sidebar ({ setsignouttoast }) {
         if (newusername !== user.displayname) {
             u.updateProfile({
                 displayName: newusername.replace(/\s\s+/g, ' ')
-            }).then(window.location.reload(false))
-            db.collection("users").doc(user.uid).update({
+            }).then(db.collection("users").doc(user.uid).update({
                 displayname: newusername.replace(/\s\s+/g, ' ')
-            })
+            })).then(window.location.reload(false))
+
         }
     }
 
     const handlecategorieprivate = (what, id) => {
         db.collection("categories").doc(id).update({
             private: what === "public" ? (false) : (true)
-        }).then(setcategorieprivateprompt({ prompt: true, type: what }))
+        }).then(
+            dispatch(setsnackbar({
+                snackbar: {
+                    open: true,
+                    type: "info",
+                    hu: what === "public" ? ("A kategória mostantól publikus!") : ("A kategória mostantól privát!"),
+                    en: `Categorie successfully set to ${what}`
+                }
+            }))
+        )
     }
 
     const handledeleteuser = async () => {
@@ -155,14 +167,20 @@ function Sidebar ({ setsignouttoast }) {
         <>
             <div className={mobile ? sidebarmobile ? ("sidebar__mobile sidebar__div") : ("sidebar__mobileopen sidebar__div") : ("")} style={{ flex: mobile ? ("0") : ("0.25") }}>
                 <div className={"sidebar"}>
-                    <div className="sidebar__top" onClick={(e) => { if (Boolean(menu)) setmenu(null); else setmenu(e.currentTarget) }}>
+                    <div className="sidebar__top" onClick={(e) => {
+                        if (Boolean(menu))
+                            setmenu(null);
+                        else setmenu(e.currentTarget)
+                    }}>
                         <h3 style={{ cursor: "pointer" }}>Discord CLoNe by tojglEE</h3>
                         <ExpandMoreIcon className={Boolean(menu) ? ("sidebar__menuiconshowed sidebar__menuicon") : ("sidebar__menuicon")} />
                         <Menu
                             anchorEl={menu}
                             className="sidebar__menu"
                             open={Boolean(menu)}
-                            onClose={() => setmenu(null)}
+                            onClose={() => {
+                                setmenu(null);
+                            }}
                         >
                             <MenuItem className="menu__itemflex" onClick={() => {
                                 if (mobile && !sidebarmobile) {
@@ -191,7 +209,17 @@ function Sidebar ({ setsignouttoast }) {
                                 <PeopleAltIcon />
                             </MenuItem>
 
-                            <MenuItem className="menu__itemflex" onClick={() => { auth.signOut(); setsignouttoast(true) }}>
+                            <MenuItem className="menu__itemflex" onClick={() => {
+                                auth.signOut();
+                                dispatch(setsnackbar({
+                                    snackbar: {
+                                        open: true,
+                                        type: "warning",
+                                        hu: "Sikeres kijelentkezés!",
+                                        en: "Successful sign out!"
+                                    }
+                                }))
+                            }}>
                                 <div className="menu__text">
                                     {language === "hu" ? ("Kijelentkezés") : ("Sign out")}
                                 </div>
@@ -213,7 +241,7 @@ function Sidebar ({ setsignouttoast }) {
                                     return (
                                         <SidebarCategories mobile={mobile} categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
                                             setcategoriename={setcategoriename} categoriemenu={categoriemenu}
-                                            setcategoriemenu={setcategoriemenu} setchannerror={setchannerror} channerror={channerror} user={user} />
+                                            setcategoriemenu={setcategoriemenu} user={user} />
                                     )
                                 }
                                 else return null
@@ -280,11 +308,17 @@ function Sidebar ({ setsignouttoast }) {
                                         <div style={{ margin: "10px 0 10px 0", display: "flex", justifyContent: "center", alignItems: "center" }}>
                                             <Tooltip placement="left" title={language === "hu" ? categorie.categorie.private ? ("Privát") : ("Publikus") :
                                                 categorie.categorie.private ? ("Private") : ("Public")}>
-                                                <IconButton style={{ color: "white", opacity: "0.5" }}>
+                                                <IconButton onClick={() => {
+                                                    if (categorie.categorie.private)
+                                                        handlecategorieprivate("public", id)
+                                                    else handlecategorieprivate("private", id)
+                                                }}
+                                                    style={{ color: "white", opacity: "0.5" }}
+                                                >
                                                     {categorie.categorie.private ? (
-                                                        <LockIcon onClick={() => handlecategorieprivate("public", id)} />
+                                                        <LockIcon />
                                                     ) : (
-                                                            <LockOpenIcon onClick={() => handlecategorieprivate("private", id)} />
+                                                            <LockOpenIcon />
                                                         )}
                                                 </IconButton>
                                             </Tooltip>
@@ -320,7 +354,7 @@ function Sidebar ({ setsignouttoast }) {
             </Dialog>
 
 
-            <Dialog open={categoriedeleteprompt.prompt} onClose={() => setcategoriedeleteprompt({ prompt: false })}>
+            <Dialog open={categoriedeleteprompt?.prompt} onClose={() => setcategoriedeleteprompt({ prompt: false })}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
                         {language === "hu" ? ("Biztosan törlöd a kategóriát?") : ("Are you sure you want to delete this category?")}
@@ -331,15 +365,29 @@ function Sidebar ({ setsignouttoast }) {
                         onClick={() => setcategoriedeleteprompt({ prompt: false })}>{language === "hu" ? ("Nem") : ("No")}</Button>
                     <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
                         onClick={async () => {
-                            db.collection("categories").doc(categoriedeleteprompt.id).collection("channels").get().then(data => {
+                            db.collection("categories").doc(categoriedeleteprompt?.id).collection("channels").get().then(data => {
                                 if (data.docs.length > 0) {
-                                    setcategoriedeletederror(true)
+                                    dispatch(setsnackbar({
+                                        snackbar: {
+                                            open: true,
+                                            type: "error",
+                                            hu: "Kategória nem üres, előbb töröld a csatornáit!",
+                                            en: "Categorie is not empty, first delete the channels!"
+                                        }
+                                    }))
                                     setcategoriedeleteprompt(false)
                                     setcategoriemenu(false)
                                 }
                                 else
                                     db.collection("categories").doc(categoriedeleteprompt.id).delete().then(() => {
-                                        setcategoriedeleted(true)
+                                        dispatch(setsnackbar({
+                                            snackbar: {
+                                                open: true,
+                                                type: "warning",
+                                                hu: "Kategória sikeresen törölve!",
+                                                en: "Categorie deleted!"
+                                            }
+                                        }))
                                         setcategoriedeleteprompt(false)
                                         setcategoriemenu(false)
                                     })
@@ -384,7 +432,13 @@ function Sidebar ({ setsignouttoast }) {
                         {language === "hu" ? ("Felhasználók") : ("Users")}
                     </DialogTitle>
                     <DialogContent>
+                        {users.map((user, i) => (
+                            <Tooltip key={i} title={language === "hu" ? `Utoljára bejelentkezve: ${user.lastlogin?.toDate().toLocaleString()}` :
+                                `Last login: ${user.lastlogin?.toDate().toLocaleString()}`}>
+                                <p style={{ opacity: "0.8", cursor: "default" }}>{user.displayname}</p>
+                            </Tooltip>
 
+                        ))}
                     </DialogContent>
                 </DialogContent>
                 <div className="dialog__closeicon">
@@ -419,19 +473,6 @@ function Sidebar ({ setsignouttoast }) {
 
 
             <Userdialog dialog={dialog} setdialog={setdialog} user={user} avatar={true} />
-
-            <Snackbars
-                categoriecreated={categoriecreated}
-                setcategoriedeletederror={setcategoriedeletederror}
-                categoriedeletederror={categoriedeletederror}
-                setcategoriecreated={setcategoriecreated}
-                channerror={channerror}
-                setchannerror={setchannerror}
-                setcategoriedeleted={setcategoriedeleted}
-                categoriedeleted={categoriedeleted}
-                categorieprivateprompt={categorieprivateprompt}
-                setcategorieprivateprompt={setcategorieprivateprompt}
-            />
         </>
     )
 }
