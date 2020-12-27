@@ -1,0 +1,9 @@
+@use '../Theme';
+
+.loading {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: Theme.$main-background-color;
+}

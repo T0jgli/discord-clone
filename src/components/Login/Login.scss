@@ -1,0 +1,97 @@
+@use '../Theme';
+
+//Base
+
+.login {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: Theme.$main-background-color;
+
+    .login__language {
+        display: flex;
+        justify-content: center;
+        img {
+            object-fit: contain;
+            width: 50px;
+            margin-left: 10px;
+            margin-right: 10px;
+            transition: 0.3s;
+        }
+        img:hover {
+            cursor: default;
+            -moz-transform: scale(1.04, 1.04);
+            -webkit-transform: scale(1.04, 1.04);
+            transform: scale(1.04, 1.04);
+        }
+        .login__language__languageactive {
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+        .login__language__languageactive:hover {
+            -moz-transform: scale(1.08, 1.08);
+            -webkit-transform: scale(1.08, 1.08);
+            transform: scale(1.08, 1.08);
+            cursor: pointer;
+        }
+    }
+
+    .login__logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        img {
+            object-fit: contain;
+            height: 20%;
+            max-width: 80vw;
+        }
+        .loginlogo__gifdiv {
+            margin: 30px;
+            width: 50%;
+            div {
+                text-align: center;
+                img {
+                    width: 75%;
+                    object-fit: contain;
+                }
+            }
+        }
+    }
+
+    button {
+        background-color: Theme.$discord-color;
+        color: #eff2f5;
+        font-weight: 800;
+        margin-bottom: 20px;
+        transition: 0.3s;
+        padding: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    button:hover {
+        background-color: white;
+        color: Theme.$discord-color;
+    }
+}
+
+//Login Dialog
+
+.login__googlelogindiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    img {
+        width: 8%;
+        transition: 0.3s;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    img:hover {
+        cursor: pointer;
+        -moz-transform: scale(1.04, 1.04);
+        -webkit-transform: scale(1.04, 1.04);
+        transform: scale(1.04, 1.04);
+        font-size: larger;
+    }
+}
