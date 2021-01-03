@@ -4,22 +4,23 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { selectlanguage, selectsnackbar, setsnackbar } from "../lib/AppSlice"
 import { useDispatch, useSelector } from 'react-redux'
 
-function Alert (props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 const Snackbars = () => {
+    const dispatch = useDispatch()
+
     const language = useSelector(selectlanguage)
     const snackbaropen = useSelector(selectsnackbar)
-    const dispatch = useDispatch()
     return (
-        <Snackbar open={snackbaropen?.open} autoHideDuration={snackbaropen?.filesizeerror ? (5000) : (3000)} onClose={(event, reason) => {
-            if (reason === "clickaway") { return; };
-            dispatch(setsnackbar({ snackbar: { ...snackbaropen, open: false } }))
-        }}>
-            <Alert onClose={(event, reason) => { if (reason === "clickaway") { return; }; dispatch(setsnackbar({ snackbar: { ...snackbaropen, open: false } })) }}
-                severity={snackbaropen?.type}>{language === "hu" ? (snackbaropen?.hu) : (snackbaropen?.en)}
-            </Alert>
+        <Snackbar open={snackbaropen?.open} anchorOrigin={{ vertical: snackbaropen?.signout ? 'top' : 'bottom', horizontal: snackbaropen?.signout ? 'right' : 'center' }}
+            autoHideDuration={snackbaropen?.filesizeerror ? (5000) : (3000)} onClose={(event, reason) => {
+                if (reason === "clickaway") { return; };
+                dispatch(setsnackbar({ snackbar: { ...snackbaropen, open: false } }))
+            }}>
+            <MuiAlert elevation={5} variant="filled"
+                onClose={(event, reason) => { if (reason === "clickaway") { return; }; dispatch(setsnackbar({ snackbar: { ...snackbaropen, open: false } })) }}
+                severity={snackbaropen?.type}
+            >
+                {language === "hu" ? (snackbaropen?.hu) : (snackbaropen?.en)}
+            </MuiAlert>
         </Snackbar>
     )
 }

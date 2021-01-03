@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import "./Sidebar.css"
 import { useDispatch, useSelector } from 'react-redux';
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import AddIcon from "@material-ui/icons/Add"
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@material-ui/core';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grow, TextField } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import db from '../../lib/firebase';
 import firebase from "firebase/app"
 import { selectlanguage, setChannelInfo, setsnackbar } from '../../lib/AppSlice';
-import SidebarChannelList from './SidebarChannelList';
+import SideBarChannel from './SideBarChannel';
+
+const hiddencategories = JSON.parse(localStorage.getItem("hiddenCategories"))
 
 const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
     const dispatch = useDispatch()
 
     const language = useSelector(selectlanguage)
-
     const [channels, setchannel] = useState([])
     const [promptstate, setpromptstate] = useState(false)
-    const [hide, sethide] = useState(false)
+    const [hide, sethide] = useState(hiddencategories ? hiddencategories.includes(categorieid) ? true : false : false)
     const [channelname, setchannelname] = useState("")
 
     useEffect(() => {
@@ -32,7 +32,6 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
             )
         )
     }, [categorieid])
-
     const handleaddchannel = () => {
         if (channelname) {
             db.collection("categories").doc(categorieid).collection("channels").add({
@@ -76,15 +75,36 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
     return (
         <>
             <div className="sidebar__channelsheader">
-                <div className="sidebar__header" onClick={() => sethide(!hide)}>
+                <div className="sidebar__header" onClick={() => {
+                    sethide(!hide);
+                    if (!hide)
+                        if (hiddencategories)
+                            localStorage.setItem("hiddenCategories", JSON.stringify([
+                                ...hiddencategories, categorieid
+                            ]))
+                        else
+                            localStorage.setItem("hiddenCategories", JSON.stringify([
+                                categorieid
+                            ]))
+                    else
+                        localStorage.setItem("hiddenCategories", JSON.stringify(hiddencategories.filter(e => e !== categorieid)))
+
+                }}>
                     <ExpandMoreIcon className={hide ? ("sidebar__categorieiconshowed sidebar__menuicon") : ("sidebar__menucion")} />
                     <h5>{categorie.categoriename}</h5>
                 </div>
                 <AddIcon onClick={() => setpromptstate(true)} />
             </div>
-            <SidebarChannelList categorieid={categorieid} channels={channels} hide={hide} user={user} />
 
-            <Dialog open={promptstate} onClose={() => setpromptstate(false)}>
+            <div className="sidebar__channelslist">
+                {!hide && channels.map(({ id, channel }) => (
+                    <SideBarChannel categorieid={categorieid} user={user} key={id}
+                        channelname={channel.channelname} createdby={channel.createdby} id={id} />
+                ))}
+
+            </div>
+
+            <Dialog TransitionComponent={Grow} open={promptstate} onClose={() => setpromptstate(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
                         {language === "hu" ? ("Add meg a csatorna nevét!") : ("Write a channel name!")}

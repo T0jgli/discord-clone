@@ -1,2 +1,10 @@
 $main-background-color: #2f3135;
+$lighter-background-color: #363a3f;
+$paper-background-color: #40464b;
+
 $discord-color: #738adb;
+
+%d-flex-center {
+    display: flex !important;
+    align-items: center !important;
+}

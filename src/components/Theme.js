@@ -51,7 +51,7 @@ const Theme = createMuiTheme({
         },
         MuiDialogActions: {
             root: {
-                backgroundColor: "#363a3f"
+                backgroundColor: "#363a3f !important"
             }
         },
         MuiMenu: {

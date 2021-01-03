@@ -3,12 +3,15 @@ import React, { useState, useEffect } from 'react'
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { Button, IconButton, Dialog, DialogContent, DialogTitle, DialogActions, Tooltip } from '@material-ui/core'
+import { Button, IconButton, Dialog, DialogContent, DialogTitle, DialogActions, Tooltip, Grow } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField';
 
 
 import { useDispatch, useSelector } from 'react-redux'
-import { selectChannelName, setChannelInfo, selectlanguage, selectfilenamesinchannel, setfilenamesinchannel, selectimagenamesinchannel, setsnackbar } from '../../lib/AppSlice'
+import {
+    selectChannelName, setChannelInfo, selectlanguage, selectfilenamesinchannel, setfilenamesinchannel, selectimagenamesinchannel,
+    setsnackbar, selectmutedchannels
+} from '../../lib/AppSlice'
 import db, { storage } from '../../lib/firebase'
 
 const SideBarChannel = ({ id, channelname, createdby, user, categorieid }) => {
@@ -16,6 +19,8 @@ const SideBarChannel = ({ id, channelname, createdby, user, categorieid }) => {
 
     const channel = useSelector(selectChannelName)
     const language = useSelector(selectlanguage)
+    const mutedchannels = useSelector(selectmutedchannels)
+
     const filenamesinchannel = useSelector(selectfilenamesinchannel)
     const imagenamesinchannel = useSelector(selectimagenamesinchannel)
 
@@ -76,12 +81,13 @@ const SideBarChannel = ({ id, channelname, createdby, user, categorieid }) => {
     return (
         <>
             <div onMouseEnter={() => setdelbutton(true)} onMouseLeave={() => { if (channelname !== channel) { setdelbutton(false) } }}
-                className={channelname === channel ? ("sidebarchannel activechannel") : ("notactivechannel sidebarchannel")} onClick={() => {
-                    setdelbutton(true); dispatch(setChannelInfo({
-                        channelId: id, channelName: channelname, categorieid: categorieid
-                    }))
-                }}>
-                <h4><span>#</span>{channelname}</h4>
+                className={channelname === channel ? mutedchannels?.includes(id) ? ("sidebarchannel mutedchannelbg") :
+                    ("sidebarchannel activechannel") : ("sidebarchannel notactivechannel")} onClick={() => {
+                        setdelbutton(true); dispatch(setChannelInfo({
+                            channelId: id, channelName: channelname, categorieid: categorieid
+                        }))
+                    }}>
+                <h4 className={mutedchannels?.includes(id) && "mutedchannel"}><span>#</span>{channelname}</h4>
                 {delbutton && createdby === user.uid ? (
                     <IconButton onClick={() => setdialog(true)} className="delicon" style={{ color: "gray" }}>
                         <EditIcon />
@@ -93,7 +99,7 @@ const SideBarChannel = ({ id, channelname, createdby, user, categorieid }) => {
                 if (e.key === "Escape") {
                     setdialog(false)
                 }
-            }} open={dialog} onClose={() => setdialog(false)}>
+            }} TransitionComponent={Grow} open={dialog} onClose={() => setdialog(false)}>
                 <DialogContent>
                     <DialogTitle>
                         {language === "hu" ? ("Csatorna szerkesztése") : ("Channel edit")}

@@ -33,9 +33,8 @@
     }
 
     .sidebar__top {
-        display: flex;
+        @extend %d-flex-center;
         justify-content: space-between;
-        align-items: center;
         padding: 1.7rem;
         background-color: Theme.$main-background-color;
         color: white;
@@ -44,7 +43,7 @@
     }
 
     .sidebar__top:hover {
-        background-color: #363a3f;
+        background-color: Theme.$lighter-background-color;
     }
 
     .sidebar__channels {
@@ -52,16 +51,14 @@
         overflow-x: hidden;
 
         .sidebar__channelsheader {
-            display: flex;
+            @extend %d-flex-center;
             justify-content: space-between;
-            align-items: center;
             padding: 0.6rem;
             background-color: Theme.$main-background-color;
             color: gray;
 
             .sidebar__header {
-                display: flex;
-                align-items: center;
+                @extend %d-flex-center;
 
                 .sidebar__categorieiconshowed {
                     transform: rotate(-90deg);
@@ -80,8 +77,16 @@
             }
 
             .activechannel {
-                background-color: #40464b;
+                background-color: Theme.$paper-background-color;
                 color: white;
+                margin-left: 0.8rem;
+                margin-right: 0.8rem;
+                border-radius: 0.8rem;
+            }
+
+            .mutedchannelbg {
+                color: white;
+                background-color: rgba(64, 70, 75, 0.6);
                 margin-left: 0.8rem;
                 margin-right: 0.8rem;
                 border-radius: 0.8rem;
@@ -96,11 +101,14 @@
                     color: gray;
                 }
 
+                .mutedchannel {
+                    opacity: 0.25;
+                }
+
                 h4 {
+                    @extend %d-flex-center;
                     transition: 0.1s;
-                    display: flex;
                     padding-left: 0.5rem;
-                    align-items: center;
                     cursor: pointer;
                     flex: 1;
 
@@ -112,14 +120,13 @@
             }
 
             .sidebarchannel:hover {
-                background-color: #40464b;
+                background-color: Theme.$paper-background-color;
             }
         }
     }
     .sidebar__profile {
-        display: flex;
+        @extend %d-flex-center;
         justify-content: space-between;
-        align-items: center;
         color: gray;
         background-color: #292a2e;
         padding: 0.5rem;
@@ -147,9 +154,8 @@
 .MuiMenu-paper {
     .MuiList-root {
         .menu__itemflex {
-            display: flex !important;
+            @extend %d-flex-center;
             justify-content: space-between !important;
-            align-items: center !important;
             min-height: 50px !important;
 
             .menu__text {

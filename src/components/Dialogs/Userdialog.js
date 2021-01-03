@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import "./Userdialog.css"
 import { useSelector } from 'react-redux';
 import { selectlanguage } from '../../lib/AppSlice';
 
 import CloseIcon from '@material-ui/icons/Close';
 import Link from '@material-ui/core/Link';
-import { IconButton, Dialog, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core'
+import { IconButton, Dialog, DialogContent, DialogContentText, DialogTitle, Grow } from '@material-ui/core'
 import TimeAgo from 'timeago-react';
 import * as timeago from 'timeago.js';
 import hu from 'timeago.js/lib/lang/hu';
@@ -22,7 +21,7 @@ function Userdialog ({ dialog, setdialog, user, counter, avatar, lastlogin }) {
         })
     }, [user.uid])
     return (
-        <Dialog open={dialog} onClose={() => setdialog(false)}>
+        <Dialog TransitionComponent={Grow} open={dialog} onClose={() => setdialog(false)}>
             <DialogContent>
                 <img src={user.photo} alt="userphoto" style={{ borderRadius: "50%" }} />
                 <DialogTitle>

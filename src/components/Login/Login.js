@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import "./Login.css"
 import { selectlanguage, setlanguage, setsnackbar } from "../../lib/AppSlice"
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -14,7 +13,6 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 const Login = () => {
     const dispatch = useDispatch()
     const language = useSelector(selectlanguage)
-
     const [langtoast, setlangtoast] = useState(false)
     const [open, setopen] = useState(false)
     const [logindata, setlogindata] = useState({ email: "", password: "" })
@@ -54,13 +52,14 @@ const Login = () => {
             <div className="login">
                 <div className="login__logo">
                     <img src="/dclogo.png" alt="" />
-                    <div className="login__gifdiv">
+
+                    <div className="loginlogo__gifdiv">
                         <Giphy tag="doggy" />
                     </div>
                 </div>
                 <div className="login__language">
                     <img src="/hu.png"
-                        className={language === "hu" ? ("login__languageimg") : ("login__languageactive")}
+                        className={language !== "hu" && ("login__language__languageactive")}
                         onClick={() => {
                             localStorage.removeItem("language");
                             setlangtoast(true);
@@ -69,7 +68,7 @@ const Login = () => {
                             }))
                         }} alt="huimage" />
                     <img src="/uk.png"
-                        className={language !== "hu" ? ("login__languageimg") : ("login__languageactive")}
+                        className={language === "hu" && ("login__language__languageactive")}
                         onClick={() => {
                             localStorage.setItem("language", "en", 365);
                             setlangtoast(true);
@@ -104,7 +103,7 @@ const Login = () => {
                             onChange={(e) => setlogindata({ ...logindata, password: e.target.value })} label={language === "hu" ? ("Jelszó") : ("Password")} />
                     </form>
                 </DialogContent>
-                <div className="googlelogindiv">
+                <div className={"login__googlelogindiv"}>
                     <Tooltip arrow title={language === "hu" ? ("Bejelentkezés Google-vel") : ("Sign in with Google")}>
                         <img alt="googleicon" onClick={signinwithgoogle} src="/googleicon.png" />
                     </Tooltip>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import "./App.scss"
 import db, { auth } from "./lib/firebase"
-import "./App.css"
 import Sidebar from './components/Sidebar/Sidebar';
 import Chat from './components/Chat/Chat'
 import Login from './components/Login/Login'
@@ -71,21 +71,22 @@ const App = () => {
   }, [user])
 
   return (
-    <div className="app">
-      {user ? (
-        <ThemeProvider theme={Theme}>
-          <Sidebar />
-          <Chat />
-        </ThemeProvider>
-      ) : loading ? (<Loading />) : (
-        <ThemeProvider theme={Theme}>
-          <Login />
-        </ThemeProvider>
-      )}
+    <ThemeProvider theme={Theme}>
+      <div className="app">
+        {user ? (
+          <>
+            <Sidebar />
+            <Chat />
+          </>
+        ) : loading ? (<Loading />) : (
+          <ThemeProvider theme={Theme}>
+            <Login />
+          </ThemeProvider>
+        )}
 
-      <Snackbars />
-
-    </div>
+        <Snackbars />
+      </div>
+    </ThemeProvider>
   );
 }
 

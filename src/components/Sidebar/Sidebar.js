@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import "./Sidebar.css"
 
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import SettingsIcon from "@material-ui/icons/Settings"
@@ -7,7 +6,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {
     Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Switch,
-    FormControlLabel, Paper, Tabs, Tab, IconButton, Tooltip
+    FormControlLabel, Paper, Tabs, Tab, IconButton, Tooltip, Grow
 } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -27,7 +26,7 @@ import db, { auth } from '../../lib/firebase'
 import firebase from "firebase/app"
 import { Scrollbars } from 'react-custom-scrollbars';
 
-import Userdialog from '../Userdialog/Userdialog'
+import Userdialog from '../Dialogs/Userdialog'
 import SidebarCategories from "./SidebarCategories"
 import { a11yProps, TabPanel } from "../../lib/Tabhelper"
 import SwipeableViews from 'react-swipeable-views';
@@ -47,7 +46,7 @@ const Sidebar = () => {
         prompt: false,
         id: null
     })
-    const [mobile, setmobile] = useState(false)
+    const [mobile] = useState(window.innerWidth < 768)
     const [tab, settab] = useState(0)
     const [categorieprivate, setcategorieprivate] = useState(false)
     const [newusername, setnewusername] = useState(user.displayname)
@@ -79,12 +78,6 @@ const Sidebar = () => {
             })
             )
         })
-        if (window.innerWidth < 768) {
-            dispatch(setsidebarmobile({
-                sidebarmobile: true
-            }))
-            setmobile(true)
-        }
         db.collection("users").onSnapshot(snapshot => {
             setusers(snapshot.docs.map(snap => snap.data()))
         })
@@ -136,9 +129,10 @@ const Sidebar = () => {
         if (newusername !== user.displayname) {
             u.updateProfile({
                 displayName: newusername.replace(/\s\s+/g, ' ')
-            }).then(db.collection("users").doc(user.uid).update({
-                displayname: newusername.replace(/\s\s+/g, ' ')
-            })).then(window.location.reload(false))
+            }).then(
+                db.collection("users").doc(user.uid).update({
+                    newusername: newusername.replace(/\s\s+/g, ' ')
+                })).then(window.location.reload(false))
 
         }
     }
@@ -152,7 +146,7 @@ const Sidebar = () => {
                     open: true,
                     type: "info",
                     hu: what === "public" ? ("A kategória mostantól publikus!") : ("A kategória mostantól privát!"),
-                    en: `Categorie successfully set to ${what}`
+                    en: `Categorie successfully set to ${what}!`
                 }
             }))
         )
@@ -162,7 +156,6 @@ const Sidebar = () => {
         db.collection("users").doc(user.uid).delete().then(await u.delete())
         window.close()
     }
-
     return (
         <>
             <div className={mobile ? sidebarmobile ? ("sidebar__mobile sidebar__div") : ("sidebar__mobileopen sidebar__div") : ("")} style={{ flex: mobile ? ("0") : ("0.25") }}>
@@ -215,6 +208,7 @@ const Sidebar = () => {
                                     snackbar: {
                                         open: true,
                                         type: "warning",
+                                        signout: true,
                                         hu: "Sikeres kijelentkezés!",
                                         en: "Successful sign out!"
                                     }
@@ -261,7 +255,7 @@ const Sidebar = () => {
                 </div>
             </div>
 
-            <Dialog open={categoriemenu} onClose={() => setcategoriemenu(false)}>
+            <Dialog TransitionComponent={Grow} open={categoriemenu} onClose={() => setcategoriemenu(false)}>
                 <DialogContent>
                     <Paper>
                         <Tabs
@@ -354,7 +348,7 @@ const Sidebar = () => {
             </Dialog>
 
 
-            <Dialog open={categoriedeleteprompt?.prompt} onClose={() => setcategoriedeleteprompt({ prompt: false })}>
+            <Dialog TransitionComponent={Grow} open={categoriedeleteprompt?.prompt} onClose={() => setcategoriedeleteprompt({ prompt: false })}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
                         {language === "hu" ? ("Biztosan törlöd a kategóriát?") : ("Are you sure you want to delete this category?")}
@@ -397,7 +391,7 @@ const Sidebar = () => {
             </Dialog>
 
 
-            <Dialog open={settingsdialog} onClose={() => setsettingsdialog(false)}>
+            <Dialog TransitionComponent={Grow} open={settingsdialog} onClose={() => setsettingsdialog(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
                         {language === "hu" ? ("Beállítások") : ("Settings")}
@@ -426,7 +420,7 @@ const Sidebar = () => {
                 </DialogActions>
             </Dialog>
 
-            <Dialog open={usersmenu} onClose={() => setusersmenu(false)}>
+            <Dialog TransitionComponent={Grow} open={usersmenu} onClose={() => setusersmenu(false)}>
                 <DialogContent>
                     <DialogTitle>
                         {language === "hu" ? ("Felhasználók") : ("Users")}
@@ -457,7 +451,7 @@ const Sidebar = () => {
                 if (e.key === "Escape" || e.key === "Backspace") {
                     setdeleteprompt(false)
                 }
-            }} open={deleteprompt} onClose={() => setdeleteprompt(false)}>
+            }} TransitionComponent={Grow} open={deleteprompt} onClose={() => setdeleteprompt(false)}>
                 <DialogContent>
                     <DialogTitle>
                         {language === "hu" ? ("Biztosan törlöd a felhasználói fiókot?") : ("Are you sure you want to delete this user account?")}

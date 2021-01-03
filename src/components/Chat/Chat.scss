@@ -1,10 +1,11 @@
 //CHAT
+@use '../Theme';
 
 .chat {
     display: flex;
     flex-direction: column;
     flex: 0.75;
-    background-color: #363a3f;
+    background-color: Theme.$lighter-background-color;
     height: 100vh;
     @media (max-width: 768px) {
         flex: 1 !important;
@@ -24,11 +25,13 @@
     }
 
     .chatheader {
-        display: flex;
+        @extend %d-flex-center;
         justify-content: space-between;
-        align-items: center;
         color: gray;
         padding: 10px;
+        @media (max-width: 768px) {
+            padding-top: 7px !important;
+        }
         -webkit-box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.75);
         -moz-box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.75);
         box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.75);
@@ -37,9 +40,19 @@
         }
 
         .chatheader__left {
-            display: flex;
-            align-items: center;
+            @extend %d-flex-center;
             justify-content: space-between;
+
+            .mutedchannel {
+                opacity: 0.4;
+                transition: 0.3s;
+            }
+
+            .notmutedchannel {
+                opacity: 1;
+                transition: 0.3s;
+            }
+
             h3 {
                 display: flex;
                 margin-right: 10px;
@@ -54,20 +67,18 @@
         }
 
         .chatheader__right {
-            display: flex;
-            align-items: center;
-            flex: 0.2;
+            @extend %d-flex-center;
             justify-content: space-between;
+            flex: 0.2;
 
             .MuiSvgIcon-root {
                 margin: 10px;
             }
 
             .chatheader__search {
-                display: flex;
-                align-items: center;
+                @extend %d-flex-center;
                 color: gray;
-                background-color: #2f3135;
+                background-color: Theme.$main-background-color;
                 border-radius: 3px;
                 padding: 3px;
 
@@ -96,9 +107,8 @@
         }
 
         .search__notfound {
-            display: flex;
+            @extend %d-flex-center;
             justify-content: center;
-            align-items: center;
             padding-top: 30px;
             color: lightgray;
 
@@ -116,9 +126,8 @@
         }
 
         .message {
-            display: flex;
+            @extend %d-flex-center;
             justify-content: space-between;
-            align-items: center;
             padding: 20px;
             color: white;
             transition: 0.3s;
@@ -210,11 +219,10 @@
     }
 
     .chat__filediv {
-        color: lightgray;
-        display: flex;
-        align-items: center;
-        width: max-content;
+        @extend %d-flex-center;
         justify-content: space-between;
+        color: lightgray;
+        width: max-content;
         padding: 0.5rem 0 0.5rem 0.5rem;
         border-radius: 8px;
         margin: 0 1.2rem 0 1.2rem;
@@ -228,10 +236,9 @@
         }
 
         .chat__input {
-            color: lightgray;
-            display: flex;
-            align-items: center;
+            @extend %d-flex-center;
             justify-content: space-between;
+            color: lightgray;
             padding: 0.5rem;
             border-radius: 8px;
             margin: 1.2rem;
@@ -258,8 +265,7 @@
             }
 
             .chat__inputicons {
-                display: flex;
-                align-items: center;
+                @extend %d-flex-center;
 
                 .MuiSvgIcon-root {
                     padding: 5px 10px 5px 10px;

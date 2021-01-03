@@ -42,7 +42,7 @@ const Emoji = ({ input, setinput, fade }) => {
         <Grow in={fade} timeout={200}>
             <Picker onSelect={(emoji) => {
                 setinput(input + emoji.native)
-            }} theme="dark" autoFocus emoji="" native title="" i18n={language === "hu" && (HungarianLang)}
+            }} theme="dark" emoji="" native title="" i18n={language === "hu" && (HungarianLang)}
                 style={{ position: 'absolute', bottom: '20px', right: '20px', zIndex: "1" }} />
         </Grow>
     )

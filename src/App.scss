@@ -1,4 +1,8 @@
 @use './components/Theme';
+@use './components/Chat/Chat';
+@use './components/Loading/Loading';
+@use './components/Login/Login';
+@use './components/Sidebar/Sidebar';
 
 * {
   margin: 0;
@@ -28,7 +32,7 @@ body {
   .MuiDialog-paper {
     .MuiDialogContent-root {
       .MuiPaper-root {
-        background-color: #40464b !important;
+        background-color: Theme.$paper-background-color !important;
         color: white !important;
         border-radius: 0.8rem;
       }

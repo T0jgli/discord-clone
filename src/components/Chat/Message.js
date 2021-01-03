@@ -3,14 +3,14 @@ import React, { forwardRef, useState } from 'react'
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Tooltip } from '@material-ui/core'
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grow, IconButton, Tooltip } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { selectcategorieid, selectChannelId, selectlanguage, setsnackbar } from '../../lib/AppSlice'
 import db, { storage } from '../../lib/firebase'
 import { useDispatch, useSelector } from 'react-redux'
 
-import Userdialog from '../Userdialog/Userdialog';
+import Userdialog from '../Dialogs/Userdialog';
 import { selectUser } from '../../lib/userSlice';
 
 function getdays (messagetime) {
@@ -33,13 +33,8 @@ function getdays (messagetime) {
 }
 
 function geturl (message) {
-    let exactprefix;
-    let prefixes = ["www.", "https://", "http://"]
-    let messagebeforeurl = "";
-    let messageafterurl = "";
-    let messageurl = "";
-    let messageendindex;
-    let newmessage = []
+    let exactprefix, messageendindex = "", messageafterurl = "", messagebeforeurl = "", messageurl = "", newmessage = [];
+    let prefixes = ["www.", "https://", "http://", "ftp://"]
     prefixes.map((prefix) => {
         if (message.includes(prefix)) {
             exactprefix = prefix
@@ -76,10 +71,14 @@ function geturl (message) {
 }
 
 function messagetimefunc (t) {
-    if (t < 10) {
-        return "0" + t
+    let minute = t.getMinutes()
+    let seconds = t.getSeconds()
+    if (minute < 10) {
+        minute = "0" + t.getMinutes()
     }
-    else return t
+    if (seconds < 10)
+        seconds = "0" + t.getSeconds()
+    return minute + ":" + seconds
 }
 
 const Message = forwardRef(({ timestamp, user,
@@ -160,8 +159,6 @@ const Message = forwardRef(({ timestamp, user,
             }
         }))
     }
-    const messageswithurl = geturl(message)
-    const getdayfunc = getdays(messagetime)
     return (
         <>
             <div ref={ref} className={searched ? ("message searched") : ("message")}>
@@ -169,24 +166,28 @@ const Message = forwardRef(({ timestamp, user,
                 <div className="message__info">
                     <h4>
                         <span onClick={() => { countfunc() }} className="name">{user.displayname}</span>
-                        {timestamp && (<span className="time">{getdayfunc === "Today" ?
-                            language === "hu" ? ("Ma " + messagetime?.getHours() + ":" + messagetimefunc(messagetime?.getMinutes()) +
-                                ":" + messagetimefunc(messagetime?.getSeconds())) :
-                                ("Today " + messagetimefunc(messagetime?.getHours()) + ":" + messagetimefunc(messagetime?.getMinutes()) +
-                                    ":" + messagetimefunc(messagetime?.getSeconds())) :
-                            getdayfunc === "Yesterday" ?
-                                language === "hu" ? ("Tegnap " + messagetimefunc(messagetime?.getHours()) + ":" + messagetimefunc(messagetime?.getMinutes()) +
-                                    ":" + messagetimefunc(messagetime?.getSeconds())) :
-                                    ("Yesterday " + messagetime?.getHours() + ":" + messagetimefunc(messagetime?.getMinutes()) +
-                                        ":" + messagetimefunc(messagetime?.getSeconds())) :
-                                (messagetime?.toLocaleString('hu-HU'))}</span>)}
+                        {timestamp && (
+                            <span className="time">
+                                {getdays(messagetime) === "Today" ?
+                                    language === "hu" ? ("Ma " + messagetime?.getHours() + ":" + messagetimefunc(messagetime)) :
+                                        ("Today " + messagetime?.getHours() + ":" + messagetimefunc(messagetime)) :
+                                    getdays(messagetime) === "Yesterday" ?
+                                        language === "hu" ? ("Tegnap " + messagetime?.getHours() + ":" + messagetimefunc(messagetime)) :
+                                            ("Yesterday " + messagetime?.getHours() + ":" + messagetimefunc(messagetime)) :
+                                        (messagetime?.toLocaleString('hu-HU'))}
+                            </span>)}
                     </h4>
 
-                    <p>{messageswithurl ?
-                        (messageswithurl[1]) :
-                        (message)}{messageswithurl ?
-                            (<a rel="noopener noreferrer" href={messageswithurl[0]} className="message__url" target="_blank" >{messageswithurl[0]}</a>) :
-                            (null)}{messageswithurl ? (messageswithurl[2]) : (null)}
+                    <p>
+                        {geturl(message) ?
+                            (
+                                <>
+                                    {geturl(message)[1]}
+                                    <a rel="noopener noreferrer" href={geturl(message)[0]} className="message__url" target="_blank" >{geturl(message)[0]}</a>
+                                    {geturl(message)[2]}
+                                </>
+                            ) :
+                            (message)}
                     </p>
 
                     {imageurl && (<img alt="messageImage"
@@ -215,7 +216,7 @@ const Message = forwardRef(({ timestamp, user,
                 {user.uid === userloggedin.uid && (
                     <div className="message__delicon">
                         <Tooltip title={language === "hu" ? ("Üzenet törlése") : ("Delete message")} placement="left">
-                            <IconButton onClick={() => setdeleteprompt(true)}>
+                            <IconButton onClick={() => setdeleteprompt(true)} >
                                 <DeleteIcon style={{ color: "grey" }} />
                             </IconButton>
                         </Tooltip>
