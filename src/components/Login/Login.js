@@ -54,27 +54,31 @@ const Login = () => {
                     <img src="/dclogo.png" alt="" />
 
                     <div className="loginlogo__gifdiv">
-                        <Giphy tag="doggy" />
+                        <Giphy tag="fun dog" />
                     </div>
                 </div>
                 <div className="login__language">
-                    <img src="/hu.png"
-                        className={language !== "hu" && ("login__language__languageactive")}
+                    <img src="/hu.svg"
+                        className={language === "hu" ? ("login__language__languageactive") : ("")}
                         onClick={() => {
-                            localStorage.removeItem("language");
-                            setlangtoast(true);
-                            dispatch(setlanguage({
-                                language: "hu"
-                            }))
+                            if (language === "en") {
+                                localStorage.removeItem("language");
+                                setlangtoast(true);
+                                dispatch(setlanguage({
+                                    language: "hu"
+                                }))
+                            }
                         }} alt="huimage" />
-                    <img src="/uk.png"
-                        className={language === "hu" && ("login__language__languageactive")}
+                    <img src="/uk.svg"
+                        className={language !== "hu" ? ("login__language__languageactive") : ("")}
                         onClick={() => {
-                            localStorage.setItem("language", "en", 365);
-                            setlangtoast(true);
-                            dispatch(setlanguage({
-                                language: "en"
-                            }))
+                            if (language === "hu") {
+                                localStorage.setItem("language", "en", 365);
+                                setlangtoast(true);
+                                dispatch(setlanguage({
+                                    language: "en"
+                                }))
+                            }
                         }} alt="ukimage" />
 
                 </div>

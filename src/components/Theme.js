@@ -59,7 +59,7 @@ const Theme = createMuiTheme({
                 top: "8% !important",
                 left: "0% !important",
                 width: "25%",
-                minWidth: "200px",
+                minWidth: "250px",
                 backgroundColor: "rgb(32, 32, 32) !important",
                 color: "rgb(212, 212, 212) !important",
                 borderRadius: "0.5rem",

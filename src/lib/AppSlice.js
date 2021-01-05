@@ -5,8 +5,8 @@ export const appSlice = createSlice({
   initialState: {
     channelId: null,
     channelName: null,
+    channelDesc: null,
     categorieid: null,
-    focus: null,
     language: localStorage.getItem("language") || "hu",
     mutedchannels: JSON.parse(localStorage.getItem("mutedChannels")),
     filenamesinchannel: [],
@@ -19,8 +19,7 @@ export const appSlice = createSlice({
       state.channelId = action.payload.channelId;
       state.channelName = action.payload.channelName;
       state.categorieid = action.payload.categorieid;
-
-      state.focus = action.payload.focus;
+      state.channelDesc = action.payload.channelDesc;
     },
     setlanguage: (state, action) => {
       state.language = action.payload.language;
@@ -46,12 +45,13 @@ export const { setChannelInfo, setsidebarmobile, setlanguage, setfilenamesinchan
 
 export const selectChannelId = state => state.app.channelId;
 export const selectChannelName = state => state.app.channelName;
+export const selectChannelDesc = state => state.app.channelDesc;
+
 export const selectcategorieid = state => state.app.categorieid;
 export const selectsidebarmobile = state => state.app.sidebarmobile;
 export const selectsnackbar = state => state.app.snackbar;
 export const selectmutedchannels = state => state.app.mutedchannels;
 
-export const selectfocus = state => state.app.focus;
 export const selectlanguage = state => state.app.language;
 export const selectfilenamesinchannel = state => state.app.filenamesinchannel;
 export const selectimagenamesinchannel = state => state.app.imagenamesinchannel;

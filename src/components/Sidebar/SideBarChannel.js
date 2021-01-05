@@ -9,15 +9,15 @@ import TextField from '@material-ui/core/TextField';
 
 import { useDispatch, useSelector } from 'react-redux'
 import {
-    selectChannelName, setChannelInfo, selectlanguage, selectfilenamesinchannel, setfilenamesinchannel, selectimagenamesinchannel,
-    setsnackbar, selectmutedchannels
+    setChannelInfo, selectlanguage, selectfilenamesinchannel, setfilenamesinchannel, selectimagenamesinchannel,
+    setsnackbar, selectmutedchannels, selectChannelId, setsidebarmobile
 } from '../../lib/AppSlice'
 import db, { storage } from '../../lib/firebase'
 
-const SideBarChannel = ({ id, channelname, createdby, user, categorieid }) => {
+const SideBarChannel = ({ id, channelname, channeldesc, createdby, user, categorieid }) => {
     const dispatch = useDispatch()
 
-    const channel = useSelector(selectChannelName)
+    const channelid = useSelector(selectChannelId)
     const language = useSelector(selectlanguage)
     const mutedchannels = useSelector(selectmutedchannels)
 
@@ -28,6 +28,8 @@ const SideBarChannel = ({ id, channelname, createdby, user, categorieid }) => {
     const [dialog, setdialog] = useState(false)
     const [deleteprompt, setdeleteprompt] = useState(false)
     const [newname, setnewname] = useState(channelname)
+    const [newdesc, setnewdesc] = useState(channeldesc)
+
 
     const deletefunc = () => {
         filenamesinchannel.map(file => {
@@ -57,37 +59,55 @@ const SideBarChannel = ({ id, channelname, createdby, user, categorieid }) => {
     }
 
     const editfunc = () => {
-        if (newname !== channelname && newname.replace(/\s/g, '').length) {
-            db.collection("categories").doc(categorieid).collection("channels").doc(id).update({
-                channelname: newname
-            })
-            dispatch(setChannelInfo({
-                channelName: newname, channelId: id, focus: true, categorieid: categorieid
-            }))
+        if (newname !== channelname || newdesc !== channeldesc) {
+            if (newname.length > 0) {
+                db.collection("categories").doc(categorieid).collection("channels").doc(id).update({
+                    channelname: newname.replace(/\s/g, ''),
+                    description: newdesc.replace(/\s/g, '')
+                })
+                dispatch(setChannelInfo({
+                    channelName: newname, channelId: id, categorieid: categorieid, channelDesc: newdesc
+                }))
+            }
+            else {
+                setnewname(channelname)
+                setnewdesc(channeldesc)
+                dispatch(setsnackbar({
+                    snackbar: {
+                        open: true,
+                        type: "error",
+                        hu: "Azért ehhez meg kéne adni egy nevet is!",
+                        en: "I think you should write a name first!"
+                    }
+                }))
+            }
+
         }
         setdialog(false)
-        setnewname(newname)
     }
-
     useEffect(() => {
         let mounted = false;
-        if (channelname !== channel && !mounted) {
+        dispatch(setsidebarmobile({
+            sidebarmobile: true
+        }))
+
+        if (id !== channelid && !mounted) {
             setdelbutton(false)
         }
         return () => { mounted = true };
 
-    }, [channel, channelname])
+    }, [channelid, id, dispatch])
 
     return (
         <>
-            <div onMouseEnter={() => setdelbutton(true)} onMouseLeave={() => { if (channelname !== channel) { setdelbutton(false) } }}
-                className={channelname === channel ? mutedchannels?.includes(id) ? ("sidebarchannel mutedchannelbg") :
+            <div onMouseEnter={() => setdelbutton(true)} onMouseLeave={() => { if (id !== channelid) { setdelbutton(false) } }}
+                className={id === channelid ? mutedchannels?.includes(id) ? ("sidebarchannel mutedchannelbg") :
                     ("sidebarchannel activechannel") : ("sidebarchannel notactivechannel")} onClick={() => {
                         setdelbutton(true); dispatch(setChannelInfo({
-                            channelId: id, channelName: channelname, categorieid: categorieid
+                            channelId: id, channelName: channelname, categorieid: categorieid, channelDesc: channeldesc
                         }))
                     }}>
-                <h4 className={mutedchannels?.includes(id) && "mutedchannel"}><span>#</span>{channelname}</h4>
+                <h4 className={mutedchannels?.includes(id) ? "mutedchannel" : ("")}><span>#</span>{channelname}</h4>
                 {delbutton && createdby === user.uid ? (
                     <IconButton onClick={() => setdialog(true)} className="delicon" style={{ color: "gray" }}>
                         <EditIcon />
@@ -110,6 +130,13 @@ const SideBarChannel = ({ id, channelname, createdby, user, categorieid }) => {
                             label={language === "hu" ? ("Név") : ("Name")}
                             variant="outlined"
                             value={newname} onChange={(e) => setnewname(e.target.value)}
+                        />
+                        <br />
+                        <TextField
+                            style={{ marginTop: "30px" }}
+                            label={language === "hu" ? ("Leírás") : ("Description")}
+                            variant="outlined"
+                            value={newdesc} onChange={(e) => setnewdesc(e.target.value)}
                         />
                     </form>
                     <br />

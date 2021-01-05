@@ -1,5 +1,5 @@
 import React from 'react'
-import { selectChannelId, selectChannelName, selectlanguage, selectmutedchannels, selectsidebarmobile, setmutedchannels, setsidebarmobile } from "../../lib/AppSlice"
+import { selectChannelDesc, selectChannelId, selectChannelName, selectlanguage, selectmutedchannels, selectsidebarmobile, setmutedchannels, setsidebarmobile } from "../../lib/AppSlice"
 import { useDispatch, useSelector } from 'react-redux'
 
 import NotificationsIcon from '@material-ui/icons/Notifications'
@@ -7,9 +7,8 @@ import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
 import SearchRoundedIcon from '@material-ui/icons/SearchRounded'
 import HelpRoundedIcon from '@material-ui/icons/HelpRounded'
 import CloseIcon from '@material-ui/icons/Close';
-import { Sling as Hamburger } from 'hamburger-react'
 import { Fade } from '@material-ui/core';
-
+import MenuIcon from '@material-ui/icons/Menu';
 
 const ChatHeader = ({ searchtext, setsearchtext }) => {
     const dispatch = useDispatch()
@@ -18,6 +17,8 @@ const ChatHeader = ({ searchtext, setsearchtext }) => {
     const sidebarmobile = useSelector(selectsidebarmobile)
     const channelid = useSelector(selectChannelId)
     const channelname = useSelector(selectChannelName)
+    const channeldesc = useSelector(selectChannelDesc)
+
     const mutedchannels = useSelector(selectmutedchannels)
 
 
@@ -55,7 +56,7 @@ const ChatHeader = ({ searchtext, setsearchtext }) => {
     return (
         <>
             <div className="chatheader__sidebarbtn">
-                <Hamburger rounded size={27} direction="left" toggled={!sidebarmobile} toggle={() => {
+                <MenuIcon fontSize="large" onClick={() => {
                     dispatch(setsidebarmobile({
                         sidebarmobile: !sidebarmobile
                     }))
@@ -67,6 +68,12 @@ const ChatHeader = ({ searchtext, setsearchtext }) => {
                         <span>#</span>
                         {channelname}
                     </h3>
+                    {channelname && (
+                        <>
+                            <hr className="" />
+                            <p className={mutedchannels?.includes(channelid) ? "mutedchannel" : "notmutedchannel"}>{channeldesc}</p>
+                        </>
+                    )}
                 </div>
                 {channelid && (
                     <Fade in={Boolean(channelid)}>

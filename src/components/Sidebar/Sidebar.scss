@@ -1,20 +1,43 @@
 @use '../Theme';
 
 @media (max-width: 768px) {
-    .sidebar__div {
-        transition: width 0.3s;
-    }
-
     .sidebar__mobileopen {
         opacity: 1;
         visibility: visible;
-        width: 100%;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        width: 60%;
     }
 
     .sidebar__mobile {
-        width: 0;
-        visibility: hidden;
+        position: fixed;
+        left: -1000px;
+        top: 0;
     }
+}
+
+.sidebar__mobile__closeicon {
+    color: grey;
+    position: absolute;
+    width: 100%;
+    text-align: right;
+    bottom: 90px;
+    transition: all 0.3s;
+    background-color: #2f3135;
+    &:hover {
+        color: white;
+        cursor: pointer;
+    }
+
+    svg {
+        padding-right: 15px;
+    }
+}
+
+.sidebar__div {
+    flex: 0.25 !important;
+    transition: all 0.5s ease-in-out;
 }
 
 .sidebar {
@@ -30,6 +53,10 @@
 
     .sidebar__menuiconshowed {
         transform: rotate(90deg);
+
+        @media (max-width: 768px) {
+            transform: rotate(180deg);
+        }
     }
 
     .sidebar__top {
@@ -40,10 +67,21 @@
         color: white;
         border-bottom: 3px solid #26282c;
         transition: 0.3s;
-    }
 
-    .sidebar__top:hover {
-        background-color: Theme.$lighter-background-color;
+        @media (max-width: 768px) {
+            flex-direction: column;
+            h3 {
+                font-size: 1rem;
+            }
+
+            svg {
+                padding-top: 20px;
+            }
+        }
+
+        &:hover {
+            background-color: Theme.$lighter-background-color;
+        }
     }
 
     .sidebar__channels {
@@ -64,6 +102,12 @@
                     transform: rotate(-90deg);
                 }
             }
+        }
+
+        .sidebar__channels__loading {
+            display: grid;
+            place-items: center;
+            height: 50%;
         }
 
         .sidebar__channelslist {
@@ -97,6 +141,10 @@
                 display: flex;
                 justify-content: space-between;
 
+                &:hover {
+                    background-color: Theme.$paper-background-color;
+                }
+
                 .delicon {
                     color: gray;
                 }
@@ -117,10 +165,6 @@
                         padding: 0.5rem;
                     }
                 }
-            }
-
-            .sidebarchannel:hover {
-                background-color: Theme.$paper-background-color;
             }
         }
     }
@@ -162,10 +206,10 @@
                 flex: 1;
                 transition: 0.3s;
                 font-weight: bolder;
-            }
 
-            .menu__text:hover {
-                color: white;
+                &:hover {
+                    color: white;
+                }
             }
         }
     }

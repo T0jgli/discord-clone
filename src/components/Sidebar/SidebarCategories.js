@@ -21,6 +21,7 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
     const [promptstate, setpromptstate] = useState(false)
     const [hide, sethide] = useState(hiddencategories ? hiddencategories.includes(categorieid) ? true : false : false)
     const [channelname, setchannelname] = useState("")
+    const [channeldesc, setchanneldesc] = useState("")
 
     useEffect(() => {
         db.collection("categories").doc(categorieid).collection("channels").orderBy("created", "desc").onSnapshot((snapshot) =>
@@ -36,18 +37,18 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
         if (channelname) {
             db.collection("categories").doc(categorieid).collection("channels").add({
                 channelname: channelname.replace(/\s\s+/g, ' '),
+                description: channeldesc,
                 created: firebase.firestore.FieldValue.serverTimestamp(),
                 createdby: user.uid
-            }).then(() => {
-                db.collection("categories").doc(categorieid).collection("channels").get().then
-                    (doc => doc.forEach(doc => {
-                        if (channelname === doc.data().channelname) {
-                            dispatch(setChannelInfo({
-                                channelId: doc.id, channelName: doc.data().channelname, categorieid: categorieid, focus: true
-                            }))
-                        }
-                    }))
+            }).then((e) => {
+                dispatch(setChannelInfo({
+                    channelId: e.id,
+                    channelName: channelname.replace(/\s\s+/g, ' '),
+                    channelDesc: channeldesc,
+                    categorieid: categorieid
+                }))
                 setchannelname("");
+                setchanneldesc("")
                 dispatch(setsnackbar({
                     snackbar: {
                         open: true,
@@ -56,8 +57,8 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
                         en: "Channel created!"
                     }
                 }))
+                setpromptstate(false);
             })
-            setpromptstate(false);
         }
         else {
             dispatch(setsnackbar({
@@ -98,7 +99,7 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
 
             <div className="sidebar__channelslist">
                 {!hide && channels.map(({ id, channel }) => (
-                    <SideBarChannel categorieid={categorieid} user={user} key={id}
+                    <SideBarChannel channeldesc={channel.description} categorieid={categorieid} user={user} key={id}
                         channelname={channel.channelname} createdby={channel.createdby} id={id} />
                 ))}
 
@@ -107,19 +108,22 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
             <Dialog TransitionComponent={Grow} open={promptstate} onClose={() => setpromptstate(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
-                        {language === "hu" ? ("Add meg a csatorna nevét!") : ("Write a channel name!")}
+                        {language === "hu" ? ("Csatorna létrehozása") : ("Create a channel!")}
                     </DialogTitle>
                     <ArrowDropDownIcon />
                     <form style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddchannel(channelname) }}>
                         <TextField variant="filled" autoFocus={mobile ? false : true} value={channelname} fullWidth
                             onChange={(e) => setchannelname(e.target.value)} label="Név" />
+                        <TextField variant="filled" style={{ marginTop: "30px" }} value={channeldesc} fullWidth
+                            onChange={(e) => setchanneldesc(e.target.value)} label="Leírás" />
+
                     </form>
                 </DialogContent>
                 <DialogActions >
                     <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
                         onClick={() => setpromptstate(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>
                     <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={() => handleaddchannel(channelname)}>{language === "hu" ? ("Létrehoz") : ("Create")}</Button>
+                        onClick={() => handleaddchannel()}>{language === "hu" ? ("Létrehoz") : ("Create")}</Button>
                 </DialogActions>
             </Dialog>
         </>

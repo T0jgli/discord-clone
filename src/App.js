@@ -39,6 +39,8 @@ const App = () => {
       else {
         dispatch(logout())
       }
+      setloading(false)
+
     })
     window.document.documentElement.lang = language
   }, [dispatch, language])
@@ -46,7 +48,6 @@ const App = () => {
 
   useEffect(() => {
     if (user) {
-      setloading(false)
       const docref = db.collection("users").doc(user.uid)
       docref.get().then(doc => {
         if (doc.exists) {
@@ -63,27 +64,22 @@ const App = () => {
         }
       })
     }
-    else {
-      setTimeout(() => {
-        setloading(false)
-      }, 1500);
-    }
+
   }, [user])
 
   return (
     <ThemeProvider theme={Theme}>
       <div className="app">
-        {user ? (
+        {!loading ? user ? (
           <>
             <Sidebar />
             <Chat />
           </>
-        ) : loading ? (<Loading />) : (
-          <ThemeProvider theme={Theme}>
+        ) : (
             <Login />
-          </ThemeProvider>
-        )}
-
+          ) : (
+            <Loading />
+          )}
         <Snackbars />
       </div>
     </ThemeProvider>

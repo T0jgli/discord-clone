@@ -18,22 +18,19 @@
             margin-left: 10px;
             margin-right: 10px;
             transition: 0.3s;
-        }
-        img:hover {
-            cursor: default;
-            -moz-transform: scale(1.04, 1.04);
-            -webkit-transform: scale(1.04, 1.04);
-            transform: scale(1.04, 1.04);
+
+            &:hover {
+                transform: scale(1.08, 1.08);
+                cursor: pointer;
+            }
         }
         .login__language__languageactive {
             opacity: 0.5;
             transition: 0.3s;
-        }
-        .login__language__languageactive:hover {
-            -moz-transform: scale(1.08, 1.08);
-            -webkit-transform: scale(1.08, 1.08);
-            transform: scale(1.08, 1.08);
-            cursor: pointer;
+
+            &:hover {
+                cursor: default;
+            }
         }
     }
 
@@ -54,6 +51,12 @@
                 img {
                     width: 75%;
                     object-fit: contain;
+                    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+                    transition: all 0.3s;
+                    &:hover {
+                        opacity: 0.85;
+                        transition: all 0.3s;
+                    }
                 }
             }
         }
@@ -68,10 +71,11 @@
         padding: 10px;
         padding-left: 20px;
         padding-right: 20px;
-    }
-    button:hover {
-        background-color: white;
-        color: Theme.$discord-color;
+
+        &:hover {
+            background-color: white;
+            color: Theme.$discord-color;
+        }
     }
 }
 
@@ -86,12 +90,10 @@
         transition: 0.3s;
         margin-top: 10px;
         margin-bottom: 10px;
-    }
-    img:hover {
-        cursor: pointer;
-        -moz-transform: scale(1.04, 1.04);
-        -webkit-transform: scale(1.04, 1.04);
-        transform: scale(1.04, 1.04);
-        font-size: larger;
+
+        &:hover {
+            cursor: pointer;
+            transform: scale(1.04, 1.04);
+        }
     }
 }

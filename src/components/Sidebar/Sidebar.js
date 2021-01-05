@@ -6,7 +6,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {
     Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Switch,
-    FormControlLabel, Paper, Tabs, Tab, IconButton, Tooltip, Grow
+    FormControlLabel, Paper, Tabs, Tab, IconButton, Tooltip, Grow, CircularProgress
 } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -158,7 +158,7 @@ const Sidebar = () => {
     }
     return (
         <>
-            <div className={mobile ? sidebarmobile ? ("sidebar__mobile sidebar__div") : ("sidebar__mobileopen sidebar__div") : ("")} style={{ flex: mobile ? ("0") : ("0.25") }}>
+            <div className={mobile ? sidebarmobile ? ("sidebar__mobile sidebar__div") : ("sidebar__mobileopen sidebar__div") : ("sidebar__div")}>
                 <div className={"sidebar"}>
                     <div className="sidebar__top" onClick={(e) => {
                         if (Boolean(menu))
@@ -171,16 +171,12 @@ const Sidebar = () => {
                             anchorEl={menu}
                             className="sidebar__menu"
                             open={Boolean(menu)}
+                            transitionDuration={300}
                             onClose={() => {
                                 setmenu(null);
                             }}
                         >
                             <MenuItem className="menu__itemflex" onClick={() => {
-                                if (mobile && !sidebarmobile) {
-                                    dispatch(setsidebarmobile({
-                                        sidebarmobile: true
-                                    }))
-                                }
                                 setcategoriemenu(true)
                             }}>
                                 <div className="menu__text">
@@ -189,11 +185,6 @@ const Sidebar = () => {
                                 <FolderIcon />
                             </MenuItem>
                             <MenuItem className="menu__itemflex" onClick={() => {
-                                if (mobile && !sidebarmobile) {
-                                    dispatch(setsidebarmobile({
-                                        sidebarmobile: true
-                                    }))
-                                }
                                 setusersmenu(true)
                             }}>
                                 <div className="menu__text">
@@ -222,24 +213,20 @@ const Sidebar = () => {
 
                         </Menu>
                     </div>
-                    <div onClick={() => {
-                        if (mobile && !sidebarmobile) {
-                            dispatch(setsidebarmobile({
-                                sidebarmobile: true
-                            }))
-                        }
-                    }} className="sidebar__channels">
+                    <div className="sidebar__channels">
                         <Scrollbars autoHide autoHideDuration={2000} renderThumbVertical={props => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
-                            {categories.map(categorie => {
-                                if (categorie) {
-                                    return (
-                                        <SidebarCategories mobile={mobile} categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
-                                            setcategoriename={setcategoriename} categoriemenu={categoriemenu}
-                                            setcategoriemenu={setcategoriemenu} user={user} />
-                                    )
-                                }
-                                else return null
-                            })}
+                            {categories.length > 0 ? categories.map(categorie => {
+                                return (
+                                    <SidebarCategories mobile={mobile} categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
+                                        setcategoriename={setcategoriename} categoriemenu={categoriemenu}
+                                        setcategoriemenu={setcategoriemenu} user={user} />
+                                )
+                            }) : (
+                                    <div className="sidebar__channels__loading">
+                                        <CircularProgress size={50} />
+                                    </div>
+                                )}
+
                         </Scrollbars>
                     </div>
                     <div className="sidebar__profile">
@@ -253,6 +240,17 @@ const Sidebar = () => {
                         </div>
                     </div>
                 </div>
+
+                {mobile && (
+                    <div className="sidebar__mobile__closeicon">
+                        <CloseIcon fontSize="large" onClick={() => {
+                            dispatch(setsidebarmobile({
+                                sidebarmobile: !sidebarmobile
+                            }))
+                        }} />
+                    </div>
+                )}
+
             </div>
 
             <Dialog TransitionComponent={Grow} open={categoriemenu} onClose={() => setcategoriemenu(false)}>
@@ -276,7 +274,7 @@ const Sidebar = () => {
                 >
                     <TabPanel value={tab} index={0}>
                         <DialogTitle style={{ margin: "5px" }}>
-                            {language === "hu" ? ("Add meg a kategória nevét!") : ("Write a channel categorie name!")}
+                            {language === "hu" ? ("Kategória létrehozása") : ("Create a channel categorie")}
                         </DialogTitle>
                         <ArrowDropDownIcon />
                         <form style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie(categoriename) }}>

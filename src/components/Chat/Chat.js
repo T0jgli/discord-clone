@@ -13,7 +13,7 @@ import ImageIcon from '@material-ui/icons/Image';
 
 import { selectUser } from '../../lib/userSlice'
 import {
-    selectChannelId, selectChannelName, selectfocus, selectlanguage, setfilenamesinchannel, selectcategorieid,
+    selectChannelId, selectChannelName, selectlanguage, setfilenamesinchannel, selectcategorieid,
     selectsidebarmobile, setsidebarmobile, setsnackbar
 } from '../../lib/AppSlice'
 import { useSelector, useDispatch } from 'react-redux'
@@ -40,7 +40,6 @@ const Chat = () => {
     const dispatch = useDispatch()
     const hiddenFileInput = useRef(null);
     const chatmessage = useRef(null)
-    const endchat = useRef(null)
 
     const user = useSelector(selectUser)
     const language = useSelector(selectlanguage)
@@ -48,7 +47,6 @@ const Chat = () => {
     const channelid = useSelector(selectChannelId)
     const categorieid = useSelector(selectcategorieid)
     const channelname = useSelector(selectChannelName)
-    const focus = useSelector(selectfocus)
 
     const classes = useStyles();
 
@@ -75,21 +73,16 @@ const Chat = () => {
                 .orderBy('timestamp', 'desc')
                 .onSnapshot(snapshot =>
                     setmessages(snapshot.docs.map(doc => doc.data())))
-            if (focus) {
+            if (window.innerWidth > 768) {
                 chatmessage.current.focus()
             }
         }
-    }, [channelid, categorieid, focus])
-    useEffect(() => {
-        if (channelname) {
-            if (focus) {
-                chatmessage.current.focus()
-            }
-        }
-    }, [channelname, focus])
+
+
+    }, [channelid, categorieid])
 
     useEffect(() => {
-        if (messages) {
+        if (messages.length > 0) {
             let tempfiles = []
             let tempimages = []
             messages.map(message => {
@@ -104,6 +97,7 @@ const Chat = () => {
 
             dispatch(setfilenamesinchannel({ filenamesinchannel: tempfiles, imagenamesinchannel: tempimages }))
         }
+        else dispatch(setfilenamesinchannel({ filenamesinchannel: [], imagenamesinchannel: [] }))
 
     }, [messages, dispatch])
 
@@ -229,7 +223,7 @@ const Chat = () => {
                             })}
                         </FlipMove>
                     </div>
-                    <div ref={endchat} style={{ overflowX: "hidden" }}></div>
+                    <div style={{ overflowX: "hidden" }}></div>
                 </Scrollbars>
                 {image && (
                     <Grow in={Boolean(image)}>
@@ -280,7 +274,7 @@ const Chat = () => {
                                 fontSize="large" onClick={() => hiddenFileInput.current.click()} />
                         </Tooltip>
                         <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage() } }}>
-                            <input value={input} ref={chatmessage}
+                            <input value={input} autoFocus ref={chatmessage}
                                 onPaste={(e) => {
                                     if (e.clipboardData.files[0])
                                         if (e.clipboardData.files[0].size < 52428800) {

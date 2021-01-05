@@ -3,7 +3,7 @@ import React, { forwardRef, useState } from 'react'
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grow, IconButton, Tooltip } from '@material-ui/core'
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Tooltip } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { selectcategorieid, selectChannelId, selectlanguage, setsnackbar } from '../../lib/AppSlice'
@@ -194,7 +194,8 @@ const Message = forwardRef(({ timestamp, user,
                         onClick={() => setlightbox({ toggler: true, url: imageurl, user: user.displayname, timestamp: timestamp })} src={imageurl} />)}
                     {fileurl && (
                         <>
-                            <a href={fileurl} target={filename.split(".").slice(-1)[0] === "pdf" ? ("_blank") : undefined} download>
+                            <a href={fileurl} rel="noreferrer"
+                                target={filename.split(".").slice(-1)[0] === "pdf" ? ("_blank") : undefined} download>
                                 <Button variant="contained">
                                     {filename.split(".").slice(-1)[0] === "pdf" ? (
                                         <DescriptionIcon fontSize="small" style={{ marginRight: "5px" }} />
