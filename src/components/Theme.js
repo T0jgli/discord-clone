@@ -65,6 +65,13 @@ const Theme = createMuiTheme({
                 borderRadius: "0.5rem",
             }
         },
+        MuiPopover: {
+            paper: {
+                backgroundColor: "rgba(32, 32, 32, 1) !important",
+                color: "rgb(212, 212, 212) !important",
+                borderRadius: "0.5rem",
+            }
+        },
         MuiSnackbarContent: {
             root: {
                 borderRadius: "0.6rem",

@@ -194,6 +194,7 @@ const Chat = () => {
                                         return (
                                             <Message setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
                                                 id={message.id}
+                                                edited={message.edited}
                                                 imageurl={message.imageurl} key={message.id} message={message.message}
                                                 timestamp={message.timestamp} user={message.user} imagename={message.imagename}
                                                 searched
@@ -216,6 +217,7 @@ const Chat = () => {
                                     return (
                                         <Message setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
                                             id={message.id}
+                                            edited={message.edited}
                                             imageurl={message.imageurl} key={message.id} message={message.message}
                                             timestamp={message.timestamp} user={message.user} imagename={message.imagename}
                                         />

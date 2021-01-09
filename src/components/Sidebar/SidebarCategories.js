@@ -105,7 +105,14 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
 
             </div>
 
-            <Dialog TransitionComponent={Grow} open={promptstate} onClose={() => setpromptstate(false)}>
+            <Dialog onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                    handleaddchannel()
+                }
+                if (e.key === "Escape" || e.key === "Backspace") {
+                    setpromptstate(false)
+                }
+            }} TransitionComponent={Grow} open={promptstate} onClose={() => setpromptstate(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
                         {language === "hu" ? ("Csatorna létrehozása") : ("Create a channel!")}
@@ -113,9 +120,9 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
                     <ArrowDropDownIcon />
                     <form style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddchannel(channelname) }}>
                         <TextField variant="filled" autoFocus={mobile ? false : true} value={channelname} fullWidth
-                            onChange={(e) => setchannelname(e.target.value)} label="Név" />
+                            onChange={(e) => setchannelname(e.target.value)} label={language === "hu" ? ("Név") : ("Name")} />
                         <TextField variant="filled" style={{ marginTop: "30px" }} value={channeldesc} fullWidth
-                            onChange={(e) => setchanneldesc(e.target.value)} label="Leírás" />
+                            onChange={(e) => setchanneldesc(e.target.value)} label={language === "hu" ? ("Leírás") : ("Description")} />
 
                     </form>
                 </DialogContent>

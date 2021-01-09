@@ -63,7 +63,7 @@ const SideBarChannel = ({ id, channelname, channeldesc, createdby, user, categor
             if (newname.length > 0) {
                 db.collection("categories").doc(categorieid).collection("channels").doc(id).update({
                     channelname: newname.replace(/\s/g, ''),
-                    description: newdesc.replace(/\s/g, '')
+                    description: newdesc
                 })
                 dispatch(setChannelInfo({
                     channelName: newname, channelId: id, categorieid: categorieid, channelDesc: newdesc

@@ -279,7 +279,7 @@ const Sidebar = () => {
                         <ArrowDropDownIcon />
                         <form style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie(categoriename) }}>
                             <TextField variant="filled" autoFocus={mobile ? false : true} value={categoriename} fullWidth
-                                onChange={(e) => setcategoriename(e.target.value)} label="Név" />
+                                onChange={(e) => setcategoriename(e.target.value)} label={language === "hu" ? ("Név") : ("Name")} />
                             <FormControlLabel style={{ marginTop: "15px", fontWeight: "bold" }} control={
                                 <Switch color="primary"
                                     checked={categorieprivate} onChange={() => setcategorieprivate(!categorieprivate)} />

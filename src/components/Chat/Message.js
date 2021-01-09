@@ -3,15 +3,18 @@ import React, { forwardRef, useState } from 'react'
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Tooltip } from '@material-ui/core'
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Popover, Tooltip } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { selectcategorieid, selectChannelId, selectlanguage, setsnackbar } from '../../lib/AppSlice'
 import db, { storage } from '../../lib/firebase'
 import { useDispatch, useSelector } from 'react-redux'
-
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import EditIcon from '@material-ui/icons/Edit';
 import Userdialog from '../Dialogs/Userdialog';
 import { selectUser } from '../../lib/userSlice';
+import DoneIcon from '@material-ui/icons/Done';
+import firebase from "firebase/app"
 
 function getdays (messagetime) {
     let today = new Date()
@@ -82,7 +85,7 @@ function messagetimefunc (t) {
 }
 
 const Message = forwardRef(({ timestamp, user,
-    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched }, ref) => {
+    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched, edited }, ref) => {
     const dispatch = useDispatch()
 
     const userloggedin = useSelector(selectUser)
@@ -92,6 +95,10 @@ const Message = forwardRef(({ timestamp, user,
 
     const [dialog, setdialog] = useState(false)
     const [runned, setrunned] = useState(false)
+    const [editpopper, seteditpopper] = useState(null)
+    const [edit, setedit] = useState(false)
+    const [newmessage, setnewmessage] = useState(message)
+
     const [deleteprompt, setdeleteprompt] = useState(false)
     const [lastlogin, setlastlogin] = useState(null)
     const [counter, setcounter] = useState(0)
@@ -159,6 +166,26 @@ const Message = forwardRef(({ timestamp, user,
             }
         }))
     }
+
+    const editfunc = () => {
+        if (newmessage !== message) {
+            if (newmessage.length > 0)
+                db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc(id).update({
+                    message: newmessage,
+                    edited: firebase.firestore.FieldValue.serverTimestamp()
+                })
+            else {
+                if (fileurl || imageurl) {
+                    db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc(id).update({
+                        message: newmessage,
+                        edited: firebase.firestore.FieldValue.serverTimestamp()
+                    })
+                }
+                else setnewmessage(message)
+            }
+        }
+        setedit(false)
+    }
     return (
         <>
             <div ref={ref} className={searched ? ("message searched") : ("message")}>
@@ -175,20 +202,47 @@ const Message = forwardRef(({ timestamp, user,
                                         language === "hu" ? ("Tegnap " + messagetime?.getHours() + ":" + messagetimefunc(messagetime)) :
                                             ("Yesterday " + messagetime?.getHours() + ":" + messagetimefunc(messagetime)) :
                                         (messagetime?.toLocaleString('hu-HU'))}
-                            </span>)}
-                    </h4>
+                            </span>)
+                        }
+                        {edited && (
+                            <Tooltip placement="right" arrow title={
+                                <h3 style={{ fontWeight: "400" }}>
+                                    {new Date(edited?.toDate()).toLocaleString(undefined, {
+                                        month: "short", day: "numeric",
+                                        hour: "numeric", minute: "numeric"
+                                    })}
+                                </h3>
+                            }>
+                                <span className="edited">
+                                    (szerkesztve)
+                                </span>
+                            </Tooltip>
 
-                    <p>
-                        {geturl(message) ?
-                            (
-                                <>
-                                    {geturl(message)[1]}
-                                    <a rel="noopener noreferrer" href={geturl(message)[0]} className="message__url" target="_blank" >{geturl(message)[0]}</a>
-                                    {geturl(message)[2]}
-                                </>
-                            ) :
-                            (message)}
-                    </p>
+                        )}
+                    </h4>
+                    {!edit ? (
+                        <p>
+                            {geturl(message) ?
+                                (
+                                    <>
+                                        {geturl(message)[1]}
+                                        <a rel="noopener noreferrer" href={geturl(message)[0]} className="message__url" target="_blank" >{geturl(message)[0]}</a>
+                                        {geturl(message)[2]}
+                                    </>
+                                ) :
+                                (message)}
+                        </p>
+                    ) : (
+                            <form className="message__edit" onSubmit={editfunc}>
+                                <input value={newmessage} onChange={(e) => {
+                                    setnewmessage(e.target.value)
+                                }} />
+                                <IconButton type="submit" size="small" >
+                                    <DoneIcon />
+                                </IconButton>
+                            </form>
+                        )}
+
 
                     {imageurl && (<img alt="messageImage"
                         onClick={() => setlightbox({ toggler: true, url: imageurl, user: user.displayname, timestamp: timestamp })} src={imageurl} />)}
@@ -196,7 +250,7 @@ const Message = forwardRef(({ timestamp, user,
                         <>
                             <a href={fileurl} rel="noreferrer"
                                 target={filename.split(".").slice(-1)[0] === "pdf" ? ("_blank") : undefined} download>
-                                <Button variant="contained">
+                                <Button className="message__button" variant="contained">
                                     {filename.split(".").slice(-1)[0] === "pdf" ? (
                                         <DescriptionIcon fontSize="small" style={{ marginRight: "5px" }} />
                                     ) : (
@@ -207,7 +261,7 @@ const Message = forwardRef(({ timestamp, user,
                                     }
                                 </Button>
                             </a>
-                            <Tooltip title={language === "hu" ? ("Fájl URL másolása") : ("Copy file URL")} placement="right">
+                            <Tooltip className="message__button" title={language === "hu" ? ("Fájl URL másolása") : ("Copy file URL")} placement="right">
                                 <IconButton style={{ background: "transparent" }} color="default" onClick={copy}>
                                     <FileCopyIcon />
                                 </IconButton>
@@ -216,15 +270,36 @@ const Message = forwardRef(({ timestamp, user,
                 </div>
                 {user.uid === userloggedin.uid && (
                     <div className="message__delicon">
-                        <Tooltip title={language === "hu" ? ("Üzenet törlése") : ("Delete message")} placement="left">
-                            <IconButton onClick={() => setdeleteprompt(true)} >
-                                <DeleteIcon style={{ color: "grey" }} />
-                            </IconButton>
-                        </Tooltip>
+                        <IconButton onClick={(e) => { seteditpopper(e.currentTarget) }} >
+                            <MoreVertIcon style={{ color: "grey" }} />
+                        </IconButton>
                     </div>
                 )}
 
             </div>
+            <Popover anchorOrigin={{
+                vertical: 'center',
+                horizontal: 'left',
+            }}
+                transformOrigin={{
+                    vertical: 'center',
+                    horizontal: 'right',
+                }}
+                onClose={() => seteditpopper(null)}
+                open={Boolean(editpopper)} anchorEl={editpopper} disablePortal>
+                <Paper style={{ background: "transparent" }} className="message__editmenu">
+                    <Tooltip title={language === "hu" ? ("Üzenet szerkeszrése") : ("Edit message")} placement="bottom">
+                        <IconButton onClick={() => { setedit(!edit); seteditpopper(null) }} >
+                            <EditIcon style={{ color: "grey" }} />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title={language === "hu" ? ("Üzenet törlése") : ("Delete message")} placement="bottom">
+                        <IconButton onClick={() => setdeleteprompt(true)} >
+                            <DeleteIcon style={{ color: "grey" }} />
+                        </IconButton>
+                    </Tooltip>
+                </Paper>
+            </Popover >
 
             <Dialog onKeyDown={(e) => {
                 if (e.key === 'Enter') {
