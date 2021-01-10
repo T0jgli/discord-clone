@@ -1,13 +1,6 @@
 # Discord clone by me
 
-### Features
-- Google authentication
-- Image & file upload
-- Category create
-- Channel modify & delete
-- User information panel
-- Real time sync
-- Firebase backend
+### [Live](https://dc.kvlk.hu/)
 
 
 ### Thanks to
