@@ -51,14 +51,14 @@ const Login = () => {
         <>
             <div className="login">
                 <div className="login__logo">
-                    <img src="/dclogo.png" alt="" />
+                    <img src="/img/dclogo.png" alt="" />
 
                     <div className="loginlogo__gifdiv">
                         <Giphy tag="fun dog" />
                     </div>
                 </div>
                 <div className="login__language">
-                    <img src="/hu.svg"
+                    <img src="/img/hu.svg"
                         className={language === "hu" ? ("login__language__languageactive") : ("")}
                         onClick={() => {
                             if (language === "en") {
@@ -69,7 +69,7 @@ const Login = () => {
                                 }))
                             }
                         }} alt="huimage" />
-                    <img src="/uk.svg"
+                    <img src="/img/uk.svg"
                         className={language !== "hu" ? ("login__language__languageactive") : ("")}
                         onClick={() => {
                             if (language === "hu") {
@@ -109,7 +109,7 @@ const Login = () => {
                 </DialogContent>
                 <div className={"login__googlelogindiv"}>
                     <Tooltip arrow title={language === "hu" ? ("Bejelentkezés Google-vel") : ("Sign in with Google")}>
-                        <img alt="googleicon" onClick={signinwithgoogle} src="/googleicon.png" />
+                        <img alt="googleicon" onClick={signinwithgoogle} src="/img/googleicon.png" />
                     </Tooltip>
                 </div>
 

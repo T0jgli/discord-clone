@@ -37,11 +37,9 @@ function Userdialog ({ dialog, setdialog, user, counter, avatar, lastlogin }) {
                     <br />
                     {!avatar && (language === "hu" ? (<span>Összes üzenete a csatornán: <span>{counter}</span></span>) :
                         (<span>All messages on the channel: <span>{counter}</span></span>))}
-                    <br />
-                    {!avatar &&
-                        (<span style={{ marginTop: "15px", fontWeight: "bolder", display: "inline-block" }}>{language === "hu" ? ("Utoljára bejelentkezve: ") : ("Last login: ")}
-                            <TimeAgo datetime={lastlogin} locale={language === "hu" ? ("hu") : ("en")} /></span>)
-                    }
+                    {!avatar && (<br />)}
+                    <span style={{ marginTop: "15px", fontWeight: "bolder", display: "inline-block" }}>{language === "hu" ? ("Utoljára bejelentkezve: ") : ("Last login: ")}
+                        <TimeAgo datetime={lastlogin} locale={language === "hu" ? ("hu") : ("en")} /></span>
                 </DialogContentText>
                 {avatar && (<DialogContentText style={{ color: "gray", fontStyle: "italic" }}>
                     Uid: #{user.uid.substring(0, 5)}

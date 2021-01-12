@@ -230,7 +230,7 @@ const Sidebar = () => {
                         </Scrollbars>
                     </div>
                     <div className="sidebar__profile">
-                        <Avatar src={user.photo} onClick={() => setdialog(true)} />
+                        <Avatar src={user.photo} onClick={() => setdialog(true)} alt="Avatar picture" />
                         <div className="sidebar__profileinfo">
                             <h3 style={{ cursor: "pointer" }} onClick={() => setdialog(true)}>{user.displayname}</h3>
                             <p>#{user.uid.substring(0, 5)}</p>

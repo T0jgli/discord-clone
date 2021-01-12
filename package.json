@@ -7,10 +7,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@reduxjs/toolkit": "^1.5.0",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "emoji-mart": "^3.0.0",
     "firebase": "^7.24.0",
     "react": "^17.0.1",
@@ -23,9 +20,21 @@
     "react-redux": "^7.2.2",
     "react-scripts": "4.0.1",
     "react-swipeable-views": "^0.13.9",
-    "sass": "^1.32.0",
+    "sass": "^1.32.2",
     "timeago-react": "^3.0.1",
-    "timeago.js": "^4.0.2"
+    "timeago.js": "^4.0.2",
+    "web-vitals": "^1.0.1",
+    "workbox-background-sync": "^6.0.2",
+    "workbox-broadcast-update": "^6.0.2",
+    "workbox-cacheable-response": "^6.0.2",
+    "workbox-core": "^6.0.2",
+    "workbox-expiration": "^6.0.2",
+    "workbox-navigation-preload": "^6.0.2",
+    "workbox-precaching": "^6.0.2",
+    "workbox-range-requests": "^6.0.2",
+    "workbox-routing": "^6.0.2",
+    "workbox-strategies": "^6.0.2",
+    "workbox-streams": "^6.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -34,7 +43,10 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [

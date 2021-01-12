@@ -189,7 +189,7 @@ const Message = forwardRef(({ timestamp, user,
     return (
         <>
             <div ref={ref} className={searched ? ("message searched") : ("message")}>
-                <Avatar onClick={() => { countfunc() }} src={user.photo} />
+                <Avatar onClick={() => { countfunc() }} src={user.photo} alt="Avatar picture " />
                 <div className="message__info">
                     <h4>
                         <span onClick={() => { countfunc() }} className="name">{user.displayname}</span>
