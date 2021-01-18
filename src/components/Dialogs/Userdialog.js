@@ -16,10 +16,12 @@ function Userdialog ({ dialog, setdialog, user, counter, avatar, lastlogin }) {
 
     useEffect(() => {
         timeago.register('hu', hu);
-        db.collection("users").doc(user.uid).get().then(u => {
-            setusername(u.data().displayname)
-        })
-    }, [user.uid])
+        if (user)
+            db.collection("users").doc(user.uid).get().then(u => {
+                if (u.exists)
+                    setusername(u.data().displayname)
+            })
+    }, [user])
     return (
         <Dialog TransitionComponent={Grow} open={dialog} onClose={() => setdialog(false)}>
             <DialogContent>
@@ -27,7 +29,7 @@ function Userdialog ({ dialog, setdialog, user, counter, avatar, lastlogin }) {
                 <DialogTitle>
                     <span style={{ fontWeight: "bold" }}>{user.displayname}</span>
                     <br />
-                    {username !== user.displayname && (
+                    {username && username !== user.displayname && (
                         <span>({username})</span>
                     )}
                 </DialogTitle>

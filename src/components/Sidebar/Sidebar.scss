@@ -193,6 +193,27 @@
     }
 }
 
+.userdialog__div {
+    display: flex;
+    align-items: center;
+    margin: 15px auto;
+
+    .userdialog__text {
+        flex: 1;
+    }
+
+    .userdialog__avatar {
+        border-right: 1px solid #ffffff;
+        margin-right: 15px;
+        padding-right: 15px;
+
+        img,
+        .MuiAvatar-root > svg {
+            cursor: default;
+        }
+    }
+}
+
 //MUIMENU
 
 .MuiMenu-paper {

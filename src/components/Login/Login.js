@@ -2,16 +2,17 @@ import React, { useState } from 'react'
 import { selectlanguage, setlanguage, setsnackbar } from "../../lib/AppSlice"
 import { useDispatch, useSelector } from 'react-redux'
 
-import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip } from '@material-ui/core'
+import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip, CircularProgress } from '@material-ui/core'
 
 import Snackbar from '@material-ui/core/Snackbar';
-import Giphy from "react-hooks-giphy";
 
 import { auth, googleprovider } from "../../lib/firebase"
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import useNewGif from './useNewGif';
 
 const Login = () => {
     const dispatch = useDispatch()
+    const gif = useNewGif("funny dog")
     const language = useSelector(selectlanguage)
     const [langtoast, setlangtoast] = useState(false)
     const [open, setopen] = useState(false)
@@ -54,7 +55,13 @@ const Login = () => {
                     <img src="/img/dclogo.png" alt="" />
 
                     <div className="loginlogo__gifdiv">
-                        <Giphy tag="fun dog" />
+                        <div className="gif">
+                            {gif ? (
+                                <img src={gif?.data.images.downsized.url} alt="Gif" />
+                            ) : (
+                                    <CircularProgress />
+                                )}
+                        </div>
                     </div>
                 </div>
                 <div className="login__language">

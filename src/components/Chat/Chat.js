@@ -36,15 +36,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+const today = new Date().toLocaleString("hu-HU").replace(/\s/g, '').split('.').join("").split(':').join("")
+
 const Chat = () => {
     const dispatch = useDispatch()
     const hiddenFileInput = useRef(null);
-    const chatmessage = useRef(null)
+    const chatMessageInput = useRef(null)
 
     const user = useSelector(selectUser)
     const language = useSelector(selectlanguage)
     const sidebarmobile = useSelector(selectsidebarmobile)
-    const channelid = useSelector(selectChannelId)
+    const channelId = useSelector(selectChannelId)
     const categorieid = useSelector(selectcategorieid)
     const channelname = useSelector(selectChannelName)
 
@@ -63,23 +65,22 @@ const Chat = () => {
         toggler: false, url: null, user: null, timestamp: null
     })
 
-    const todaysdate = new Date().toLocaleString("hu-HU").replace(/\s/g, '').split('.').join("").split(':').join("")
 
     useEffect(() => {
-        if (channelid) {
+        if (channelId) {
             db.collection("categories").doc(categorieid).collection("channels")
-                .doc(channelid)
+                .doc(channelId)
                 .collection("messages")
                 .orderBy('timestamp', 'desc')
                 .onSnapshot(snapshot =>
                     setmessages(snapshot.docs.map(doc => doc.data())))
             if (window.innerWidth > 768) {
-                chatmessage.current.focus()
+                chatMessageInput.current.focus()
             }
         }
 
 
-    }, [channelid, categorieid])
+    }, [channelId, categorieid])
 
     useEffect(() => {
         if (messages.length > 0) {
@@ -105,18 +106,18 @@ const Chat = () => {
         if (image) {
             if (image.type.includes("image")) {
                 setloading(true)
-                const uploadtask = storage.ref(`images/${image.name.replace(".", "__" + todaysdate + ".")}`).put(image);
+                const uploadtask = storage.ref(`images/${image.name.replace(".", "__" + today + ".")}`).put(image);
                 uploadtask.on("state_changed", snapshot => {
                     setuploadvalue((snapshot.bytesTransferred / image.size) * 100)
                 }, error => console.log(error), () => {
-                    storage.ref("images").child(image.name.replace(".", "__" + todaysdate + ".")).getDownloadURL().then(url => {
-                        let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc()
+                    storage.ref("images").child(image.name.replace(".", "__" + today + ".")).getDownloadURL().then(url => {
+                        let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelId).collection("messages").doc()
                         ref.set({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
                             user: user,
                             imageurl: url,
-                            imagename: image.name.replace(".", "__" + todaysdate + "."),
+                            imagename: image.name.replace(".", "__" + today + "."),
                             id: ref.id
                         })
                     }).then(() => setloading(false))
@@ -124,19 +125,19 @@ const Chat = () => {
             }
             else {
                 setloading(true)
-                const uploadtask = storage.ref(`files/${image.name.replace(".", "__" + todaysdate + ".")}`).put(image)
+                const uploadtask = storage.ref(`files/${image.name.replace(".", "__" + today + ".")}`).put(image)
 
                 uploadtask.on("state_changed", snapshot => {
                     setuploadvalue((snapshot.bytesTransferred / image.size) * 100)
                 }, error => console.log(error), () => {
-                    storage.ref("files").child(image.name.replace(".", "__" + todaysdate + ".")).getDownloadURL().then(url => {
-                        let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc()
+                    storage.ref("files").child(image.name.replace(".", "__" + today + ".")).getDownloadURL().then(url => {
+                        let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelId).collection("messages").doc()
                         ref.set({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
                             user: user,
                             fileurl: url,
-                            filename: image.name.replace(".", "__" + todaysdate + "."),
+                            filename: image.name.replace(".", "__" + today + "."),
                             id: ref.id
                         })
                     }).then(() => setloading(false))
@@ -145,7 +146,7 @@ const Chat = () => {
 
         }
         else {
-            let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc()
+            let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelId).collection("messages").doc()
             ref.set({
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 message: input,
@@ -259,7 +260,7 @@ const Chat = () => {
                     onDragOver={(file) => setfiledroptext(language === "en" ? ("Drop the file here to upload!") : ("Húzza ide a fájlt a feltöltéshez!"))}
                     onDragLeave={() => setfiledroptext(null)}
                     onDrop={(file) => {
-                        if (channelid) {
+                        if (channelId) {
                             setimage(file[0])
                             setfiledroptext(null)
                         }
@@ -267,16 +268,16 @@ const Chat = () => {
                 >
                     <div className="chat__input">
                         <Tooltip title={language === "hu" ? image ? ("Fájl lecserélése") : ("Fájl hozzáadása") : image ? ("Replace file") : ("Add file")}
-                            disableHoverListener={!channelid}
-                            disableFocusListener={!channelid}
-                            disableTouchListener={!channelid}
+                            disableHoverListener={!channelId}
+                            disableFocusListener={!channelId}
+                            disableTouchListener={!channelId}
                             placement="top"
                         >
-                            <AddCircleIcon className={channelid ? ("chat__inputfilebutton") : ("chat__disabledsendbtn")}
+                            <AddCircleIcon className={channelId ? ("chat__inputfilebutton") : ("chat__disabledsendbtn")}
                                 fontSize="large" onClick={() => hiddenFileInput.current.click()} />
                         </Tooltip>
                         <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage() } }}>
-                            <input value={input} autoFocus ref={chatmessage}
+                            <input value={input} autoFocus ref={chatMessageInput}
                                 onPaste={(e) => {
                                     if (e.clipboardData.files[0])
                                         if (e.clipboardData.files[0].size < 52428800) {
@@ -293,11 +294,11 @@ const Chat = () => {
                                                 }
                                             }))
                                 }}
-                                placeholder={filedroptext ? (filedroptext) : image ? (image.name) : channelid ?
+                                placeholder={filedroptext ? (filedroptext) : image ? (image.name) : channelId ?
                                     language === "hu" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
                                     language === "hu" ? ("Válassz csatornát") : ("Select a channel")}
-                                disabled={!channelid} onChange={(e) => setinput(e.target.value)} />
-                            <input disabled={!channelid} type="file"
+                                disabled={!channelId} onChange={(e) => setinput(e.target.value)} />
+                            <input disabled={!channelId} type="file"
                                 ref={hiddenFileInput} onChange={(e) => {
                                     if (e.target.files[0]) {
                                         if (e.target.files[0]?.size < 52428800) {
@@ -321,7 +322,7 @@ const Chat = () => {
                             <SendRoundedIcon className={input || image ? "" : ("chat__disabledsendbtn")}
                                 onClick={(e) => { if (input || image) { sendmessage() } }} />
                             <EmojiEmotionsIcon className={channelname ? "" : ("chat__disabledsendbtn")}
-                                fontSize="large" onClick={() => { if (channelid) setemojidialog(true) }} />
+                                fontSize="large" onClick={() => { if (channelId) setemojidialog(true) }} />
                         </div>
                     </div>
                 </FileDrop>

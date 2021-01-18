@@ -1,9 +1,9 @@
-import React, { forwardRef, useState } from 'react'
+import React, { forwardRef, useRef, useState } from 'react'
 
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Popover, Tooltip } from '@material-ui/core'
+import { Avatar, Button, IconButton, Paper, Popover, Tooltip } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { selectcategorieid, selectChannelId, selectlanguage, setsnackbar } from '../../lib/AppSlice'
@@ -15,6 +15,7 @@ import Userdialog from '../Dialogs/Userdialog';
 import { selectUser } from '../../lib/userSlice';
 import DoneIcon from '@material-ui/icons/Done';
 import firebase from "firebase/app"
+import ConfirmDialog from '../Dialogs/ConfirmDialog';
 
 function getdays (messagetime) {
     let today = new Date()
@@ -92,14 +93,21 @@ const Message = forwardRef(({ timestamp, user,
     const channelid = useSelector(selectChannelId)
     const categorieid = useSelector(selectcategorieid)
     const language = useSelector(selectlanguage)
+    const messageRef = useRef(null)
 
     const [dialog, setdialog] = useState(false)
     const [runned, setrunned] = useState(false)
+    const [confirmprompt, setconfirmprompt] = useState({
+        en: null,
+        hu: null,
+        open: false,
+        enter: null,
+    })
+
     const [editpopper, seteditpopper] = useState(null)
     const [edit, setedit] = useState(false)
     const [newmessage, setnewmessage] = useState(message)
 
-    const [deleteprompt, setdeleteprompt] = useState(false)
     const [lastlogin, setlastlogin] = useState(null)
     const [counter, setcounter] = useState(0)
 
@@ -214,29 +222,33 @@ const Message = forwardRef(({ timestamp, user,
                                 </h3>
                             }>
                                 <span className="edited">
-                                    (szerkesztve)
+                                    {language === "hu" ? ("(szerkesztve)") : ("(edited)")}
                                 </span>
                             </Tooltip>
 
                         )}
                     </h4>
                     {!edit ? (
-                        <p>
-                            {geturl(message) ?
-                                (
-                                    <>
-                                        {geturl(message)[1]}
-                                        <a rel="noopener noreferrer" href={geturl(message)[0]} className="message__url" target="_blank" >{geturl(message)[0]}</a>
-                                        {geturl(message)[2]}
-                                    </>
-                                ) :
-                                (message)}
+                        <p >
+                            <span ref={messageRef}>
+                                {geturl(message) ?
+                                    (
+                                        <>
+                                            {geturl(message)[1]}
+                                            <a rel="noopener noreferrer" href={geturl(message)[0]} className="message__url" target="_blank" >{geturl(message)[0]}</a>
+                                            {geturl(message)[2]}
+                                        </>
+                                    ) :
+                                    (message)}
+                            </span>
+
                         </p>
                     ) : (
                             <form className="message__edit" onSubmit={editfunc}>
-                                <input value={newmessage} onChange={(e) => {
-                                    setnewmessage(e.target.value)
-                                }} />
+                                <input style={{ width: messageRef?.current?.offsetWidth || "200px", letterSpacing: "0.2px" }}
+                                    value={newmessage} onChange={(e) => {
+                                        setnewmessage(e.target.value)
+                                    }} />
                                 <IconButton type="submit" size="small" >
                                     <DoneIcon />
                                 </IconButton>
@@ -294,33 +306,21 @@ const Message = forwardRef(({ timestamp, user,
                         </IconButton>
                     </Tooltip>
                     <Tooltip title={language === "hu" ? ("Üzenet törlése") : ("Delete message")} placement="bottom">
-                        <IconButton onClick={() => setdeleteprompt(true)} >
+                        <IconButton onClick={() => {
+                            setconfirmprompt({
+                                hu: "Biztosan törlöd az üzenetet?",
+                                en: "Are you sure you want to delete this message?",
+                                open: true,
+                                enter: deletefunc
+                            })
+                        }} >
                             <DeleteIcon style={{ color: "grey" }} />
                         </IconButton>
                     </Tooltip>
                 </Paper>
             </Popover >
 
-            <Dialog onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    deletefunc()
-                }
-                if (e.key === "Escape" || e.key === "Backspace") {
-                    setdeleteprompt(false)
-                }
-            }} open={deleteprompt} onClose={() => setdeleteprompt(false)}>
-                <DialogContent>
-                    <DialogTitle>
-                        {language === "hu" ? ("Biztosan törlöd az üzenetet?") : ("Are you sure you want to delete this message?")}
-                    </DialogTitle>
-                </DialogContent>
-                <DialogActions >
-                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => { setdeleteprompt(false) }}>{language === "hu" ? ("Nem") : ("No")}</Button>
-                    <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={() => { deletefunc() }}>{language === "hu" ? ("Igen") : ("Yes")}</Button>
-                </DialogActions>
-            </Dialog>
+            <ConfirmDialog confirmprompt={confirmprompt} setconfirmprompt={setconfirmprompt} />
 
             <Userdialog lastlogin={lastlogin} dialog={dialog} setdialog={setdialog} user={user} counter={counter} />
         </>

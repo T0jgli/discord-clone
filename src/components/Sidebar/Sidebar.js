@@ -18,9 +18,8 @@ import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
 import CloseIcon from '@material-ui/icons/Close';
-
 import { selectUser } from '../../lib/userSlice'
-import { selectlanguage, selectsidebarmobile, setsidebarmobile, setsnackbar } from '../../lib/AppSlice'
+import { selectlanguage, selectsidebarmobile, setChannelInfo, setsidebarmobile, setsnackbar } from '../../lib/AppSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import db, { auth } from '../../lib/firebase'
 import firebase from "firebase/app"
@@ -30,6 +29,7 @@ import Userdialog from '../Dialogs/Userdialog'
 import SidebarCategories from "./SidebarCategories"
 import { a11yProps, TabPanel } from "../../lib/Tabhelper"
 import SwipeableViews from 'react-swipeable-views';
+import ConfirmDialog from '../Dialogs/ConfirmDialog';
 
 const Sidebar = () => {
     const dispatch = useDispatch()
@@ -39,13 +39,15 @@ const Sidebar = () => {
     const sidebarmobile = useSelector(selectsidebarmobile)
 
     const [categoriemenu, setcategoriemenu] = useState(false)
-    const [deleteprompt, setdeleteprompt] = useState(false)
     const [usersmenu, setusersmenu] = useState(false)
     const [settingsdialog, setsettingsdialog] = useState(false)
-    const [categoriedeleteprompt, setcategoriedeleteprompt] = useState({
-        prompt: false,
-        id: null
+    const [confirmprompt, setconfirmprompt] = useState({
+        en: null,
+        hu: null,
+        open: false,
+        enter: null,
     })
+
     const [mobile] = useState(window.innerWidth < 768)
     const [tab, settab] = useState(0)
     const [categorieprivate, setcategorieprivate] = useState(false)
@@ -78,7 +80,7 @@ const Sidebar = () => {
             })
             )
         })
-        db.collection("users").onSnapshot(snapshot => {
+        db.collection("users").orderBy("lastlogin", "desc").onSnapshot(snapshot => {
             setusers(snapshot.docs.map(snap => snap.data()))
         })
 
@@ -156,6 +158,34 @@ const Sidebar = () => {
         db.collection("users").doc(user.uid).delete().then(await u.delete())
         window.close()
     }
+
+    const deletecategorie = () => {
+        db.collection("categories").doc(confirmprompt?.id).collection("channels").get().then(data => {
+            if (data.docs.length > 0) {
+                dispatch(setsnackbar({
+                    snackbar: {
+                        open: true,
+                        type: "error",
+                        hu: "Kategória nem üres, előbb töröld a csatornáit!",
+                        en: "Categorie is not empty, first delete the channels!"
+                    }
+                }))
+            }
+            else
+                db.collection("categories").doc(confirmprompt.id).delete().then(() => {
+                    dispatch(setsnackbar({
+                        snackbar: {
+                            open: true,
+                            type: "warning",
+                            hu: "Kategória sikeresen törölve!",
+                            en: "Categorie deleted!"
+                        }
+                    }))
+                })
+        })
+        setconfirmprompt({ ...confirmprompt, open: false })
+        setcategoriemenu(false)
+    }
     return (
         <>
             <div className={mobile ? sidebarmobile ? ("sidebar__mobile sidebar__div") : ("sidebar__mobileopen sidebar__div") : ("sidebar__div")}>
@@ -195,6 +225,12 @@ const Sidebar = () => {
 
                             <MenuItem className="menu__itemflex" onClick={() => {
                                 auth.signOut();
+                                dispatch(setChannelInfo({
+                                    channelId: null,
+                                    channelName: null,
+                                    categorieid: null,
+                                    channelDesc: null
+                                }))
                                 dispatch(setsnackbar({
                                     snackbar: {
                                         open: true,
@@ -215,13 +251,18 @@ const Sidebar = () => {
                     </div>
                     <div className="sidebar__channels">
                         <Scrollbars autoHide autoHideDuration={2000} renderThumbVertical={props => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
-                            {categories.length > 0 ? categories.map(categorie => {
-                                return (
-                                    <SidebarCategories mobile={mobile} categorieid={categorie.id} key={categorie.id} categorie={categorie.categorie} categoriename={categoriename}
-                                        setcategoriename={setcategoriename} categoriemenu={categoriemenu}
-                                        setcategoriemenu={setcategoriemenu} user={user} />
+                            {categories.length > 0 ?
+                                categories.filter(c => c).map(
+                                    categorie => {
+                                        return (
+                                            <SidebarCategories mobile={mobile} categorieid={categorie.id} key={categorie.id}
+                                                categorie={categorie.categorie} categoriename={categoriename}
+                                                setcategoriename={setcategoriename} categoriemenu={categoriemenu}
+                                                setcategoriemenu={setcategoriemenu} user={user} />
+                                        )
+                                    }
                                 )
-                            }) : (
+                                : (
                                     <div className="sidebar__channels__loading">
                                         <CircularProgress size={50} />
                                     </div>
@@ -317,7 +358,15 @@ const Sidebar = () => {
 
                                             <TextField label="" variant="filled" value={categorie.categorie.categoriename} onChange={(e) => handleeditcategoriename(e, id)} />
                                             <Tooltip placement="right" title={language === "hu" ? ("Törlés") : ("Delete")}>
-                                                <IconButton style={{ color: "gray" }} onClick={() => setcategoriedeleteprompt({ prompt: true, id: categorie.categorie.id })}>
+                                                <IconButton style={{ color: "gray" }} onClick={() => {
+                                                    setconfirmprompt({
+                                                        en: "Are you sure you want to delete this category?",
+                                                        hu: "Biztosan törlöd a kategóriát?",
+                                                        open: true,
+                                                        enter: deletecategorie,
+                                                        id: categorie.categorie.id
+                                                    })
+                                                }}>
                                                     <DeleteIcon />
                                                 </IconButton>
                                             </Tooltip>
@@ -345,50 +394,6 @@ const Sidebar = () => {
                 </DialogActions>
             </Dialog>
 
-
-            <Dialog TransitionComponent={Grow} open={categoriedeleteprompt?.prompt} onClose={() => setcategoriedeleteprompt({ prompt: false })}>
-                <DialogContent>
-                    <DialogTitle style={{ margin: "5px" }}>
-                        {language === "hu" ? ("Biztosan törlöd a kategóriát?") : ("Are you sure you want to delete this category?")}
-                    </DialogTitle>
-                </DialogContent>
-                <DialogActions >
-                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => setcategoriedeleteprompt({ prompt: false })}>{language === "hu" ? ("Nem") : ("No")}</Button>
-                    <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={async () => {
-                            db.collection("categories").doc(categoriedeleteprompt?.id).collection("channels").get().then(data => {
-                                if (data.docs.length > 0) {
-                                    dispatch(setsnackbar({
-                                        snackbar: {
-                                            open: true,
-                                            type: "error",
-                                            hu: "Kategória nem üres, előbb töröld a csatornáit!",
-                                            en: "Categorie is not empty, first delete the channels!"
-                                        }
-                                    }))
-                                    setcategoriedeleteprompt(false)
-                                    setcategoriemenu(false)
-                                }
-                                else
-                                    db.collection("categories").doc(categoriedeleteprompt.id).delete().then(() => {
-                                        dispatch(setsnackbar({
-                                            snackbar: {
-                                                open: true,
-                                                type: "warning",
-                                                hu: "Kategória sikeresen törölve!",
-                                                en: "Categorie deleted!"
-                                            }
-                                        }))
-                                        setcategoriedeleteprompt(false)
-                                        setcategoriemenu(false)
-                                    })
-                            })
-                        }}>{language === "hu" ? ("Igen") : ("Yes")}</Button>
-                </DialogActions>
-            </Dialog>
-
-
             <Dialog TransitionComponent={Grow} open={settingsdialog} onClose={() => setsettingsdialog(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>
@@ -401,7 +406,14 @@ const Sidebar = () => {
                     </form>
                     <br />
                     <Tooltip title={language === "hu" ? ("Fiók törlése") : ("Delete account")}>
-                        <IconButton onClick={() => { setdeleteprompt(true) }} style={{ backgroundColor: "red", margin: "20px", color: "rgb(225, 225, 225)" }}>
+                        <IconButton onClick={() => {
+                            setconfirmprompt({
+                                en: "Are you sure you want to delete this user account?",
+                                hu: "Biztosan törlöd a felhasználói fiókot?",
+                                open: true,
+                                enter: handledeleteuser,
+                            })
+                        }} style={{ backgroundColor: "red", margin: "20px", color: "rgb(225, 225, 225)" }}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
@@ -425,11 +437,19 @@ const Sidebar = () => {
                     </DialogTitle>
                     <DialogContent>
                         {users.map((user, i) => (
-                            <Tooltip key={i} title={language === "hu" ? `Utoljára bejelentkezve: ${user.lastlogin?.toDate().toLocaleString()}` :
-                                `Last login: ${user.lastlogin?.toDate().toLocaleString()}`}>
-                                <p style={{ opacity: "0.8", cursor: "default" }}>{user.displayname}</p>
-                            </Tooltip>
-
+                            <>
+                                <div className="userdialog__div" key={i}>
+                                    <div className="userdialog__avatar">
+                                        <Avatar src={user.photoUrl} />
+                                    </div>
+                                    <div className="userdialog__text">
+                                        <Tooltip title={language === "hu" ? `Utoljára bejelentkezve: ${user.lastlogin?.toDate().toLocaleString()}` :
+                                            `Last login: ${user.lastlogin?.toDate().toLocaleString()}`}>
+                                            <p style={{ opacity: "0.8", cursor: "default" }}>{user.displayname}</p>
+                                        </Tooltip>
+                                    </div>
+                                </div>
+                            </>
                         ))}
                     </DialogContent>
                 </DialogContent>
@@ -441,28 +461,7 @@ const Sidebar = () => {
 
             </Dialog>
 
-
-            <Dialog onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    handledeleteuser()
-                }
-                if (e.key === "Escape" || e.key === "Backspace") {
-                    setdeleteprompt(false)
-                }
-            }} TransitionComponent={Grow} open={deleteprompt} onClose={() => setdeleteprompt(false)}>
-                <DialogContent>
-                    <DialogTitle>
-                        {language === "hu" ? ("Biztosan törlöd a felhasználói fiókot?") : ("Are you sure you want to delete this user account?")}
-                    </DialogTitle>
-                </DialogContent>
-                <DialogActions >
-                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => { setdeleteprompt(false); setdialog(false) }}>{language === "hu" ? ("Nem") : ("No")}</Button>
-                    <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={async () => handledeleteuser()}>{language === "hu" ? ("Igen") : ("Yes")}</Button>
-                </DialogActions>
-            </Dialog>
-
+            <ConfirmDialog confirmprompt={confirmprompt} setconfirmprompt={setconfirmprompt} />
 
             <Userdialog dialog={dialog} setdialog={setdialog} user={user} avatar={true} />
         </>

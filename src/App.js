@@ -51,13 +51,14 @@ const App = () => {
       const docref = db.collection("users").doc(user.uid)
       docref.get().then(doc => {
         if (doc.exists) {
-          db.collection("users").doc(user.uid).update({
+          docref.update({
             lastlogin: firebase.firestore.FieldValue.serverTimestamp(),
           })
         }
         else {
-          db.collection("users").doc(user.uid).set({
+          docref.set({
             email: user.email,
+            photoUrl: user.photo,
             displayname: user.displayname,
             lastlogin: firebase.firestore.FieldValue.serverTimestamp(),
           })

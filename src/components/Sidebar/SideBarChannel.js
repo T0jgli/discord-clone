@@ -13,6 +13,7 @@ import {
     setsnackbar, selectmutedchannels, selectChannelId, setsidebarmobile
 } from '../../lib/AppSlice'
 import db, { storage } from '../../lib/firebase'
+import ConfirmDialog from '../Dialogs/ConfirmDialog';
 
 const SideBarChannel = ({ id, channelname, channeldesc, createdby, user, categorieid }) => {
     const dispatch = useDispatch()
@@ -26,9 +27,14 @@ const SideBarChannel = ({ id, channelname, channeldesc, createdby, user, categor
 
     const [delbutton, setdelbutton] = useState(false)
     const [dialog, setdialog] = useState(false)
-    const [deleteprompt, setdeleteprompt] = useState(false)
     const [newname, setnewname] = useState(channelname)
     const [newdesc, setnewdesc] = useState(channeldesc)
+    const [confirmprompt, setconfirmprompt] = useState({
+        en: null,
+        hu: null,
+        open: false,
+        enter: null,
+    })
 
 
     const deletefunc = () => {
@@ -141,7 +147,14 @@ const SideBarChannel = ({ id, channelname, channeldesc, createdby, user, categor
                     </form>
                     <br />
                     <Tooltip title={language === "hu" ? ("Csatorna törlése") : ("Delete channel")}>
-                        <IconButton onClick={() => setdeleteprompt(true)} style={{ backgroundColor: "red", margin: "20px", color: "rgb(225, 225, 225)" }}>
+                        <IconButton onClick={() => {
+                            setconfirmprompt({
+                                hu: "Biztosan törlöd a csatornát?",
+                                en: "Are you sure you want to delete this channel?",
+                                open: true,
+                                enter: deletefunc
+                            })
+                        }} style={{ backgroundColor: "red", margin: "20px", color: "rgb(225, 225, 225)" }}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
@@ -155,29 +168,7 @@ const SideBarChannel = ({ id, channelname, channeldesc, createdby, user, categor
             </Dialog>
 
 
-            <Dialog onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    deletefunc()
-                }
-                if (e.key === "Escape" || e.key === "Backspace") {
-                    setdeleteprompt(false)
-                }
-            }} open={deleteprompt} onClose={() => setdeleteprompt(false)}>
-                <DialogContent>
-                    <DialogTitle>
-                        {language === "hu" ? ("Biztosan törlöd a csatornát?") : ("Are you sure you want to delete this channel?")}
-                    </DialogTitle>
-                </DialogContent>
-                <DialogActions >
-                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => { setdeleteprompt(false); setdialog(false) }}>{language === "hu" ? ("Nem") : ("No")}</Button>
-                    <Button style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                        onClick={async () => { await deletefunc() }}>{language === "hu" ? ("Igen") : ("Yes")}</Button>
-                </DialogActions>
-            </Dialog>
-
-
-
+            <ConfirmDialog confirmprompt={confirmprompt} setconfirmprompt={setconfirmprompt} />
         </>
     )
 }

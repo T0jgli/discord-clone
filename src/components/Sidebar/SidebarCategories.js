@@ -24,7 +24,7 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
     const [channeldesc, setchanneldesc] = useState("")
 
     useEffect(() => {
-        db.collection("categories").doc(categorieid).collection("channels").orderBy("created", "desc").onSnapshot((snapshot) =>
+        db.collection("categories").doc(categorieid).collection("channels").orderBy("created", "asc").onSnapshot((snapshot) =>
             setchannel(
                 snapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -109,7 +109,7 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
                 if (e.key === 'Enter') {
                     handleaddchannel()
                 }
-                if (e.key === "Escape" || e.key === "Backspace") {
+                if (e.key === "Escape") {
                     setpromptstate(false)
                 }
             }} TransitionComponent={Grow} open={promptstate} onClose={() => setpromptstate(false)}>
