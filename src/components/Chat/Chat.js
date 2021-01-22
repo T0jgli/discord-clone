@@ -109,8 +109,8 @@ const Chat = () => {
                 const uploadtask = storage.ref(`images/${image.name.replace(".", "__" + today + ".")}`).put(image);
                 uploadtask.on("state_changed", snapshot => {
                     setuploadvalue((snapshot.bytesTransferred / image.size) * 100)
-                }, error => console.log(error), () => {
-                    storage.ref("images").child(image.name.replace(".", "__" + today + ".")).getDownloadURL().then(url => {
+                }, error => console.log(error), async () => {
+                    await storage.ref("images").child(image.name.replace(".", "__" + today + ".")).getDownloadURL().then(url => {
                         let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelId).collection("messages").doc()
                         ref.set({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -120,7 +120,8 @@ const Chat = () => {
                             imagename: image.name.replace(".", "__" + today + "."),
                             id: ref.id
                         })
-                    }).then(() => setloading(false))
+                    })
+                    setloading(false)
                 })
             }
             else {
@@ -129,8 +130,8 @@ const Chat = () => {
 
                 uploadtask.on("state_changed", snapshot => {
                     setuploadvalue((snapshot.bytesTransferred / image.size) * 100)
-                }, error => console.log(error), () => {
-                    storage.ref("files").child(image.name.replace(".", "__" + today + ".")).getDownloadURL().then(url => {
+                }, error => console.log(error), async () => {
+                    await storage.ref("files").child(image.name.replace(".", "__" + today + ".")).getDownloadURL().then(url => {
                         let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelId).collection("messages").doc()
                         ref.set({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -140,7 +141,8 @@ const Chat = () => {
                             filename: image.name.replace(".", "__" + today + "."),
                             id: ref.id
                         })
-                    }).then(() => setloading(false))
+                    })
+                    setloading(false)
                 })
             }
 

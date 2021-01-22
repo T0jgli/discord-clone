@@ -34,43 +34,39 @@ const SidebarCategories = ({ user, categorie, categorieid, mobile }) => {
         )
     }, [categorieid])
     const handleaddchannel = () => {
-        if (channelname) {
-            db.collection("categories").doc(categorieid).collection("channels").add({
-                channelname: channelname.replace(/\s\s+/g, ' '),
-                description: channeldesc,
-                created: firebase.firestore.FieldValue.serverTimestamp(),
-                createdby: user.uid
-            }).then((e) => {
-                dispatch(setChannelInfo({
-                    channelId: e.id,
-                    channelName: channelname.replace(/\s\s+/g, ' '),
-                    channelDesc: channeldesc,
-                    categorieid: categorieid
-                }))
-                setchannelname("");
-                setchanneldesc("")
-                dispatch(setsnackbar({
-                    snackbar: {
-                        open: true,
-                        type: "success",
-                        hu: "Csatorna létrehozva!",
-                        en: "Channel created!"
-                    }
-                }))
-                setpromptstate(false);
-            })
-        }
-        else {
+        if (!channelname) return dispatch(setsnackbar({
+            snackbar: {
+                open: true,
+                type: "error",
+                hu: "Azért ehhez meg kéne adni egy nevet is!",
+                en: "I think you should write a name first!"
+            }
+        }))
+
+        db.collection("categories").doc(categorieid).collection("channels").add({
+            channelname: channelname.replace(/\s\s+/g, ' '),
+            description: channeldesc,
+            created: firebase.firestore.FieldValue.serverTimestamp(),
+            createdby: user.uid
+        }).then((e) => {
+            dispatch(setChannelInfo({
+                channelId: e.id,
+                channelName: channelname.replace(/\s\s+/g, ' '),
+                channelDesc: channeldesc,
+                categorieid: categorieid
+            }))
+            setchannelname("");
+            setchanneldesc("")
             dispatch(setsnackbar({
                 snackbar: {
                     open: true,
-                    type: "error",
-                    hu: "Azért ehhez meg kéne adni egy nevet is!",
-                    en: "I think you should write a name first!"
+                    type: "success",
+                    hu: "Csatorna létrehozva!",
+                    en: "Channel created!"
                 }
             }))
-        }
-
+            setpromptstate(false);
+        })
     }
 
     return (

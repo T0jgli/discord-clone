@@ -113,26 +113,23 @@ const Message = forwardRef(({ timestamp, user,
 
     let messagetime = new Date(timestamp?.toDate())
     const countfunc = () => {
-        if (!runned) {
-            db.collection("categories").doc(categorieid).collection("channels")
-                .doc(channelid)
-                .collection("messages")
-                .onSnapshot(snapshot => snapshot.docs.map(doc => {
-                    if (doc.data().user.uid === user.uid) {
-                        setcounter(counter => counter + 1)
-                    }
-                    return null
-                }))
-            db.collection("users")
-                .doc(user.uid).get().then(doc => {
-                    let lastlogintime = new Date(doc.data().lastlogin?.toDate());
-                    setlastlogin(lastlogintime.toLocaleString("hu-HU"))
-                }).then(() => { setdialog(true); setrunned(true) })
-        }
-        else {
-            setdialog(true)
 
-        }
+        if (runned) return setdialog(true)
+
+        db.collection("categories").doc(categorieid).collection("channels")
+            .doc(channelid)
+            .collection("messages")
+            .onSnapshot(snapshot => snapshot.docs.map(doc => {
+                if (doc.data().user.uid === user.uid) {
+                    setcounter(counter => counter + 1)
+                }
+                return null
+            }))
+        db.collection("users")
+            .doc(user.uid).get().then(doc => {
+                let lastlogintime = new Date(doc.data().lastlogin?.toDate());
+                setlastlogin(lastlogintime.toLocaleString("hu-HU"))
+            }).then(() => { setdialog(true); setrunned(true) })
     }
 
     const copy = () => {

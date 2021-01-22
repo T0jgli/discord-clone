@@ -5,7 +5,6 @@ import { selectlanguage } from '../../lib/AppSlice'
 
 const ConfirmDialog = ({ confirmprompt, setconfirmprompt }) => {
     const language = useSelector(selectlanguage)
-
     return (
         <Dialog onKeyDown={(e) => {
             if (e.key === 'Enter') {

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { selectlanguage, setlanguage, setsnackbar } from "../../lib/AppSlice"
 import { useDispatch, useSelector } from 'react-redux'
 
-import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip, CircularProgress } from '@material-ui/core'
+import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip, CircularProgress, Grow } from '@material-ui/core'
 
 import Snackbar from '@material-ui/core/Snackbar';
 
@@ -18,8 +18,9 @@ const Login = () => {
     const [open, setopen] = useState(false)
     const [logindata, setlogindata] = useState({ email: "", password: "" })
 
-    const signinwithgoogle = () => {
-        auth.signInWithPopup(googleprovider).then(() => {
+    const signinwithgoogle = async () => {
+        try {
+            await auth.signInWithPopup(googleprovider)
             dispatch(setsnackbar({
                 snackbar: {
                     open: true,
@@ -28,9 +29,9 @@ const Login = () => {
                     en: "Successful login!"
                 }
             }))
-
-        }).catch(error => alert(error.message))
-
+        } catch (error) {
+            alert(error.message)
+        }
     }
 
     const signin = () => {
@@ -56,11 +57,9 @@ const Login = () => {
 
                     <div className="loginlogo__gifdiv">
                         <div className="gif">
-                            {gif ? (
+                            <Grow in={Boolean(gif)}>
                                 <img src={gif?.data.images.downsized.url} alt="Gif" />
-                            ) : (
-                                    <CircularProgress />
-                                )}
+                            </Grow>
                         </div>
                     </div>
                 </div>

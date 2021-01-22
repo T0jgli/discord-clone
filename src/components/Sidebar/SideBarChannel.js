@@ -66,28 +66,22 @@ const SideBarChannel = ({ id, channelname, channeldesc, createdby, user, categor
 
     const editfunc = () => {
         if (newname !== channelname || newdesc !== channeldesc) {
-            if (newname.length > 0) {
-                db.collection("categories").doc(categorieid).collection("channels").doc(id).update({
-                    channelname: newname.replace(/\s/g, ''),
-                    description: newdesc
-                })
-                dispatch(setChannelInfo({
-                    channelName: newname, channelId: id, categorieid: categorieid, channelDesc: newdesc
-                }))
-            }
-            else {
-                setnewname(channelname)
-                setnewdesc(channeldesc)
-                dispatch(setsnackbar({
-                    snackbar: {
-                        open: true,
-                        type: "error",
-                        hu: "Azért ehhez meg kéne adni egy nevet is!",
-                        en: "I think you should write a name first!"
-                    }
-                }))
-            }
+            if (newname.length < 1) return dispatch(setsnackbar({
+                snackbar: {
+                    open: true,
+                    type: "error",
+                    hu: "Azért ehhez meg kéne adni egy nevet is!",
+                    en: "I think you should write a name first!"
+                }
+            }))
 
+            db.collection("categories").doc(categorieid).collection("channels").doc(id).update({
+                channelname: newname.replace(/\s/g, ''),
+                description: newdesc
+            })
+            dispatch(setChannelInfo({
+                channelName: newname, channelId: id, categorieid: categorieid, channelDesc: newdesc
+            }))
         }
         setdialog(false)
     }

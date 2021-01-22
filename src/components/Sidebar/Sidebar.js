@@ -127,22 +127,28 @@ const Sidebar = () => {
             categoriename: e.target.value.replace(/\s\s+/g, ' ')
         })
     }
-    const handleeditusernamedone = () => {
+    const handleeditusernamedone = async () => {
         if (newusername !== user.displayname) {
-            u.updateProfile({
-                displayName: newusername.replace(/\s\s+/g, ' ')
-            }).then(
-                db.collection("users").doc(user.uid).update({
+            try {
+                await u.updateProfile({
+                    displayName: newusername.replace(/\s\s+/g, ' ')
+                })
+                await db.collection("users").doc(user.uid).update({
                     newusername: newusername.replace(/\s\s+/g, ' ')
-                })).then(window.location.reload(false))
-
+                })
+                window.location.reload(false)
+            } catch (error) {
+                console.error(error)
+            }
         }
     }
 
-    const handlecategorieprivate = (what, id) => {
-        db.collection("categories").doc(id).update({
-            private: what === "public" ? (false) : (true)
-        }).then(
+    const handlecategorieprivate = async (what, id) => {
+        try {
+            await db.collection("categories").doc(id).update({
+                private: what === "public" ? (false) : (true)
+            })
+
             dispatch(setsnackbar({
                 snackbar: {
                     open: true,
@@ -151,18 +157,27 @@ const Sidebar = () => {
                     en: `Categorie successfully set to ${what}!`
                 }
             }))
-        )
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     const handledeleteuser = async () => {
-        db.collection("users").doc(user.uid).delete().then(await u.delete())
-        window.close()
+        try {
+
+            await db.collection("users").doc(user.uid).delete()
+            await u.delete()
+            window.close()
+
+        } catch (error) {
+            console.error(error)
+        }
     }
 
-    const deletecategorie = () => {
-        db.collection("categories").doc(confirmprompt?.id).collection("channels").get().then(data => {
+    const deletecategorie = (id) => {
+        db.collection("categories").doc(id).collection("channels").get().then(data => {
             if (data.docs.length > 0) {
-                dispatch(setsnackbar({
+                return dispatch(setsnackbar({
                     snackbar: {
                         open: true,
                         type: "error",
@@ -171,17 +186,17 @@ const Sidebar = () => {
                     }
                 }))
             }
-            else
-                db.collection("categories").doc(confirmprompt.id).delete().then(() => {
-                    dispatch(setsnackbar({
-                        snackbar: {
-                            open: true,
-                            type: "warning",
-                            hu: "Kategória sikeresen törölve!",
-                            en: "Categorie deleted!"
-                        }
-                    }))
-                })
+
+            db.collection("categories").doc(id).delete().then(() => {
+                dispatch(setsnackbar({
+                    snackbar: {
+                        open: true,
+                        type: "warning",
+                        hu: "Kategória sikeresen törölve!",
+                        en: "Categorie deleted!"
+                    }
+                }))
+            })
         })
         setconfirmprompt({ ...confirmprompt, open: false })
         setcategoriemenu(false)
@@ -356,15 +371,15 @@ const Sidebar = () => {
                                                 </IconButton>
                                             </Tooltip>
 
-                                            <TextField label="" variant="filled" value={categorie.categorie.categoriename} onChange={(e) => handleeditcategoriename(e, id)} />
+                                            <TextField label="" variant="filled" value={categorie.categorie.categoriename}
+                                                onChange={(e) => handleeditcategoriename(e, id)} />
                                             <Tooltip placement="right" title={language === "hu" ? ("Törlés") : ("Delete")}>
                                                 <IconButton style={{ color: "gray" }} onClick={() => {
                                                     setconfirmprompt({
                                                         en: "Are you sure you want to delete this category?",
                                                         hu: "Biztosan törlöd a kategóriát?",
                                                         open: true,
-                                                        enter: deletecategorie,
-                                                        id: categorie.categorie.id
+                                                        enter: () => deletecategorie(categorie.categorie.id)
                                                     })
                                                 }}>
                                                     <DeleteIcon />
