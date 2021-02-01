@@ -4,7 +4,7 @@ import { selectlanguage } from '../../lib/AppSlice';
 
 import CloseIcon from '@material-ui/icons/Close';
 import Link from '@material-ui/core/Link';
-import { IconButton, Dialog, DialogContent, DialogContentText, DialogTitle, Grow } from '@material-ui/core'
+import { IconButton, Dialog, DialogContent, DialogContentText, DialogTitle, Grow, Fade } from '@material-ui/core'
 import TimeAgo from 'timeago-react';
 import * as timeago from 'timeago.js';
 import hu from 'timeago.js/lib/lang/hu';
@@ -16,12 +16,14 @@ function Userdialog ({ dialog, setdialog, user, counter, avatar, lastlogin }) {
 
     useEffect(() => {
         timeago.register('hu', hu);
-        if (user)
+        if (dialog)
             db.collection("users").doc(user.uid).get().then(u => {
                 if (u.exists)
                     setusername(u.data().displayname)
             })
-    }, [user])
+
+
+    }, [user, dialog])
     return (
         <Dialog TransitionComponent={Grow} open={dialog} onClose={() => setdialog(false)}>
             <DialogContent>
@@ -30,7 +32,10 @@ function Userdialog ({ dialog, setdialog, user, counter, avatar, lastlogin }) {
                     <span style={{ fontWeight: "bold" }}>{user.displayname}</span>
                     <br />
                     {username && username !== user.displayname && (
-                        <span>({username})</span>
+                        <Fade in>
+                            <span>({username})</span>
+                        </Fade>
+
                     )}
                 </DialogTitle>
                 <DialogContentText>

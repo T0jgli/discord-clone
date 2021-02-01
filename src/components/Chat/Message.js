@@ -270,8 +270,8 @@ const Message = forwardRef(({ timestamp, user,
                                     }
                                 </Button>
                             </a>
-                            <Tooltip className="message__button" title={language === "hu" ? ("Fájl URL másolása") : ("Copy file URL")} placement="right">
-                                <IconButton style={{ background: "transparent" }} color="default" onClick={copy}>
+                            <Tooltip title={language === "hu" ? ("Fájl URL másolása") : ("Copy file URL")} placement="right">
+                                <IconButton style={{ background: "transparent", color: "white", marginTop: "10px" }} color="default" onClick={copy}>
                                     <FileCopyIcon />
                                 </IconButton>
                             </Tooltip>

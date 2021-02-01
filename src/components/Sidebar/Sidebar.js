@@ -6,7 +6,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import {
     Avatar, Button, Dialog, DialogContent, DialogTitle, DialogActions, TextField, Switch,
-    FormControlLabel, Paper, Tabs, Tab, IconButton, Tooltip, Grow, CircularProgress
+    FormControlLabel, Paper, Tabs, Tab, IconButton, Tooltip, Grow, CircularProgress, LinearProgress
 } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -120,7 +120,6 @@ const Sidebar = () => {
         setcategoriename("")
     }
 
-
     const u = firebase.auth().currentUser
     const handleeditcategoriename = (e, id) => {
         db.collection("categories").doc(id).update({
@@ -128,6 +127,14 @@ const Sidebar = () => {
         })
     }
     const handleeditusernamedone = async () => {
+        if (!newusername) return dispatch(setsnackbar({
+            snackbar: {
+                open: true,
+                type: "error",
+                hu: "Nem kéne név nélkül részt venni a rendezvényen",
+                en: "I don't think you should do this without a name"
+            }
+        }))
         if (newusername !== user.displayname) {
             try {
                 await u.updateProfile({
@@ -279,7 +286,7 @@ const Sidebar = () => {
                                 )
                                 : (
                                     <div className="sidebar__channels__loading">
-                                        <CircularProgress size={50} />
+                                        <LinearProgress color="primary" />
                                     </div>
                                 )}
 
@@ -417,7 +424,7 @@ const Sidebar = () => {
                     <ArrowDropDownIcon />
                     <form style={{ marginTop: "20px" }} onSubmit={(e) => { e.preventDefault(); handleeditusernamedone(); setsettingsdialog(false) }}>
                         <TextField label={language === "hu" ? ("Felhasználónév") : ("Username")}
-                            variant="outlined" value={newusername} onChange={(e) => { if (e.target.value) setnewusername(e.target.value) }} />
+                            variant="outlined" value={newusername} onChange={(e) => { setnewusername(e.target.value) }} />
                     </form>
                     <br />
                     <Tooltip title={language === "hu" ? ("Fiók törlése") : ("Delete account")}>
@@ -451,7 +458,7 @@ const Sidebar = () => {
                         {language === "hu" ? ("Felhasználók") : ("Users")}
                     </DialogTitle>
                     <DialogContent>
-                        {users.map((user, i) => (
+                        {users?.map((user, i) => (
                             <>
                                 <div className="userdialog__div" key={i}>
                                     <div className="userdialog__avatar">

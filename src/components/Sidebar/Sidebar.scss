@@ -103,13 +103,6 @@
                 }
             }
         }
-
-        .sidebar__channels__loading {
-            display: grid;
-            place-items: center;
-            height: 50%;
-        }
-
         .sidebar__channelslist {
             transition: 0.3s;
             .notactivechannel {

@@ -235,15 +235,19 @@
                     }
                 }
 
-                .message__button {
-                    margin-top: 10px;
-                    background-color: rgba(78, 78, 78, 0.65);
-                    color: white;
-                    transition: 0.3s;
+                a {
+                    text-decoration: none;
 
-                    &:hover {
-                        color: rgba(255, 255, 255, 0.8);
-                        background-color: rgba(100, 100, 100, 0.65);
+                    .message__button {
+                        margin-top: 10px;
+                        background-color: rgba(78, 78, 78, 0.65);
+                        color: white;
+                        transition: 0.3s;
+
+                        &:hover {
+                            color: rgba(255, 255, 255, 0.8);
+                            background-color: rgba(100, 100, 100, 0.65);
+                        }
                     }
                 }
 

@@ -275,7 +275,7 @@ const Chat = () => {
                             disableTouchListener={!channelId}
                             placement="top"
                         >
-                            <AddCircleIcon className={channelId ? ("chat__inputfilebutton") : ("chat__disabledsendbtn")}
+                            <AddCircleIcon style={{ marginLeft: "5px" }} className={channelId ? ("chat__inputfilebutton") : ("chat__disabledsendbtn")}
                                 fontSize="large" onClick={() => hiddenFileInput.current.click()} />
                         </Tooltip>
                         <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage() } }}>
