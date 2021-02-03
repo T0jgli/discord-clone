@@ -11,7 +11,7 @@ import db, { storage } from '../../lib/firebase'
 import { useDispatch, useSelector } from 'react-redux'
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import EditIcon from '@material-ui/icons/Edit';
-import Userdialog from '../Dialogs/Userdialog';
+import Userdialog from '../Dialogs/UserDialog';
 import { selectUser } from '../../lib/userSlice';
 import DoneIcon from '@material-ui/icons/Done';
 import firebase from "firebase/app"

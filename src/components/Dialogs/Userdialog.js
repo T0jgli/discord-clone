@@ -9,10 +9,12 @@ import TimeAgo from 'timeago-react';
 import * as timeago from 'timeago.js';
 import hu from 'timeago.js/lib/lang/hu';
 import db from '../../lib/firebase';
+import { selectUser } from '../../lib/userSlice';
 
-function Userdialog ({ dialog, setdialog, user, counter, avatar, lastlogin }) {
+function Userdialog ({ dialog, setdialog, counter, avatar, lastlogin }) {
     const language = useSelector(selectlanguage)
     const [username, setusername] = useState(null)
+    const user = useSelector(selectUser)
 
     useEffect(() => {
         timeago.register('hu', hu);
