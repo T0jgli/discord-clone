@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import "./App.scss"
 import db, { auth } from "./lib/firebase"
-import Sidebar from './components/Sidebar/Sidebar';
-import Chat from './components/Chat/Chat'
-import Login from './components/Login/Login'
+const Sidebar = lazy(() => import('./components/Sidebar/Sidebar'));
+const Chat = lazy(() => import('./components/Chat/Chat'));
+const Login = lazy(() => import('./components/Login/Login'));
+const Snackbars = lazy(() => import('./components/Snackbars'));
+
 import Loading from "./components/Loading/Loading"
-import Snackbars from "./components/Snackbars"
 import Theme from './components/Theme';
 import firebase from "firebase/app"
 
@@ -13,6 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectUser, login, logout } from "./lib/userSlice"
 import { selectlanguage } from "./lib/AppSlice"
 import { ThemeProvider } from '@material-ui/core';
+import { motion } from 'framer-motion';
+import { pageVariants } from './components/Animation';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -23,7 +26,7 @@ const App = () => {
   const [loading, setloading] = useState(true)
 
   useEffect(() => {
-    auth.onAuthStateChanged((authuser) => {
+    const cleanup = auth.onAuthStateChanged((authuser) => {
       if (authuser) {
         let dname = authuser.displayName;
         if (!authuser.displayName) {
@@ -43,6 +46,8 @@ const App = () => {
 
     })
     window.document.documentElement.lang = language
+
+    return () => cleanup()
   }, [dispatch, language])
 
 
@@ -70,20 +75,23 @@ const App = () => {
 
   return (
     <ThemeProvider theme={Theme}>
-      <div className="app">
-        {!loading ? user ? (
-          <>
-            <Sidebar />
-            <Chat />
-          </>
-        ) : (
-            <Login />
+      <Suspense fallback={<Loading />}>
+        <motion.div className="app" variants={pageVariants} initial="initial" animate="animate">
+          {!loading ? user ? (
+            <>
+              <Sidebar />
+              <Chat />
+            </>
           ) : (
-            <Loading />
-          )}
-        <Snackbars />
-      </div>
+              <Login />
+            ) : (
+              <Loading />
+            )}
+          <Snackbars />
+        </motion.div>
+      </Suspense>
     </ThemeProvider>
+
   );
 }
 
