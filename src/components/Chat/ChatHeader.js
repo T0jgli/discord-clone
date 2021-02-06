@@ -80,7 +80,9 @@ const ChatHeader = ({ searchtext, setsearchtext }) => {
                         <div className="chatheader__right">
                             <div className="chatheader__search">
                                 <input
+                                    aria-label={language === "en" ? ("Search field input") : ("Keresőmező")}
                                     value={searchtext}
+                                    type="text"
                                     onChange={(e) => setsearchtext(e.target.value)}
                                     placeholder={language === "hu" ? ("Keresés") : ("Search")} />
                                 {searchtext ? (

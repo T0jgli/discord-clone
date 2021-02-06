@@ -196,7 +196,7 @@ const CategorieDialog = ({ categoriemenu,
 
                     else if (index + 1 === categories.length)
                         return (
-                            <p style={{ opacity: "0.5" }}>Nincs általad létrehozott kategória</p>
+                            <p key="notfound" style={{ opacity: "0.5" }}>Nincs általad létrehozott kategória</p>
                         )
                     else return null
                 })}

@@ -10,7 +10,7 @@ const Snackbars = () => {
     const language = useSelector(selectlanguage)
     const snackbaropen = useSelector(selectsnackbar)
     return (
-        <Snackbar open={snackbaropen?.open} anchorOrigin={{ vertical: snackbaropen?.signout ? 'top' : 'bottom', horizontal: snackbaropen?.signout ? 'right' : 'center' }}
+        <Snackbar open={snackbaropen?.open} anchorOrigin={{ vertical: 'bottom', horizontal: snackbaropen?.signout ? 'right' : 'center' }}
             autoHideDuration={snackbaropen?.filesizeerror ? (5000) : (3000)} onClose={(event, reason) => {
                 if (reason === "clickaway") { return; };
                 dispatch(setsnackbar({ snackbar: { ...snackbaropen, open: false } }))

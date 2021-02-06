@@ -17,24 +17,6 @@
     }
 }
 
-.sidebar__mobile__closeicon {
-    color: grey;
-    position: absolute;
-    width: 100%;
-    text-align: right;
-    bottom: 90px;
-    transition: all 0.3s;
-    background-color: #2f3135;
-    &:hover {
-        color: white;
-        cursor: pointer;
-    }
-
-    svg {
-        padding-right: 15px;
-    }
-}
-
 .sidebar__div {
     flex: 0.25 !important;
     transition: all 0.5s ease-in-out;
@@ -113,6 +95,10 @@
                 border-radius: 0.8rem;
             }
 
+            &:last-of-type {
+                padding-bottom: 2rem;
+            }
+
             .activechannel {
                 background-color: Theme.$paper-background-color;
                 color: white;
@@ -167,6 +153,7 @@
         color: gray;
         background-color: #292a2e;
         padding: 0.5rem;
+        margin-top: 10px;
         -webkit-box-shadow: 0px -2px 0px 0px rgba(0, 0, 0, 0.75);
         -moz-box-shadow: 0px -2px 0px 0px rgba(0, 0, 0, 0.75);
         box-shadow: 0px -2px 0px 0px rgba(0, 0, 0, 0.75);
@@ -193,17 +180,22 @@
 
     .userdialog__text {
         flex: 1;
+        transition: 0.3s ease-in-out;
+
+        p {
+            cursor: pointer !important;
+        }
+
+        &:hover {
+            transition: 0.3s ease-in-out;
+            opacity: 0.6;
+        }
     }
 
     .userdialog__avatar {
         border-right: 1px solid #ffffff;
         margin-right: 15px;
         padding-right: 15px;
-
-        img,
-        .MuiAvatar-root > svg {
-            cursor: default;
-        }
     }
 }
 

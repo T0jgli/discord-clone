@@ -15,7 +15,7 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
     const imagenamesinchannel = useSelector(selectimagenamesinchannel)
 
     const [newname, setnewname] = useState(channel.channelname)
-    const [newdesc, setnewdesc] = useState(channel.channeldesc)
+    const [newdesc, setnewdesc] = useState(channel.description)
 
     const deletefunc = () => {
         filenamesinchannel.map(file => {

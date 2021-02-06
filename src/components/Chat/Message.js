@@ -16,6 +16,8 @@ import { selectUser } from '../../lib/userSlice';
 import DoneIcon from '@material-ui/icons/Done';
 import firebase from "firebase/app"
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
+import { motion } from 'framer-motion';
+import { messageAnimation } from "../Animation"
 
 function getdays (messagetime) {
     let today = new Date()
@@ -85,8 +87,8 @@ function messagetimefunc (t) {
     return minute + ":" + seconds
 }
 
-const Message = forwardRef(({ timestamp, user,
-    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched, edited }, ref) => {
+const Message = ({ timestamp, user,
+    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched, edited, }) => {
     const dispatch = useDispatch()
 
     const userloggedin = useSelector(selectUser)
@@ -95,8 +97,10 @@ const Message = forwardRef(({ timestamp, user,
     const language = useSelector(selectlanguage)
     const messageRef = useRef(null)
 
-    const [dialog, setdialog] = useState(false)
-    const [runned, setrunned] = useState(false)
+    const [dialog, setdialog] = useState({
+        open: false,
+        user: null
+    })
     const [confirmprompt, setconfirmprompt] = useState({
         en: null,
         hu: null,
@@ -108,29 +112,8 @@ const Message = forwardRef(({ timestamp, user,
     const [edit, setedit] = useState(false)
     const [newmessage, setnewmessage] = useState(message)
 
-    const [lastlogin, setlastlogin] = useState(null)
-    const [counter, setcounter] = useState(0)
 
     let messagetime = new Date(timestamp?.toDate())
-    const countfunc = () => {
-
-        if (runned) return setdialog(true)
-
-        db.collection("categories").doc(categorieid).collection("channels")
-            .doc(channelid)
-            .collection("messages")
-            .onSnapshot(snapshot => snapshot.docs.map(doc => {
-                if (doc.data().user.uid === user.uid) {
-                    setcounter(counter => counter + 1)
-                }
-                return null
-            }))
-        db.collection("users")
-            .doc(user.uid).get().then(doc => {
-                let lastlogintime = new Date(doc.data().lastlogin?.toDate());
-                setlastlogin(lastlogintime.toLocaleString("hu-HU"))
-            }).then(() => { setdialog(true); setrunned(true) })
-    }
 
     const copy = () => {
         if (imageurl) {
@@ -193,11 +176,22 @@ const Message = forwardRef(({ timestamp, user,
     }
     return (
         <>
-            <div ref={ref} className={searched ? ("message searched") : ("message")}>
-                <Avatar onClick={() => { countfunc() }} src={user.photo} alt="Avatar picture " />
+            <motion.div key={id} exit="exit" variants={messageAnimation} initial="initial" animate="animate"
+                className={searched ? ("message searched") : ("message")}>
+                <Avatar onClick={() => {
+                    setdialog({
+                        open: true,
+                        user: user
+                    })
+                }} src={user.photo} alt="Avatar picture " />
                 <div className="message__info">
                     <h4>
-                        <span onClick={() => { countfunc() }} className="name">{user.displayname}</span>
+                        <span onClick={() => {
+                            setdialog({
+                                open: true,
+                                user: user
+                            })
+                        }} className="name">{user.displayname}</span>
                         {timestamp && (
                             <span className="time">
                                 {getdays(messagetime) === "Today" ?
@@ -285,7 +279,7 @@ const Message = forwardRef(({ timestamp, user,
                     </div>
                 )}
 
-            </div>
+            </motion.div>
             <Popover anchorOrigin={{
                 vertical: 'center',
                 horizontal: 'left',
@@ -319,9 +313,9 @@ const Message = forwardRef(({ timestamp, user,
 
             <ConfirmDialog confirmprompt={confirmprompt} setconfirmprompt={setconfirmprompt} />
 
-            <Userdialog lastlogin={lastlogin} dialog={dialog} setdialog={setdialog} user={user} counter={counter} />
+            <Userdialog categorieid={categorieid} channelid={channelid} dialog={dialog} setdialog={setdialog} user={user} />
         </>
     )
-})
+}
 
 export default Message

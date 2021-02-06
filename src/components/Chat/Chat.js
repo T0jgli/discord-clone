@@ -27,7 +27,8 @@ import Fslightboxes from "./Fslightboxes"
 import Emoji from "./Emoji"
 import { FileDrop } from 'react-file-drop'
 import { formatBytes } from '../../lib/FormatBytes'
-import FlipMove from 'react-flip-move'
+import { AnimatePresence, motion } from 'framer-motion';
+import { messageAnimation } from '../Animation';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -35,8 +36,6 @@ const useStyles = makeStyles((theme) => ({
         color: '#fff',
     },
 }));
-
-const today = new Date().toLocaleString("hu-HU").replace(/\s/g, '').split('.').join("").split(':').join("")
 
 const Chat = () => {
     const dispatch = useDispatch()
@@ -68,15 +67,17 @@ const Chat = () => {
 
     useEffect(() => {
         if (channelId) {
-            db.collection("categories").doc(categorieid).collection("channels")
-                .doc(channelId)
-                .collection("messages")
-                .orderBy('timestamp', 'desc')
-                .onSnapshot(snapshot =>
-                    setmessages(snapshot.docs.map(doc => doc.data())))
             if (window.innerWidth > 768) {
                 chatMessageInput.current.focus()
             }
+            const cleanup = db.collection("categories").doc(categorieid).collection("channels")
+                .doc(channelId)
+                .collection("messages")
+                .orderBy('timestamp', 'desc')
+                .onSnapshot(snapshot => {
+                    setmessages(snapshot.docs.map(doc => doc.data()))
+                })
+            return () => cleanup()
         }
 
 
@@ -103,7 +104,9 @@ const Chat = () => {
     }, [messages, dispatch])
 
     const sendmessage = () => {
+
         if (image) {
+            const today = new Date().toLocaleString("hu-HU").replace(/\s/g, '').split('.').join("").split(':').join("")
             if (image.type.includes("image")) {
                 setloading(true)
                 const uploadtask = storage.ref(`images/${image.name.replace(".", "__" + today + ".")}`).put(image);
@@ -184,7 +187,7 @@ const Chat = () => {
                         if (emojidialog)
                             setemojidialog(false)
                     }}>
-                        <FlipMove appearAnimation="accordionVertical">
+                        <AnimatePresence>
                             {messages.length > 0 && messages.map((message, index) => {
                                 if (searchtext) {
                                     if (
@@ -207,9 +210,10 @@ const Chat = () => {
                                     else {
                                         if (index + 1 === messages.length && !vane) {
                                             return (
-                                                <div key="notfound" className="search__notfound" onClick={() => setsearchtext("")}>
+                                                <motion.div exit="exit" variants={messageAnimation} initial="initial" animate="animate"
+                                                    key="notfound" className="search__notfound" onClick={() => setsearchtext("")}>
                                                     <p>{language === "hu" ? ("Nincs találat") : ("No result")}</p>
-                                                </div>
+                                                </motion.div>
                                             )
                                         }
                                         else return null
@@ -224,9 +228,11 @@ const Chat = () => {
                                             imageurl={message.imageurl} key={message.id} message={message.message}
                                             timestamp={message.timestamp} user={message.user} imagename={message.imagename}
                                         />
+
                                     )
                             })}
-                        </FlipMove>
+
+                        </AnimatePresence>
                     </div>
                     <div style={{ overflowX: "hidden" }}></div>
                 </Scrollbars>
@@ -279,9 +285,11 @@ const Chat = () => {
                                 fontSize="large" onClick={() => hiddenFileInput.current.click()} />
                         </Tooltip>
                         <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage() } }}>
-                            <input value={input} autoFocus ref={chatMessageInput}
+                            <input aria-label={language === "en" ? ("Chat message input") : ("Chat beviteli mező")}
+                                value={input} autoFocus ref={chatMessageInput}
+                                type="text"
                                 onPaste={(e) => {
-                                    if (e.clipboardData.files[0])
+                                    if (e.clipboardData.files[0] && window.innerWidth > 768)
                                         if (e.clipboardData.files[0].size < 52428800) {
                                             setimage(e.clipboardData.files[0])
                                         }

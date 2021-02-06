@@ -40,7 +40,7 @@ const Theme = createMuiTheme({
             paper: {
                 borderRadius: "0.8rem",
                 textAlign: "center",
-                backgroundColor: "#474b53",
+                backgroundColor: "#40434a",
                 color: "white",
             },
         },
@@ -51,7 +51,7 @@ const Theme = createMuiTheme({
         },
         MuiDialogActions: {
             root: {
-                backgroundColor: "#363a3f !important"
+                backgroundColor: "#292a2e !important"
             }
         },
         MuiMenu: {

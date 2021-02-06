@@ -47,7 +47,7 @@ const SideBarChannel = ({ id, channel, categorieid }) => {
                 className={id === channelid ? mutedchannels?.includes(id) ? ("sidebarchannel mutedchannelbg") :
                     ("sidebarchannel activechannel") : ("sidebarchannel notactivechannel")} onClick={() => {
                         setdelbutton(true); dispatch(setChannelInfo({
-                            channelId: id, channelName: channel.channelname, categorieid: categorieid, channelDesc: channel.channeldesc
+                            channelId: id, channelName: channel.channelname, categorieid: categorieid, channelDesc: channel.description
                         }))
                     }}>
                 <h4 className={mutedchannels?.includes(id) ? "mutedchannel" : ("")}><span>#</span>{channel.channelname}</h4>

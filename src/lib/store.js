@@ -8,4 +8,5 @@ export default configureStore({
     user: userReducer,
     app: AppReducer
   },
+  devTools: false
 });

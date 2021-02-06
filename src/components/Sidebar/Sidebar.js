@@ -5,9 +5,8 @@ import SettingsIcon from "@material-ui/icons/Settings"
 import {
     Avatar, LinearProgress
 } from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close';
 import { selectUser } from '../../lib/userSlice'
-import { selectsidebarmobile, setsidebarmobile } from '../../lib/AppSlice'
+import { selectsidebarmobile } from '../../lib/AppSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import db from '../../lib/firebase'
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -40,11 +39,13 @@ const Sidebar = () => {
     const [categories, setcategories] = useState([])
     const [categoriename, setcategoriename] = useState("")
     const [menu, setmenu] = useState(null)
-    const [dialog, setdialog] = useState(false)
+    const [dialog, setdialog] = useState({
+        open: false
+    })
 
 
     useEffect(() => {
-        db.collection("categories").orderBy("created", "asc").onSnapshot(snapshot => {
+        const cleanup = db.collection("categories").orderBy("created", "asc").onSnapshot(snapshot => {
             setcategories(snapshot.docs.map(doc => {
                 if (doc.data().private === true) {
                     if (doc.data().createdby === user.uid) {
@@ -64,13 +65,15 @@ const Sidebar = () => {
             })
             )
         })
+        return () => cleanup()
 
     }, [dispatch, user.uid])
 
 
     return (
         <>
-            <div className={mobile ? sidebarmobile ? ("sidebar__mobile sidebar__div") : ("sidebar__mobileopen sidebar__div") : ("sidebar__div")}>
+            <div
+                className={mobile ? sidebarmobile ? ("sidebar__mobile sidebar__div") : ("sidebar__mobileopen sidebar__div") : ("sidebar__div")}>
                 <div className={"sidebar"}>
                     <div className="sidebar__top" onClick={(e) => {
                         if (Boolean(menu))
@@ -102,9 +105,16 @@ const Sidebar = () => {
                         </Scrollbars>
                     </div>
                     <div className="sidebar__profile">
-                        <Avatar src={user.photo} onClick={() => setdialog(true)} alt="Avatar picture" />
+                        <Avatar src={user.photo} onClick={() => setdialog({
+                            open: true,
+                            user: user
+                        })} alt="Avatar picture" />
                         <div className="sidebar__profileinfo">
-                            <h3 style={{ cursor: "pointer" }} onClick={() => setdialog(true)}>{user.displayname}</h3>
+                            <h3 style={{ cursor: "pointer" }} onClick={() => setdialog({
+                                open: true,
+                                user: user
+                            })}
+                            >{user.displayname}</h3>
                             <p>#{user.uid.substring(0, 5)}</p>
                         </div>
                         <div className="sidebar__profileicons">
@@ -112,16 +122,6 @@ const Sidebar = () => {
                         </div>
                     </div>
                 </div>
-
-                {mobile && (
-                    <div className="sidebar__mobile__closeicon">
-                        <CloseIcon fontSize="large" onClick={() => {
-                            dispatch(setsidebarmobile({
-                                sidebarmobile: !sidebarmobile
-                            }))
-                        }} />
-                    </div>
-                )}
 
             </div>
 

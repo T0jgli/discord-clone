@@ -15,7 +15,7 @@ const SidebarCategories = ({ categorie, categorieid }) => {
     const [hide, sethide] = useState(hiddencategories ? hiddencategories.includes(categorieid) ? true : false : false)
 
     useEffect(() => {
-        db.collection("categories").doc(categorieid).collection("channels").orderBy("created", "asc").onSnapshot((snapshot) =>
+        const cleanup = db.collection("categories").doc(categorieid).collection("channels").orderBy("created", "asc").onSnapshot((snapshot) =>
             setchannel(
                 snapshot.docs.map((doc) => ({
                     id: doc.id,
@@ -23,6 +23,7 @@ const SidebarCategories = ({ categorie, categorieid }) => {
                 }))
             )
         )
+        return () => cleanup()
     }, [categorieid])
 
     return (
@@ -48,13 +49,12 @@ const SidebarCategories = ({ categorie, categorieid }) => {
                 </div>
                 <AddIcon onClick={() => setpromptstate(true)} />
             </div>
-
             <div className="sidebar__channelslist">
                 {!hide && channels.map(({ id, channel }) => (
                     <SideBarChannel channel={channel} categorieid={categorieid} key={id} id={id} />
                 ))}
-
             </div>
+
 
             <CreatechannelDialog categorieid={categorieid} promptstate={promptstate} setpromptstate={setpromptstate} />
 
