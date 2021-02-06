@@ -2,13 +2,16 @@ import React, { useState } from 'react'
 import { selectlanguage, setlanguage, setsnackbar } from "../../lib/AppSlice"
 import { useDispatch, useSelector } from 'react-redux'
 
-import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip, CircularProgress, Grow } from '@material-ui/core'
+import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip, Grow } from '@material-ui/core'
 
 import Snackbar from '@material-ui/core/Snackbar';
 
 import { auth, googleprovider } from "../../lib/firebase"
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import useNewGif from './useNewGif';
+import { motion } from 'framer-motion';
+import { loginLogo, loginLanguageAnimation } from '../Animation';
+import GitHubIcon from '@material-ui/icons/GitHub';
 
 const Login = () => {
     const dispatch = useDispatch()
@@ -35,67 +38,77 @@ const Login = () => {
     }
 
     const signin = () => {
-        auth.signInWithEmailAndPassword(logindata.email, logindata.password).catch(error => {
-            dispatch(setsnackbar({
-                snackbar: {
-                    open: true,
-                    type: "error",
-                    hu: error.message,
-                    en: error.message
-                }
-            }))
-
+        auth.signInWithEmailAndPassword(logindata.email, logindata.password).then(() => {
             setlogindata({ email: "", password: "" })
         })
+            .catch(error => {
+                dispatch(setsnackbar({
+                    snackbar: {
+                        open: true,
+                        type: "error",
+                        hu: error.message,
+                        en: error.message
+                    }
+                }))
+
+            })
     }
 
     return (
         <>
             <div className="login">
-                <div className="login__logo">
+                <motion.div variants={loginLogo} initial="initial" animate="animate" className="login__logo">
                     <img src="/img/dclogo.png" alt="" />
 
-                    <div className="loginlogo__gifdiv">
-                        <div className="gif">
-                            <Grow in={Boolean(gif)}>
-                                <img src={gif?.data.images.downsized.url} alt="Gif" />
-                            </Grow>
-                        </div>
+                </motion.div>
+                <div className="loginlogo__gifdiv">
+                    <div className="gif">
+                        <Grow in={Boolean(gif)}>
+                            <img src={gif?.data.images.downsized.url} alt="Gif" />
+                        </Grow>
                     </div>
-                </div>
-                <div className="login__language">
-                    <img src="/img/hu.svg"
-                        className={language === "hu" ? ("login__language__languageactive") : ("")}
-                        onClick={() => {
-                            if (language === "en") {
-                                localStorage.removeItem("language");
-                                setlangtoast(true);
-                                dispatch(setlanguage({
-                                    language: "hu"
-                                }))
-                            }
-                        }} alt="huimage" />
-                    <img src="/img/uk.svg"
-                        className={language !== "hu" ? ("login__language__languageactive") : ("")}
-                        onClick={() => {
-                            if (language === "hu") {
-                                localStorage.setItem("language", "en", 365);
-                                setlangtoast(true);
-                                dispatch(setlanguage({
-                                    language: "en"
-                                }))
-                            }
-                        }} alt="ukimage" />
-
                 </div>
                 <Button onClick={() => setopen(true)}>{language === "hu" ? ("Bejelentkezés") : ("Sign In")}</Button>
 
-                <Snackbar open={langtoast} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                <Snackbar open={langtoast} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setlangtoast(false) }}>
                     <SnackbarContent message={language === "hu" ? ("Nyelv sikeresen beállítva") : ("Language set")}
                     />
                 </Snackbar>
 
+            </div>
+
+            <div className="login__language">
+                <motion.img variants={loginLanguageAnimation} initial="initialHu" animate="animate" src="/img/hu.svg"
+                    className={language === "hu" ? ("login__language__languageactive huicon") : ("huicon")}
+                    onClick={() => {
+                        if (language === "en") {
+                            localStorage.removeItem("language");
+                            setlangtoast(true);
+                            dispatch(setlanguage({
+                                language: "hu"
+                            }))
+                        }
+                    }} alt="huimage" />
+                <motion.img variants={loginLanguageAnimation} initial="initialEn" animate="animate" src="/img/uk.svg"
+                    className={language !== "hu" ? ("login__language__languageactive enicon") : ("enicon")}
+                    onClick={() => {
+                        if (language === "hu") {
+                            localStorage.setItem("language", "en", 365);
+                            setlangtoast(true);
+                            dispatch(setlanguage({
+                                language: "en"
+                            }))
+                        }
+                    }} alt="ukimage" />
+
+            </div>
+
+            <div className="login__githublink">
+                <a href="https://github.com/T0jgli/discord-clone" rel="noopener noreferrer" target="_blank">
+                    GitHub
+                <GitHubIcon fontSize="small" />
+                </a>
             </div>
 
             <Dialog open={open} onClose={() => setopen(false)}>
