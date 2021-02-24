@@ -56,13 +56,20 @@ const Theme = createMuiTheme({
         },
         MuiMenu: {
             paper: {
-                top: "8% !important",
-                left: "0% !important",
-                width: "25%",
-                minWidth: "250px",
                 backgroundColor: "rgb(32, 32, 32) !important",
                 color: "rgb(212, 212, 212) !important",
                 borderRadius: "0.5rem",
+            }
+        },
+        MuiList: {
+            root: {
+                padding: "0 !important"
+            }
+        },
+        MuiListItem: {
+            root: {
+                paddingTop: "10px !important",
+                paddingBottom: "10px !important"
             }
         },
         MuiPopover: {

@@ -5,6 +5,7 @@ import { Picker } from 'emoji-mart'
 import { selectlanguage } from '../../lib/AppSlice'
 import { useSelector } from 'react-redux'
 import { Grow } from "@material-ui/core"
+import CloseIcon from '@material-ui/icons/Close';
 
 const HungarianLang = {
     search: "Keresés",
@@ -36,14 +37,19 @@ const HungarianLang = {
     },
 }
 
-const Emoji = ({ input, setinput, fade }) => {
+const Emoji = ({ input, setinput, fade, setemojidialog }) => {
     const language = useSelector(selectlanguage)
     return (
         <Grow in={fade} timeout={200}>
-            <Picker onSelect={(emoji) => {
-                setinput(input + emoji.native)
-            }} theme="dark" emoji="" native title="" i18n={language === "hu" && (HungarianLang)}
-                style={{ position: 'absolute', bottom: '20px', right: '20px', zIndex: "1" }} />
+            <div className="emoji__div">
+                <Picker onSelect={(emoji) => {
+                    setinput(input + emoji.native)
+                }} theme="dark" emoji="" native title="" i18n={language === "hu" && (HungarianLang)}
+                />
+                <div className="close">
+                    <CloseIcon onClick={() => setemojidialog(false)} />
+                </div>
+            </div>
         </Grow>
     )
 }

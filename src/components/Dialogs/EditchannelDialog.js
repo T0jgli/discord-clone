@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { Button, IconButton, Dialog, DialogContent, DialogTitle, DialogActions, Tooltip, Grow } from '@material-ui/core'
+import { Button, IconButton, Dialog, DialogContent, DialogTitle, DialogActions, Tooltip, Grow, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectfilenamesinchannel, selectimagenamesinchannel, selectlanguage, setChannelInfo, setfilenamesinchannel, setsnackbar } from '../../lib/AppSlice';
 import db, { storage } from '../../lib/firebase'
 
-const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setconfirmprompt }) => {
+const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setconfirmprompt, categories }) => {
     const dispatch = useDispatch()
 
     const language = useSelector(selectlanguage)
@@ -16,8 +16,12 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
 
     const [newname, setnewname] = useState(channel.channelname)
     const [newdesc, setnewdesc] = useState(channel.description)
+    const [newcategorie, setnewcategorie] = useState(categorieid)
+
 
     const deletefunc = () => {
+        const docref = db.collection("categories").doc(categorieid).collection("channels").doc(id)
+
         filenamesinchannel.map(file => {
             let ref = storage.ref().child("files/" + file)
             ref.delete()
@@ -29,8 +33,8 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
             return null
         })
 
-        db.collection("categories").doc(categorieid).collection("channels").doc(id).collection("messages").get().then(res => res.forEach(el => el.ref.delete()))
-        db.collection("categories").doc(categorieid).collection("channels").doc(id).delete()
+        docref.collection("messages").get().then(res => res.forEach(el => el.ref.delete()))
+        docref.delete()
         dispatch(setChannelInfo({
             channelId: null, channelName: null
         }), setfilenamesinchannel({ filenamesinchannel: [], imagenamesinchannel: [] }))
@@ -44,7 +48,8 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
         }))
     }
 
-    const editfunc = () => {
+    const editfunc = async () => {
+        const docref = db.collection("categories").doc(categorieid).collection("channels").doc(id)
         if (newname !== channel.channelname || newdesc !== channel.channeldesc) {
             if (newname.length < 1) return dispatch(setsnackbar({
                 snackbar: {
@@ -54,7 +59,7 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
                     en: "I think you should write a name first!"
                 }
             }))
-            db.collection("categories").doc(categorieid).collection("channels").doc(id).update({
+            docref.update({
                 channelname: newname.replace(/\s/g, ''),
                 description: newdesc || ""
             })
@@ -62,6 +67,23 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
                 channelName: newname, channelId: id, categorieid: categorieid, channelDesc: newdesc
             }))
         }
+
+        /*         if (newcategorie !== categorieid) {
+                    const docData = await docref.get().then(doc => doc.exists && doc.data());
+                    const messageData = await docref.collection("messages").get().then(doc => doc.exists && doc.data());
+        
+                    db.collection("categories").doc(newcategorie).collection("channels").doc(id).set({
+                        ...docData
+                    })
+                    db.collection("categories").doc(newcategorie).collection("channels").doc(id).collection("messages").add({
+                        ...docData
+                    })
+        
+        
+                    docref.collection("messages").get().then(res => res.forEach(el => el.ref.delete()))
+                    docref.delete()
+                }
+         */
         setdialog(false)
     }
     return (
@@ -89,6 +111,22 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
                         value={newdesc} onChange={(e) => setnewdesc(e.target.value)}
                     />
                 </form>
+                <br />
+                {/* <FormControl style={{ width: "75%", margin: "1rem auto" }}>
+                    <InputLabel id="demo-simple-select-label">{language === "hu" ? ("Kategória") : ("Category")}</InputLabel>
+                    <Select
+                        value={newcategorie}
+                        onChange={(e) => setnewcategorie(e.target.value)}
+                        labelId="demo-simple-select-label"
+                    >
+                        {categories?.map(categorie => (
+                            <MenuItem value={categorie.id} key={categorie.id}>
+                                {categorie.categorie.categoriename}
+                            </MenuItem>
+                        ))}
+
+                    </Select>
+                </FormControl> */}
                 <br />
                 <Tooltip title={language === "hu" ? ("Csatorna törlése") : ("Delete channel")}>
                     <IconButton onClick={() => {

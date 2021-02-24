@@ -12,7 +12,7 @@ import ConfirmDialog from '../Dialogs/ConfirmDialog';
 import EditchannelDialog from '../Dialogs/EditchannelDialog';
 import { selectUser } from '../../lib/userSlice';
 
-const SideBarChannel = ({ id, channel, categorieid }) => {
+const SideBarChannel = ({ id, channel, categorieid, categories }) => {
     const dispatch = useDispatch()
 
     const channelid = useSelector(selectChannelId)
@@ -59,7 +59,9 @@ const SideBarChannel = ({ id, channel, categorieid }) => {
 
             </div>
 
-            <EditchannelDialog setconfirmprompt={setconfirmprompt}
+            <EditchannelDialog
+                setconfirmprompt={setconfirmprompt}
+                categories={categories}
                 channel={channel}
                 id={id} categorieid={categorieid}
                 dialog={dialog} setdialog={setdialog}

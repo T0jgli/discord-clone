@@ -37,6 +37,10 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+function replaceAt (string, index, replace) {
+    return string.substring(0, index) + replace + string.substring(index + 1);
+}
+
 const Chat = () => {
     const dispatch = useDispatch()
     const hiddenFileInput = useRef(null);
@@ -109,18 +113,18 @@ const Chat = () => {
             const today = new Date().toLocaleString("hu-HU").replace(/\s/g, '').split('.').join("").split(':').join("")
             if (image.type.includes("image")) {
                 setloading(true)
-                const uploadtask = storage.ref(`images/${image.name.replace(".", "__" + today + ".")}`).put(image);
+                const uploadtask = storage.ref(`images/${replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + ".")}`).put(image);
                 uploadtask.on("state_changed", snapshot => {
                     setuploadvalue((snapshot.bytesTransferred / image.size) * 100)
                 }, error => console.log(error), async () => {
-                    await storage.ref("images").child(image.name.replace(".", "__" + today + ".")).getDownloadURL().then(url => {
+                    await storage.ref("images").child(replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + ".")).getDownloadURL().then(url => {
                         let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelId).collection("messages").doc()
                         ref.set({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
                             user: user,
                             imageurl: url,
-                            imagename: image.name.replace(".", "__" + today + "."),
+                            imagename: replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + "."),
                             id: ref.id
                         })
                     })
@@ -129,19 +133,19 @@ const Chat = () => {
             }
             else {
                 setloading(true)
-                const uploadtask = storage.ref(`files/${image.name.replace(".", "__" + today + ".")}`).put(image)
+                const uploadtask = storage.ref(`files/${replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + ".")}`).put(image)
 
                 uploadtask.on("state_changed", snapshot => {
                     setuploadvalue((snapshot.bytesTransferred / image.size) * 100)
                 }, error => console.log(error), async () => {
-                    await storage.ref("files").child(image.name.replace(".", "__" + today + ".")).getDownloadURL().then(url => {
+                    await storage.ref("files").child(replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + ".")).getDownloadURL().then(url => {
                         let ref = db.collection("categories").doc(categorieid).collection("channels").doc(channelId).collection("messages").doc()
                         ref.set({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
                             user: user,
                             fileurl: url,
-                            filename: image.name.replace(".", "__" + today + "."),
+                            filename: replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + "."),
                             id: ref.id
                         })
                     })
@@ -167,7 +171,7 @@ const Chat = () => {
     return (
         <>
             {emojidialog && (
-                <Emoji fade={emojidialog} input={input} setinput={setinput} />
+                <Emoji fade={emojidialog} input={input} setinput={setinput} setemojidialog={setemojidialog} />
             )}
 
             <div className="chat" onClick={() => {
@@ -183,10 +187,7 @@ const Chat = () => {
                 )}
                 <ChatHeader searchtext={searchtext} setsearchtext={setsearchtext} />
                 <Scrollbars renderThumbVertical={props => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
-                    <div className="chat__messages" id="messages" onClick={() => {
-                        if (emojidialog)
-                            setemojidialog(false)
-                    }}>
+                    <div className="chat__messages" id="messages">
                         <AnimatePresence>
                             {messages.length > 0 && messages.map((message, index) => {
                                 if (searchtext) {

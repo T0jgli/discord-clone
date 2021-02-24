@@ -37,7 +37,6 @@ const Sidebar = () => {
 
     const [mobile] = useState(window.innerWidth < 768)
     const [categories, setcategories] = useState([])
-    const [categoriename, setcategoriename] = useState("")
     const [menu, setmenu] = useState(null)
     const [dialog, setdialog] = useState({
         open: false
@@ -90,7 +89,7 @@ const Sidebar = () => {
                                 categories.filter(c => c).map(
                                     categorie => {
                                         return (
-                                            <SidebarCategories categorieid={categorie.id} key={categorie.id}
+                                            <SidebarCategories categories={categories} categorieid={categorie.id} key={categorie.id}
                                                 categorie={categorie.categorie}
                                             />
                                         )
@@ -133,7 +132,7 @@ const Sidebar = () => {
             <SettingsDialog setconfirmprompt={setconfirmprompt} settingsdialog={settingsdialog} setsettingsdialog={setsettingsdialog} />
 
             <CategorieDialog categoriemenu={categoriemenu} setcategoriemenu={setcategoriemenu}
-                categoriename={categoriename} setcategoriename={setcategoriename} categories={categories}
+                categories={categories}
                 confirmprompt={confirmprompt} setconfirmprompt={setconfirmprompt}
             />
 

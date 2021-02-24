@@ -9,7 +9,7 @@ import CreatechannelDialog from '../Dialogs/CreatechannelDialog';
 
 const hiddencategories = JSON.parse(localStorage.getItem("hiddenCategories"))
 
-const SidebarCategories = ({ categorie, categorieid }) => {
+const SidebarCategories = ({ categorie, categorieid, categories }) => {
     const [channels, setchannel] = useState([])
     const [promptstate, setpromptstate] = useState(false)
     const [hide, sethide] = useState(hiddencategories ? hiddencategories.includes(categorieid) ? true : false : false)
@@ -51,7 +51,7 @@ const SidebarCategories = ({ categorie, categorieid }) => {
             </div>
             <div className="sidebar__channelslist">
                 {!hide && channels.map(({ id, channel }) => (
-                    <SideBarChannel channel={channel} categorieid={categorieid} key={id} id={id} />
+                    <SideBarChannel categories={categories} channel={channel} categorieid={categorieid} key={id} id={id} />
                 ))}
             </div>
 

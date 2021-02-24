@@ -17,7 +17,6 @@ import db from '../../lib/firebase';
 import firebase from "firebase/app"
 
 const CategorieDialog = ({ categoriemenu,
-    categoriename, setcategoriename,
     confirmprompt, setconfirmprompt,
     categories,
     setcategoriemenu, }) => {
@@ -26,6 +25,8 @@ const CategorieDialog = ({ categoriemenu,
     const user = useSelector(selectUser)
 
     const [tab, settab] = useState(0)
+    const [categoriename, setcategoriename] = useState("")
+
     const [categorieprivate, setcategorieprivate] = useState(false)
 
 
