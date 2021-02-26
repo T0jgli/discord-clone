@@ -63,6 +63,7 @@ const Chat = () => {
 
     const [loading, setloading] = useState(false)
     const [emojidialog, setemojidialog] = useState(false)
+
     const [searchtext, setsearchtext] = useState("")
     const [lightbox, setlightbox] = useState({
         toggler: false, url: null, user: null, timestamp: null
@@ -186,24 +187,27 @@ const Chat = () => {
                     </Backdrop>
                 )}
                 <ChatHeader searchtext={searchtext} setsearchtext={setsearchtext} />
-                <Scrollbars renderThumbVertical={props => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
+                <Scrollbars renderThumbVertical={() => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
                     <div className="chat__messages" id="messages">
                         <AnimatePresence>
-                            {messages.length > 0 && messages.map((message, index) => {
+                            {messages.length > 0 && messages.map((
+                                { message: messageM, user: userM,
+                                    imagename, filename, id: idM, fileurl, imageurl, edited, timestamp
+                                }, index) => {
                                 if (searchtext) {
                                     if (
-                                        message?.message.toString().toLowerCase().includes(searchtext.toString().toLowerCase()) ||
-                                        message?.user.displayname.toLowerCase().includes(searchtext.toString().toLowerCase()) ||
-                                        message?.imagename?.toString().toLowerCase().includes(searchtext.toString().toLowerCase()) ||
-                                        message?.filename?.toString().toLowerCase().includes(searchtext.toString().toLowerCase())
+                                        messageM?.toString().toLowerCase().includes(searchtext.toString().toLowerCase()) ||
+                                        userM?.displayname.toLowerCase().includes(searchtext.toString().toLowerCase()) ||
+                                        imagename?.toString().toLowerCase().includes(searchtext.toString().toLowerCase()) ||
+                                        filename?.toString().toLowerCase().includes(searchtext.toString().toLowerCase())
                                     ) {
                                         vane = true
                                         return (
-                                            <Message setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
-                                                id={message.id}
-                                                edited={message.edited}
-                                                imageurl={message.imageurl} key={message.id} message={message.message}
-                                                timestamp={message.timestamp} user={message.user} imagename={message.imagename}
+                                            <Message setlightbox={setlightbox} filename={filename} fileurl={fileurl}
+                                                id={idM}
+                                                edited={edited}
+                                                imageurl={imageurl} key={idM} message={messageM}
+                                                timestamp={timestamp} user={userM} imagename={imagename}
                                                 searched
                                             />
                                         )
@@ -223,11 +227,11 @@ const Chat = () => {
                                 }
                                 else
                                     return (
-                                        <Message setlightbox={setlightbox} filename={message.filename} fileurl={message.fileurl}
-                                            id={message.id}
-                                            edited={message.edited}
-                                            imageurl={message.imageurl} key={message.id} message={message.message}
-                                            timestamp={message.timestamp} user={message.user} imagename={message.imagename}
+                                        <Message setlightbox={setlightbox} filename={filename} fileurl={fileurl}
+                                            id={idM}
+                                            edited={edited}
+                                            imageurl={imageurl} key={idM} message={messageM}
+                                            timestamp={timestamp} user={userM} imagename={imagename}
                                         />
 
                                     )
@@ -333,7 +337,10 @@ const Chat = () => {
                             <SendRoundedIcon className={input || image ? "" : ("chat__disabledsendbtn")}
                                 onClick={(e) => { if (input || image) { sendmessage() } }} />
                             <EmojiEmotionsIcon className={channelname ? "" : ("chat__disabledsendbtn")}
-                                fontSize="large" onClick={() => { if (channelId) setemojidialog(true) }} />
+                                fontSize="large" onClick={() => {
+                                    if (channelId)
+                                        setemojidialog(true)
+                                }} />
                         </div>
                     </div>
                 </FileDrop>

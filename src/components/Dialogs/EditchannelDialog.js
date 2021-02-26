@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectfilenamesinchannel, selectimagenamesinchannel, selectlanguage, setChannelInfo, setfilenamesinchannel, setsnackbar } from '../../lib/AppSlice';
 import db, { storage } from '../../lib/firebase'
 
-const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setconfirmprompt, categories }) => {
+const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setconfirmprompt }) => {
     const dispatch = useDispatch()
 
     const language = useSelector(selectlanguage)
@@ -16,8 +16,6 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
 
     const [newname, setnewname] = useState(channel.channelname)
     const [newdesc, setnewdesc] = useState(channel.description)
-    const [newcategorie, setnewcategorie] = useState(categorieid)
-
 
     const deletefunc = () => {
         const docref = db.collection("categories").doc(categorieid).collection("channels").doc(id)
@@ -68,22 +66,6 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
             }))
         }
 
-        /*         if (newcategorie !== categorieid) {
-                    const docData = await docref.get().then(doc => doc.exists && doc.data());
-                    const messageData = await docref.collection("messages").get().then(doc => doc.exists && doc.data());
-        
-                    db.collection("categories").doc(newcategorie).collection("channels").doc(id).set({
-                        ...docData
-                    })
-                    db.collection("categories").doc(newcategorie).collection("channels").doc(id).collection("messages").add({
-                        ...docData
-                    })
-        
-        
-                    docref.collection("messages").get().then(res => res.forEach(el => el.ref.delete()))
-                    docref.delete()
-                }
-         */
         setdialog(false)
     }
     return (
@@ -111,22 +93,6 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
                         value={newdesc} onChange={(e) => setnewdesc(e.target.value)}
                     />
                 </form>
-                <br />
-                {/* <FormControl style={{ width: "75%", margin: "1rem auto" }}>
-                    <InputLabel id="demo-simple-select-label">{language === "hu" ? ("Kategória") : ("Category")}</InputLabel>
-                    <Select
-                        value={newcategorie}
-                        onChange={(e) => setnewcategorie(e.target.value)}
-                        labelId="demo-simple-select-label"
-                    >
-                        {categories?.map(categorie => (
-                            <MenuItem value={categorie.id} key={categorie.id}>
-                                {categorie.categorie.categoriename}
-                            </MenuItem>
-                        ))}
-
-                    </Select>
-                </FormControl> */}
                 <br />
                 <Tooltip title={language === "hu" ? ("Csatorna törlése") : ("Delete channel")}>
                     <IconButton onClick={() => {

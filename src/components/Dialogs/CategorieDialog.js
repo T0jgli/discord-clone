@@ -118,6 +118,8 @@ const CategorieDialog = ({ categoriemenu,
         setcategoriemenu(false)
     }
 
+    let vane = false;
+
     return (
         <Dialog TransitionComponent={Grow} open={categoriemenu} onClose={() => setcategoriemenu(false)}>
             <DialogContent>
@@ -154,21 +156,22 @@ const CategorieDialog = ({ categoriemenu,
                 </DialogTitle>
                 <ArrowDropDownIcon />
                 {categories.map((categorie, index) => {
-                    if (categorie && user.uid === categorie.categorie.createdby) {
-                        const id = categorie.categorie.id
+                    const { id: idC, categoriename: cName, createdby, private: privateC } = categorie?.categorie || {}
+                    if (idC && user.uid === createdby) {
+                        vane = true;
                         return (
-                            <form key={id} style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie() }}>
+                            <form key={idC} style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie() }}>
                                 <div style={{ margin: "10px 0 10px 0", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                    <Tooltip placement="left" title={language === "hu" ? categorie.categorie.private ? ("Privát") : ("Publikus") :
-                                        categorie.categorie.private ? ("Private") : ("Public")}>
+                                    <Tooltip placement="left" title={language === "hu" ? privateC ? ("Privát") : ("Publikus") :
+                                        privateC ? ("Private") : ("Public")}>
                                         <IconButton onClick={() => {
-                                            if (categorie.categorie.private)
-                                                handlecategorieprivate("public", id)
-                                            else handlecategorieprivate("private", id)
+                                            if (privateC)
+                                                handlecategorieprivate("public", idC)
+                                            else handlecategorieprivate("private", idC)
                                         }}
                                             style={{ color: "white", opacity: "0.5" }}
                                         >
-                                            {categorie.categorie.private ? (
+                                            {privateC ? (
                                                 <LockIcon />
                                             ) : (
                                                     <LockOpenIcon />
@@ -176,15 +179,15 @@ const CategorieDialog = ({ categoriemenu,
                                         </IconButton>
                                     </Tooltip>
 
-                                    <TextField label="" variant="filled" value={categorie.categorie.categoriename}
-                                        onChange={(e) => handleeditcategoriename(e, id)} />
+                                    <TextField label="" variant="filled" value={cName}
+                                        onChange={(e) => handleeditcategoriename(e, idC)} />
                                     <Tooltip placement="right" title={language === "hu" ? ("Törlés") : ("Delete")}>
                                         <IconButton style={{ color: "gray" }} onClick={() => {
                                             setconfirmprompt({
                                                 en: "Are you sure you want to delete this category?",
                                                 hu: "Biztosan törlöd a kategóriát?",
                                                 open: true,
-                                                enter: () => deletecategorie(categorie.categorie.id)
+                                                enter: () => deletecategorie(idC)
                                             })
                                         }}>
                                             <DeleteIcon />
@@ -195,7 +198,7 @@ const CategorieDialog = ({ categoriemenu,
                         )
                     }
 
-                    else if (index + 1 === categories.length)
+                    else if (index + 1 === categories.length && !vane)
                         return (
                             <p key="notfound" style={{ opacity: "0.5" }}>Nincs általad létrehozott kategória</p>
                         )

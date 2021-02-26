@@ -68,7 +68,6 @@ const Sidebar = () => {
 
     }, [dispatch, user.uid])
 
-
     return (
         <>
             <div
@@ -84,16 +83,16 @@ const Sidebar = () => {
                         <Navbar menu={menu} setmenu={setmenu} setcategoriemenu={setcategoriemenu} setusersmenu={setusersmenu} />
                     </div>
                     <div className="sidebar__channels">
-                        <Scrollbars autoHide autoHideDuration={2000} renderThumbVertical={props => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
+                        <Scrollbars autoHide autoHideDuration={2000} renderThumbVertical={() => <div style={{ backgroundColor: "#212121", borderRadius: "5px" }} />}>
                             {categories.length > 0 ?
-                                categories.filter(c => c).map(
-                                    categorie => {
-                                        return (
-                                            <SidebarCategories categories={categories} categorieid={categorie.id} key={categorie.id}
-                                                categorie={categorie.categorie}
-                                            />
-                                        )
-                                    }
+                                categories.filter(c => c).map(({ id: idC, categorie: categorieC }) => {
+                                    return (
+                                        <SidebarCategories
+                                            categorieid={idC} key={idC}
+                                            categorie={categorieC}
+                                        />
+                                    )
+                                }
                                 )
                                 : (
                                     <div className="sidebar__channels__loading">

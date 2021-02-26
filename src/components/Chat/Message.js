@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -88,7 +88,7 @@ function messagetimefunc (t) {
 }
 
 const Message = ({ timestamp, user,
-    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched, edited, }) => {
+    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched, edited }) => {
     const dispatch = useDispatch()
 
     const userloggedin = useSelector(selectUser)
@@ -110,6 +110,7 @@ const Message = ({ timestamp, user,
 
     const [editpopper, seteditpopper] = useState(null)
     const [edit, setedit] = useState(false)
+    const [editInputWidth, seteditInputWidth] = useState(0)
     const [newmessage, setnewmessage] = useState(message)
 
 
@@ -236,10 +237,13 @@ const Message = ({ timestamp, user,
                         </p>
                     ) : (
                             <form className="message__edit" onSubmit={editfunc}>
-                                <input style={{ width: messageRef?.current?.offsetWidth || "200px", letterSpacing: "0.2px" }}
+                                <input style={{ width: editInputWidth || "200px", letterSpacing: "0.2px" }}
                                     value={newmessage} onChange={(e) => {
                                         setnewmessage(e.target.value)
-                                    }} />
+                                        if (e.nativeEvent.data)
+                                            seteditInputWidth(e.target.offsetWidth)
+                                    }}
+                                />
                                 <IconButton type="submit" size="small" >
                                     <DoneIcon />
                                 </IconButton>
@@ -292,7 +296,12 @@ const Message = ({ timestamp, user,
                 open={Boolean(editpopper)} anchorEl={editpopper} disablePortal>
                 <Paper style={{ background: "transparent" }} className="message__editmenu">
                     <Tooltip title={language === "hu" ? ("Üzenet szerkeszrése") : ("Edit message")} placement="bottom">
-                        <IconButton onClick={() => { setedit(!edit); seteditpopper(null) }} >
+                        <IconButton onClick={() => {
+                            setedit(!edit);
+                            seteditpopper(null);
+                            seteditInputWidth(messageRef?.current?.offsetWidth)
+
+                        }} >
                             <EditIcon style={{ color: "grey" }} />
                         </IconButton>
                     </Tooltip>

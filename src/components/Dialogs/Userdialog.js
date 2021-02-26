@@ -44,7 +44,6 @@ function Userdialog ({ dialog, setdialog, avatar, categorieid, channelid }) {
                     setlastlogin(lastlogintime.toLocaleString("hu-HU"))
                 })
             db.collection("users").doc(dialog?.user?.uid).get().then(u => {
-                console.log(u.data())
                 if (u.exists)
                     setusername(u.data().displayname)
             })

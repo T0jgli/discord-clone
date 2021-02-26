@@ -44,7 +44,7 @@ const Emoji = ({ input, setinput, fade, setemojidialog }) => {
             <div className="emoji__div">
                 <Picker onSelect={(emoji) => {
                     setinput(input + emoji.native)
-                }} theme="dark" emoji="" native title="" i18n={language === "hu" && (HungarianLang)}
+                }} theme="dark" emoji="" native title="" i18n={language === "hu" ? (HungarianLang) : ({})}
                 />
                 <div className="close">
                     <CloseIcon onClick={() => setemojidialog(false)} />
