@@ -30,8 +30,6 @@ const AllusersDialog = ({ usersmenu, setusersmenu }) => {
             })
             return () => cleanup()
         }
-
-
     }, [usersmenu])
 
     return (
@@ -42,24 +40,22 @@ const AllusersDialog = ({ usersmenu, setusersmenu }) => {
                         {language === "hu" ? ("Felhasználók") : ("Users")}
                     </DialogTitle>
                     <DialogContent>
-                        {users?.map(({ displayname: dName, newusername, photoUrl }, i) => {
-                            return (
-                                <div className="userdialog__div" key={i} onClick={() => setdialog({
-                                    open: true,
-                                    user: {
-                                        ...user,
-                                        displayname: newusername || dName
-                                    }
-                                })}>
-                                    <div className="userdialog__avatar">
-                                        <Avatar src={photoUrl} />
-                                    </div>
-                                    <div className="userdialog__text">
-                                        <p style={{ opacity: "0.8", cursor: "default" }}>{dName}</p>
-                                    </div>
+                        {users?.map((user, i) => (
+                            <div className="userdialog__div" key={i} onClick={() => setdialog({
+                                open: true,
+                                user: {
+                                    ...user,
+                                    displayname: user.newusername || user.displayname
+                                }
+                            })}>
+                                <div className="userdialog__avatar">
+                                    <Avatar src={user.photoUrl} />
                                 </div>
-                            )
-                        })}
+                                <div className="userdialog__text">
+                                    <p style={{ opacity: "0.8", cursor: "default" }}>{user.displayname}</p>
+                                </div>
+                            </div>
+                        ))}
                     </DialogContent>
                 </DialogContent>
                 <div className="dialog__closeicon">
