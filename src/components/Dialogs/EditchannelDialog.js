@@ -6,9 +6,11 @@ import TextField from '@material-ui/core/TextField';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectfilenamesinchannel, selectimagenamesinchannel, selectlanguage, setChannelInfo, setfilenamesinchannel, setsnackbar } from '../../lib/AppSlice';
 import db, { storage } from '../../lib/firebase'
+import { selectUser } from '../../lib/userSlice';
 
 const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setconfirmprompt }) => {
     const dispatch = useDispatch()
+    const user = useSelector(selectUser)
 
     const language = useSelector(selectlanguage)
     const filenamesinchannel = useSelector(selectfilenamesinchannel)
@@ -18,35 +20,56 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
     const [newdesc, setnewdesc] = useState(channel.description)
 
     const deletefunc = () => {
+        if (user.uid !== channel.createdby) return dispatch(setsnackbar({
+            snackbar: {
+                open: true,
+                type: "error",
+                hu: "Nincs jogod ehhez!",
+                en: "You are not authorized to do that!"
+            }
+        }))
+
         const docref = db.collection("categories").doc(categorieid).collection("channels").doc(id)
 
-        filenamesinchannel.map(file => {
+        filenamesinchannel.forEach(file => {
             let ref = storage.ref().child("files/" + file)
             ref.delete()
-            return null
         })
-        imagenamesinchannel.map(file => {
+        imagenamesinchannel.forEach(file => {
             let ref = storage.ref().child("images/" + file)
             ref.delete()
-            return null
         })
 
         docref.collection("messages").get().then(res => res.forEach(el => el.ref.delete()))
         docref.delete()
-        dispatch(setChannelInfo({
-            channelId: null, channelName: null
-        }), setfilenamesinchannel({ filenamesinchannel: [], imagenamesinchannel: [] }))
-        dispatch(setsnackbar({
-            snackbar: {
-                open: true,
-                type: "warning",
-                hu: "Csatorna sikeresen törölve!",
-                en: "Channel deleted!"
-            }
-        }))
+        dispatch(
+            setChannelInfo({
+                channelId: null, channelName: null, categorieid: null, channelDesc: null
+            }),
+            setfilenamesinchannel({
+                filenamesinchannel: [],
+                imagenamesinchannel: []
+            }),
+            setsnackbar({
+                snackbar: {
+                    open: true,
+                    type: "warning",
+                    hu: "Csatorna sikeresen törölve!",
+                    en: "Channel deleted!"
+                }
+            }))
     }
 
     const editfunc = async () => {
+        if (user.uid !== channel.createdby) return dispatch(setsnackbar({
+            snackbar: {
+                open: true,
+                type: "error",
+                hu: "Nincs jogod ehhez!",
+                en: "You are not authorized to do that!"
+            }
+        }))
+
         const docref = db.collection("categories").doc(categorieid).collection("channels").doc(id)
         if (newname !== channel.channelname || newdesc !== channel.channeldesc) {
             if (newname.length < 1) return dispatch(setsnackbar({
@@ -68,6 +91,7 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
 
         setdialog(false)
     }
+
     return (
         <Dialog onKeyDown={(e) => {
             if (e.key === "Escape") {

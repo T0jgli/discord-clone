@@ -75,16 +75,14 @@ const Chat = () => {
             if (window.innerWidth > 768) {
                 chatMessageInput.current.focus()
             }
-            const cleanup = db.collection("categories").doc(categorieid).collection("channels")
+            db.collection("categories").doc(categorieid).collection("channels")
                 .doc(channelId)
                 .collection("messages")
                 .orderBy('timestamp', 'desc')
                 .onSnapshot(snapshot => {
                     setmessages(snapshot.docs.map(doc => doc.data()))
                 })
-            return () => cleanup()
         }
-
 
     }, [channelId, categorieid])
 
@@ -237,7 +235,17 @@ const Chat = () => {
                                     )
                             })}
 
+                            {/*!channelId && (
+                                <motion.div
+                                    className="welcome-div"
+                                    key={"welcome"} exit="exit"
+                                    variants={messageAnimation}
+                                    initial="initial" animate="animate"
+                                >
+                                </motion.div>
+                            )*/}
                         </AnimatePresence>
+
                     </div>
                     <div style={{ overflowX: "hidden" }}></div>
                 </Scrollbars>

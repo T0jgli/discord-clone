@@ -61,11 +61,6 @@ const Theme = createMuiTheme({
                 borderRadius: "0.5rem",
             }
         },
-        MuiList: {
-            root: {
-                padding: "0 !important"
-            }
-        },
         MuiListItem: {
             root: {
                 paddingTop: "10px !important",

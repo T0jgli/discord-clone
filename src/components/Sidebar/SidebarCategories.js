@@ -6,11 +6,14 @@ import AddIcon from "@material-ui/icons/Add"
 import db from '../../lib/firebase';
 import SideBarChannel from './SideBarChannel';
 import CreatechannelDialog from '../Dialogs/CreatechannelDialog';
+import { selectUser } from '../../lib/userSlice';
+import { useSelector } from 'react-redux';
 
 const hiddencategories = JSON.parse(localStorage.getItem("hiddenCategories"))
 
 const SidebarCategories = ({ categorie, categorieid }) => {
     const [channels, setchannel] = useState([])
+    const user = useSelector(selectUser)
     const [promptstate, setpromptstate] = useState(false)
     const [hide, sethide] = useState(hiddencategories ? hiddencategories.includes(categorieid) ? true : false : false)
 
@@ -47,7 +50,12 @@ const SidebarCategories = ({ categorie, categorieid }) => {
                     <ExpandMoreIcon className={hide ? ("sidebar__categorieiconshowed sidebar__menuicon") : ("sidebar__menucion")} />
                     <h5>{categorie.categoriename}</h5>
                 </div>
-                <AddIcon onClick={() => setpromptstate(true)} />
+                {!categorie.onlyMeCanCreateChannel ? (
+                    <AddIcon onClick={() => setpromptstate(true)} />
+                ) : categorie.createdby === user.uid && (
+                    <AddIcon onClick={() => setpromptstate(true)} />
+                )}
+
             </div>
             <div className="sidebar__channelslist">
                 {!hide && channels.map(({ id, channel }) => (
@@ -56,7 +64,8 @@ const SidebarCategories = ({ categorie, categorieid }) => {
             </div>
 
 
-            <CreatechannelDialog categorieid={categorieid} promptstate={promptstate} setpromptstate={setpromptstate} />
+            <CreatechannelDialog createdby={categorie.createdby} onlyMeCanCreateChannel={categorie.onlyMeCanCreateChannel}
+                categorieid={categorieid} promptstate={promptstate} setpromptstate={setpromptstate} />
 
 
         </>

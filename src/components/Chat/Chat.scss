@@ -136,6 +136,7 @@
 
     .chat__messages {
         flex: 1;
+        height: 100%;
 
         .message__editmenu {
             button {
@@ -152,6 +153,15 @@
                     }
                 }
             }
+        }
+
+        .welcome-div {
+            display: grid;
+            height: 100%;
+            width: 100%;
+            place-items: center;
+            color: lightgray;
+            text-align: center;
         }
 
         .searched {
@@ -284,7 +294,7 @@
                         opacity: 0.8;
                         cursor: default;
                         font-size: x-small;
-                        margin-left: 20px;
+                        margin-left: 15px;
                         margin-top: 10px;
                         transition: 0.3s;
 

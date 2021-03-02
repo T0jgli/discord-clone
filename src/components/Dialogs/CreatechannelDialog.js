@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import firebase from "firebase/app"
 import { selectUser } from '../../lib/userSlice';
 
-const CreatechannelDialog = ({ promptstate, setpromptstate, categorieid }) => {
+const CreatechannelDialog = ({ promptstate, setpromptstate, categorieid, onlyMeCanCreateChannel, createdby }) => {
     const dispatch = useDispatch()
     const [channelname, setchannelname] = useState("")
     const [channeldesc, setchanneldesc] = useState("")
@@ -24,6 +24,16 @@ const CreatechannelDialog = ({ promptstate, setpromptstate, categorieid }) => {
                 en: "I think you should write a name first!"
             }
         }))
+
+        if (onlyMeCanCreateChannel && user.uid !== createdby) return dispatch(setsnackbar({
+            snackbar: {
+                open: true,
+                type: "error",
+                hu: "Nincs jogod ehhez!",
+                en: "You are not authorized to do that!"
+            }
+        }))
+
 
         db.collection("categories").doc(categorieid).collection("channels").add({
             channelname: channelname.replace(/\s\s+/g, ' '),
