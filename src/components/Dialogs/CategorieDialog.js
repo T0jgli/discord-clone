@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import LockIcon from '@material-ui/icons/Lock';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -15,6 +15,8 @@ import { selectUser } from '../../lib/userSlice';
 import DeleteIcon from '@material-ui/icons/Delete';
 import db from '../../lib/firebase';
 import firebase from "firebase/app"
+import PeopleIcon from '@material-ui/icons/People';
+import PersonIcon from '@material-ui/icons/Person';
 
 const CategorieDialog = ({ categoriemenu,
     confirmprompt, setconfirmprompt,
@@ -28,7 +30,7 @@ const CategorieDialog = ({ categoriemenu,
     const [categoriename, setcategoriename] = useState("")
 
     const [categorieprivate, setcategorieprivate] = useState(false)
-
+    const tabAction = useRef(null)
 
     const handleaddcategorie = () => {
         if (tab === 0)
@@ -118,14 +120,47 @@ const CategorieDialog = ({ categoriemenu,
         setcategoriemenu(false)
     }
 
+    const handleEditChannelCreation = async (what, id, privateC) => {
+        if (privateC) return dispatch(setsnackbar({
+            snackbar: {
+                open: true,
+                type: "info",
+                hu: "Privát kategóriánál tök mindegy ki hozhat létre csatornát tesó!",
+                en: "If the category is private, it doesn't matter who can create channel!"
+            }
+        }))
+
+        try {
+            await db.collection("categories").doc(id).update({
+                onlyMeCanCreateChannel: what === "public" ? (false) : (true)
+            })
+
+            dispatch(setsnackbar({
+                snackbar: {
+                    open: true,
+                    type: "info",
+                    hu: what === "public" ? ("A kategóriában mostantól mások is tudnak szobát létrehozni!") : ("A kategóriában mostantól csak te tudsz szobát létrehozni!"),
+                    en: what === "public" ? ("From now on, others as well can create rooms in this category!") : ("From now on, only you can create room in this category!")
+                }
+            }))
+        } catch (error) {
+            console.error(error)
+        }
+
+    }
+
     let vane = false;
 
     return (
-        <Dialog TransitionComponent={Grow} open={categoriemenu} onClose={() => setcategoriemenu(false)}>
+        <Dialog onEntered={() => {
+            if (tabAction.current) {
+                tabAction.current.updateIndicator();
+            }
+        }} TransitionComponent={Grow} open={categoriemenu} onClose={() => setcategoriemenu(false)}>
             <DialogContent>
                 <Paper>
                     <Tabs
-                        centered
+                        action={tabAction}
                         variant="fullWidth"
                         value={tab}
                         onChange={(e, val) => settab(val)}
@@ -156,12 +191,25 @@ const CategorieDialog = ({ categoriemenu,
                 </DialogTitle>
                 <ArrowDropDownIcon />
                 {categories.map((categorie, index) => {
-                    const { id: idC, categoriename: cName, createdby, private: privateC } = categorie?.categorie || {}
+                    const { id: idC, categoriename: cName, createdby, private: privateC, onlyMeCanCreateChannel } = categorie?.categorie || {}
                     if (idC && user.uid === createdby) {
                         vane = true;
                         return (
                             <form key={idC} style={{ margin: "10px" }} onSubmit={(e) => { e.preventDefault(); handleaddcategorie() }}>
                                 <div style={{ margin: "10px 0 10px 0", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                    <IconButton onClick={() => {
+                                        if (onlyMeCanCreateChannel)
+                                            handleEditChannelCreation("public", idC, privateC)
+                                        else
+                                            handleEditChannelCreation("private", idC, privateC)
+                                    }} style={{ color: "white", opacity: "0.5" }}>
+                                        {onlyMeCanCreateChannel ? (
+                                            <LockIcon />
+                                        ) : (
+                                                <LockOpenIcon />
+                                            )}
+                                    </IconButton>
+
                                     <Tooltip placement="left" title={language === "hu" ? privateC ? ("Privát") : ("Publikus") :
                                         privateC ? ("Private") : ("Public")}>
                                         <IconButton onClick={() => {
@@ -172,9 +220,9 @@ const CategorieDialog = ({ categoriemenu,
                                             style={{ color: "white", opacity: "0.5" }}
                                         >
                                             {privateC ? (
-                                                <LockIcon />
+                                                <PersonIcon />
                                             ) : (
-                                                    <LockOpenIcon />
+                                                    <PeopleIcon />
                                                 )}
                                         </IconButton>
                                     </Tooltip>
@@ -214,7 +262,7 @@ const CategorieDialog = ({ categoriemenu,
                     {tab === 0 ? language === "hu" ? ("Létrehoz") : ("Create") : language === "hu" ? ("Kész") : ("Done")}
                 </Button>
             </DialogActions>
-        </Dialog>
+        </Dialog >
     )
 }
 
