@@ -429,3 +429,29 @@
         justify-content: center !important;
     }
 }
+
+.settingsdialog__avatardiv {
+    position: relative;
+    margin: 50px 0;
+
+    .MuiAvatar-root {
+        margin: 1rem auto;
+        width: 80px !important;
+        height: 80px !important;
+        cursor: default !important;
+    }
+
+    .editicon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        transition: 0.3s;
+
+        &:hover {
+            svg {
+                color: rgb(179, 179, 179) !important;
+                transition: 0.3s;
+            }
+        }
+    }
+}
