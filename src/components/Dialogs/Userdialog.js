@@ -12,10 +12,9 @@ import db from '../../lib/firebase';
 
 function Userdialog ({ dialog, setdialog, avatar, categorieid, channelid }) {
     const language = useSelector(selectlanguage)
-    const [username, setusername] = useState(null)
-    const [lastlogin, setlastlogin] = useState(null)
     const [counter, setcounter] = useState(0)
     const [runned, setrunned] = useState(false)
+    const lastlogintime = new Date(dialog?.user?.lastlogin?.toDate())
 
     const countfunc = () => {
 
@@ -26,7 +25,7 @@ function Userdialog ({ dialog, setdialog, avatar, categorieid, channelid }) {
             .doc(channelid)
             .collection("messages")
             .onSnapshot(snapshot => snapshot.docs.map(doc => {
-                if (doc.data().user.uid === dialog.user.uid) {
+                if (doc.data().userUid === dialog?.user?.id) {
                     setcounter(counter => counter + 1)
                 }
                 return null
@@ -38,15 +37,6 @@ function Userdialog ({ dialog, setdialog, avatar, categorieid, channelid }) {
     useEffect(() => {
         timeago.register('hu', hu);
         if (dialog.open) {
-            db.collection("users")
-                .doc(dialog?.user?.uid).get().then(doc => {
-                    let lastlogintime = new Date(doc.data().lastlogin?.toDate());
-                    setlastlogin(lastlogintime.toLocaleString("hu-HU"))
-                })
-            db.collection("users").doc(dialog?.user?.uid).get().then(u => {
-                if (u.exists)
-                    setusername(u.data().displayname)
-            })
             if (!avatar)
                 return countfunc()
         }
@@ -56,22 +46,20 @@ function Userdialog ({ dialog, setdialog, avatar, categorieid, channelid }) {
     return (
         <Dialog TransitionComponent={Grow} open={dialog?.open} onClose={() => setdialog({ ...dialog, open: false })}>
             <DialogContent>
-                {dialog?.user?.photo ? (
-                    <img src={dialog?.user?.photo} alt="userphoto" style={{ borderRadius: "50%" }} />
-                ) : dialog?.user?.photoUrl ? (
-                    <img src={dialog?.user?.photoUrl} alt="userphoto" style={{ borderRadius: "50%" }} />
+                {dialog?.user?.photoUrl || dialog?.user?.photo ? (
+                    <img src={dialog?.user?.photoUrl || dialog?.user?.photo} alt="userphoto" style={{ maxHeight: "250px" }} />
                 ) : (
-                            <Avatar className="userdialog__myavatar" src={dialog?.user?.photo}>
-                                {dialog?.user?.displayname.substring(0, 1)}
-                            </Avatar>
-                        )}
+                    <Avatar className="userdialog__myavatar" src={dialog?.user?.photo}>
+                        {dialog?.user?.displayname.substring(0, 1)}
+                    </Avatar>
+                )}
 
                 <DialogTitle>
                     <span style={{ fontWeight: "bold" }}>{dialog?.user?.displayname}</span>
                     <br />
-                    {username && username !== dialog?.user?.displayname && (
+                    {dialog?.user?.newusername && (
                         <Fade in>
-                            <span>({username})</span>
+                            <span>({dialog?.user?.newusername})</span>
                         </Fade>
 
                     )}
@@ -84,7 +72,7 @@ function Userdialog ({ dialog, setdialog, avatar, categorieid, channelid }) {
                         (<span>All messages on the channel: <span>{counter}</span></span>))}
                     {!avatar && (<br />)}
                     <span style={{ marginTop: "15px", fontWeight: "bolder", display: "inline-block" }}>{language === "hu" ? ("Utoljára bejelentkezve: ") : ("Last login: ")}
-                        <TimeAgo datetime={lastlogin} locale={language === "hu" ? ("hu") : ("en")} /></span>
+                        <TimeAgo datetime={lastlogintime.toLocaleString("hu-HU")} locale={language === "hu" ? ("hu") : ("en")} /></span>
                 </DialogContentText>
                 {avatar && (<DialogContentText style={{ color: "gray", fontStyle: "italic" }}>
                     Uid: #{dialog?.user?.uid.substring(0, 5)}

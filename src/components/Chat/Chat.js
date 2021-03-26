@@ -55,6 +55,7 @@ const Chat = () => {
 
     const classes = useStyles();
 
+
     const [input, setinput] = useState("");
     const [messages, setmessages] = useState([]);
     const [image, setimage] = useState(null);
@@ -68,7 +69,6 @@ const Chat = () => {
     const [lightbox, setlightbox] = useState({
         toggler: false, url: null, user: null, timestamp: null
     })
-
 
     useEffect(() => {
         if (channelId) {
@@ -121,10 +121,11 @@ const Chat = () => {
                         ref.set({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
-                            user: user,
                             imageurl: url,
                             imagename: replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + "."),
-                            id: ref.id
+                            id: ref.id,
+                            userData: db.doc(`/users/${user.uid}`),
+                            userUid: user.uid
                         })
                     })
                     setloading(false)
@@ -142,10 +143,11 @@ const Chat = () => {
                         ref.set({
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
-                            user: user,
                             fileurl: url,
                             filename: replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + "."),
-                            id: ref.id
+                            id: ref.id,
+                            userData: db.doc(`/users/${user.uid}`),
+                            userUid: user.uid
                         })
                     })
                     setloading(false)
@@ -158,8 +160,9 @@ const Chat = () => {
             ref.set({
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 message: input,
-                user: user,
-                id: ref.id
+                id: ref.id,
+                userData: db.doc(`/users/${user.uid}`),
+                userUid: user.uid
             })
 
         }
@@ -190,7 +193,7 @@ const Chat = () => {
                         <AnimatePresence>
                             {messages.length > 0 && messages.map((
                                 { message: messageM, user: userM,
-                                    imagename, filename, id: idM, fileurl, imageurl, edited, timestamp
+                                    imagename, filename, id: idM, fileurl, imageurl, edited, timestamp, userData, userUid
                                 }, index) => {
                                 if (searchtext) {
                                     if (
@@ -204,6 +207,8 @@ const Chat = () => {
                                             <Message setlightbox={setlightbox} filename={filename} fileurl={fileurl}
                                                 id={idM}
                                                 edited={edited}
+                                                userUid={userUid}
+                                                userData={userData}
                                                 imageurl={imageurl} key={idM} message={messageM}
                                                 timestamp={timestamp} user={userM} imagename={imagename}
                                                 searched
@@ -228,6 +233,8 @@ const Chat = () => {
                                         <Message setlightbox={setlightbox} filename={filename} fileurl={fileurl}
                                             id={idM}
                                             edited={edited}
+                                            userUid={userUid}
+                                            userData={userData}
                                             imageurl={imageurl} key={idM} message={messageM}
                                             timestamp={timestamp} user={userM} imagename={imagename}
                                         />

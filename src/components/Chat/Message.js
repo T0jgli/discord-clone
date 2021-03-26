@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -87,8 +87,8 @@ function messagetimefunc (t) {
     return minute + ":" + seconds
 }
 
-const Message = ({ timestamp, user,
-    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched, edited }) => {
+const Message = ({ timestamp, userUid,
+    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched, edited, userData }) => {
     const dispatch = useDispatch()
 
     const userloggedin = useSelector(selectUser)
@@ -96,6 +96,15 @@ const Message = ({ timestamp, user,
     const categorieid = useSelector(selectcategorieid)
     const language = useSelector(selectlanguage)
     const messageRef = useRef(null)
+
+    const getUserData = async () => {
+        const data = await userData?.get()
+
+        setMessageUser({
+            ...data.data(),
+            id: data.id
+        })
+    }
 
     const [dialog, setdialog] = useState({
         open: false,
@@ -110,11 +119,17 @@ const Message = ({ timestamp, user,
 
     const [editpopper, seteditpopper] = useState(null)
     const [edit, setedit] = useState(false)
+    const [messageUser, setMessageUser] = useState(null)
     const [editInputWidth, seteditInputWidth] = useState(0)
     const [newmessage, setnewmessage] = useState(message)
 
 
     let messagetime = new Date(timestamp?.toDate())
+
+    useEffect(() => {
+        getUserData()
+
+    }, [])
 
     const copy = () => {
         if (imageurl) {
@@ -182,17 +197,17 @@ const Message = ({ timestamp, user,
                 <Avatar onClick={() => {
                     setdialog({
                         open: true,
-                        user: user
+                        user: messageUser
                     })
-                }} src={user.photo} alt="Avatar picture " />
+                }} src={messageUser?.photoUrl} alt="Avatar picture " />
                 <div className="message__info">
                     <h4>
                         <span onClick={() => {
                             setdialog({
                                 open: true,
-                                user: user
+                                user: messageUser
                             })
-                        }} className="name">{user.displayname}</span>
+                        }} className="name">{messageUser?.newusername}</span>
                         {timestamp && (
                             <span className="time">
                                 {getdays(messagetime) === "Today" ?
@@ -236,23 +251,23 @@ const Message = ({ timestamp, user,
 
                         </p>
                     ) : (
-                            <form className="message__edit" onSubmit={editfunc}>
-                                <input style={{ width: editInputWidth || "200px", letterSpacing: "0.2px" }}
-                                    value={newmessage} onChange={(e) => {
-                                        setnewmessage(e.target.value)
-                                        if (e.nativeEvent.data)
-                                            seteditInputWidth(e.target.offsetWidth)
-                                    }}
-                                />
-                                <IconButton type="submit" size="small" >
-                                    <DoneIcon />
-                                </IconButton>
-                            </form>
-                        )}
+                        <form className="message__edit" onSubmit={editfunc}>
+                            <input style={{ width: editInputWidth || "200px", letterSpacing: "0.2px" }}
+                                value={newmessage} onChange={(e) => {
+                                    setnewmessage(e.target.value)
+                                    if (e.nativeEvent.data)
+                                        seteditInputWidth(e.target.offsetWidth)
+                                }}
+                            />
+                            <IconButton type="submit" size="small" >
+                                <DoneIcon />
+                            </IconButton>
+                        </form>
+                    )}
 
 
                     {imageurl && (<img alt="messageImage"
-                        onClick={() => setlightbox({ toggler: true, url: imageurl, user: user.displayname, timestamp: timestamp })} src={imageurl} />)}
+                        onClick={() => setlightbox({ toggler: true, url: imageurl, user: messageUser?.displayname, timestamp: timestamp })} src={imageurl} />)}
                     {fileurl && (
                         <>
                             <a href={fileurl} rel="noreferrer"
@@ -261,8 +276,8 @@ const Message = ({ timestamp, user,
                                     {filename.split(".").slice(-1)[0] === "pdf" ? (
                                         <DescriptionIcon fontSize="small" style={{ marginRight: "5px" }} />
                                     ) : (
-                                            <InsertDriveFileIcon fontSize="small" style={{ marginRight: "5px" }} />
-                                        )}
+                                        <InsertDriveFileIcon fontSize="small" style={{ marginRight: "5px" }} />
+                                    )}
                                     {filename.split("__")[0]
                                         + "." + filename.split(".").slice(-1)[0]
                                     }
@@ -275,7 +290,7 @@ const Message = ({ timestamp, user,
                             </Tooltip>
                         </>)}
                 </div>
-                {user.uid === userloggedin.uid && (
+                {userUid === userloggedin.uid && (
                     <div className="message__delicon">
                         <IconButton onClick={(e) => { seteditpopper(e.currentTarget) }} >
                             <MoreVertIcon style={{ color: "grey" }} />
@@ -322,7 +337,7 @@ const Message = ({ timestamp, user,
 
             <ConfirmDialog confirmprompt={confirmprompt} setconfirmprompt={setconfirmprompt} />
 
-            <Userdialog categorieid={categorieid} channelid={channelid} dialog={dialog} setdialog={setdialog} user={user} />
+            <Userdialog categorieid={categorieid} channelid={channelid} dialog={dialog} setdialog={setdialog} />
         </>
     )
 }
