@@ -83,10 +83,10 @@ const App = () => {
               <Chat />
             </>
           ) : (
-              <Login />
-            ) : (
-              <Loading />
-            )}
+            <Login />
+          ) : (
+            <Loading />
+          )}
           <Snackbars />
         </motion.div>
       </Suspense>

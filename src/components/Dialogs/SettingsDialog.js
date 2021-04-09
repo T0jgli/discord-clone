@@ -36,13 +36,13 @@ const SettingsDialog = ({ setsettingsdialog, settingsdialog, setconfirmprompt })
 
     const handleeditusernamedone = async () => {
         if (newimage) {
-            const uploadtask = storage.ref(`photoImages/${user.uid}__currentPhoto`).put(newimage);
+            const uploadtask = storage.ref(`profilePictures/${user.email}__currentPhoto`).put(newimage);
             setloading(true)
             uploadtask.on("state_changed", snapshot => {
                 setuploadvalue((snapshot.bytesTransferred / newimage.size) * 100)
             }, error => console.log(error), async () => {
                 setloading(false)
-                const newPhotoUrl = await storage.ref(`photoImages/${user.uid}__currentPhoto`).getDownloadURL()
+                const newPhotoUrl = await storage.ref(`profilePictures/${user.email}__currentPhoto`).getDownloadURL()
                 db.collection("users").doc(user.uid).update({
                     photoUrl: newPhotoUrl
                 })
@@ -107,7 +107,7 @@ const SettingsDialog = ({ setsettingsdialog, settingsdialog, setconfirmprompt })
                     </DialogTitle>
                     <ArrowDropDownIcon />
                     <div className="settingsdialog__avatardiv">
-                        <Avatar src={newimage ? URL.createObjectURL(newimage) : user.photo} className="settingsdialog__avatar" />
+                        <img src={newimage ? URL.createObjectURL(newimage) : user.photo} className="settingsdialog__avatar" />
                         <div className="editicon">
                             <EditIcon onClick={() => photoChangeRef.current.click()} />
                         </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import DeleteIcon from '@material-ui/icons/Delete';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { Button, IconButton, Dialog, DialogContent, DialogTitle, DialogActions, Tooltip, Grow, Select, MenuItem, FormControl, InputLabel } from '@material-ui/core'
+import { Button, IconButton, Dialog, DialogContent, DialogTitle, DialogActions, Tooltip, Grow, Select, MenuItem, FormControl, InputLabel, Switch, FormControlLabel } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectfilenamesinchannel, selectimagenamesinchannel, selectlanguage, setChannelInfo, setfilenamesinchannel, setsnackbar } from '../../lib/AppSlice';
@@ -18,6 +18,8 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
 
     const [newname, setnewname] = useState(channel.channelname)
     const [newdesc, setnewdesc] = useState(channel.description)
+    const [onlyMeCanWrite, setonlyMeCanWrite] = useState(false)
+
 
     const deletefunc = () => {
         if (user.uid !== channel.createdby) return dispatch(setsnackbar({
@@ -81,8 +83,8 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
                 }
             }))
             docref.update({
-                channelname: newname.replace(/\s/g, ''),
-                description: newdesc || ""
+                channelname: newname.trim(),
+                description: newdesc.trim() || ""
             })
             dispatch(setChannelInfo({
                 channelName: newname, channelId: id, categorieid: categorieid, channelDesc: newdesc
@@ -117,6 +119,13 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
                         value={newdesc} onChange={(e) => setnewdesc(e.target.value)}
                     />
                 </form>
+                {/* <h4 style={{ margin: "20px auto 5px auto", color: "gray" }}>Üzenetek küldése</h4>
+
+                <FormControlLabel style={{ marginTop: "15px", fontWeight: "bold" }} control={
+                    <Switch color="primary"
+                        checked={onlyMeCanWrite} onChange={() => setonlyMeCanWrite(!onlyMeCanWrite)} />
+                } label={onlyMeCanWrite ? ("Csak én") : ("Mindenki")} /> */}
+
                 <br />
                 <Tooltip title={language === "hu" ? ("Csatorna törlése") : ("Delete channel")}>
                     <IconButton onClick={() => {

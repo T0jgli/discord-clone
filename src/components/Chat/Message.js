@@ -207,7 +207,7 @@ const Message = ({ timestamp, userUid,
                                 open: true,
                                 user: messageUser
                             })
-                        }} className="name">{messageUser?.newusername}</span>
+                        }} className="name">{messageUser?.newusername || messageUser?.displayname}</span>
                         {timestamp && (
                             <span className="time">
                                 {getdays(messagetime) === "Today" ?

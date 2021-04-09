@@ -36,14 +36,14 @@ const CreatechannelDialog = ({ promptstate, setpromptstate, categorieid, onlyMeC
 
 
         db.collection("categories").doc(categorieid).collection("channels").add({
-            channelname: channelname.replace(/\s\s+/g, ' '),
+            channelname: channelname.trim(),
             description: channeldesc,
             created: firebase.firestore.FieldValue.serverTimestamp(),
             createdby: user.uid
         }).then((e) => {
             dispatch(setChannelInfo({
                 channelId: e.id,
-                channelName: channelname.replace(/\s\s+/g, ' '),
+                channelName: channelname.trim(),
                 channelDesc: channeldesc,
                 categorieid: categorieid
             }))

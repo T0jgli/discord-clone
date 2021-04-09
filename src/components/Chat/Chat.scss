@@ -432,13 +432,13 @@
 
 .settingsdialog__avatardiv {
     position: relative;
-    margin: 50px 0;
+    margin: 30px auto 40px auto;
 
     .MuiAvatar-root {
         margin: 1rem auto;
-        width: 80px !important;
-        height: 80px !important;
+        width: 300px !important;
         cursor: default !important;
+        border-radius: 0.6rem !important;
     }
 
     .editicon {

@@ -47,7 +47,7 @@ function Userdialog ({ dialog, setdialog, avatar, categorieid, channelid }) {
         <Dialog TransitionComponent={Grow} open={dialog?.open} onClose={() => setdialog({ ...dialog, open: false })}>
             <DialogContent>
                 {dialog?.user?.photoUrl || dialog?.user?.photo ? (
-                    <img src={dialog?.user?.photoUrl || dialog?.user?.photo} alt="userphoto" style={{ maxHeight: "250px" }} />
+                    <img src={dialog?.user?.photoUrl || dialog?.user?.photo} alt="userphoto" style={{ maxHeight: "350px", maxWidth: "300px" }} />
                 ) : (
                     <Avatar className="userdialog__myavatar" src={dialog?.user?.photo}>
                         {dialog?.user?.displayname.substring(0, 1)}
