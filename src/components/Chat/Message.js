@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import DescriptionIcon from '@material-ui/icons/Description';
-import { Avatar, Button, IconButton, Paper, Popover, Tooltip } from '@material-ui/core'
+import { Avatar, Button, IconButton, Paper, Popover, Tooltip, TextareaAutosize } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
 import { selectcategorieid, selectChannelId, selectlanguage, setsnackbar } from '../../lib/AppSlice'
@@ -18,6 +18,8 @@ import firebase from "firebase/app"
 import ConfirmDialog from '../Dialogs/ConfirmDialog';
 import { motion } from 'framer-motion';
 import { messageAnimation } from "../Animation"
+import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/default-highlight';
+import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 function getdays (messagetime) {
     let today = new Date()
@@ -88,7 +90,7 @@ function messagetimefunc (t) {
 }
 
 const Message = ({ timestamp, userUid,
-    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched, edited, userData }) => {
+    message, imageurl, imagename, fileurl, filename, id, setlightbox, searched, edited, userData, hasCode }) => {
     const dispatch = useDispatch()
 
     const userloggedin = useSelector(selectUser)
@@ -120,7 +122,6 @@ const Message = ({ timestamp, userUid,
     const [editpopper, seteditpopper] = useState(null)
     const [edit, setedit] = useState(false)
     const [messageUser, setMessageUser] = useState(null)
-    const [editInputWidth, seteditInputWidth] = useState(0)
     const [newmessage, setnewmessage] = useState(message)
 
 
@@ -201,7 +202,7 @@ const Message = ({ timestamp, userUid,
                     })
                 }} src={messageUser?.photoUrl} alt="Avatar picture " />
                 <div className="message__info">
-                    <h4>
+                    <h4 style={{ marginBottom: hasCode ? "5px" : "0" }}>
                         <span onClick={() => {
                             setdialog({
                                 open: true,
@@ -235,8 +236,12 @@ const Message = ({ timestamp, userUid,
 
                         )}
                     </h4>
-                    {!edit ? (
-                        <p >
+                    {!edit ? hasCode ? (
+                        <SyntaxHighlighter customStyle={{ borderRadius: "0.6rem" }} wrapLines={true} language="qml" style={vs2015}>
+                            {message}
+                        </SyntaxHighlighter>
+                    ) : (
+                        <p>
                             <span ref={messageRef}>
                                 {geturl(message) ?
                                     (
@@ -246,17 +251,17 @@ const Message = ({ timestamp, userUid,
                                             {geturl(message)[2]}
                                         </>
                                     ) :
-                                    (message)}
+                                    (message)
+                                }
+
                             </span>
 
                         </p>
                     ) : (
                         <form className="message__edit" onSubmit={editfunc}>
-                            <input style={{ width: editInputWidth || "200px", letterSpacing: "0.2px" }}
+                            <TextareaAutosize
                                 value={newmessage} onChange={(e) => {
                                     setnewmessage(e.target.value)
-                                    if (e.nativeEvent.data)
-                                        seteditInputWidth(e.target.offsetWidth)
                                 }}
                             />
                             <IconButton type="submit" size="small" >
@@ -314,8 +319,6 @@ const Message = ({ timestamp, userUid,
                         <IconButton onClick={() => {
                             setedit(!edit);
                             seteditpopper(null);
-                            seteditInputWidth(messageRef?.current?.offsetWidth)
-
                         }} >
                             <EditIcon style={{ color: "grey" }} />
                         </IconButton>

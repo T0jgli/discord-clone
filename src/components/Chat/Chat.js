@@ -6,7 +6,7 @@ import SendRoundedIcon from '@material-ui/icons/SendRounded'
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton, Tooltip, Grow } from '@material-ui/core'
+import { IconButton, Tooltip, Grow, Button, Checkbox, TextareaAutosize } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 import AttachmentIcon from '@material-ui/icons/Attachment';
 import ImageIcon from '@material-ui/icons/Image';
@@ -29,6 +29,7 @@ import { FileDrop } from 'react-file-drop'
 import { formatBytes } from '../../lib/FormatBytes'
 import { AnimatePresence, motion } from 'framer-motion';
 import { messageAnimation } from '../Animation';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -64,6 +65,9 @@ const Chat = () => {
 
     const [loading, setloading] = useState(false)
     const [emojidialog, setemojidialog] = useState(false)
+    const [chatBottomPopup, setChatBottomPopup] = useState(false)
+    const [isCodeMessage, setIsCodeMessage] = useState(false)
+
 
     const [searchtext, setsearchtext] = useState("")
     const [lightbox, setlightbox] = useState({
@@ -122,6 +126,7 @@ const Chat = () => {
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
                             imageurl: url,
+                            isCodeMessage,
                             imagename: replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + "."),
                             id: ref.id,
                             userData: db.doc(`/users/${user.uid}`),
@@ -144,6 +149,7 @@ const Chat = () => {
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
                             fileurl: url,
+                            isCodeMessage,
                             filename: replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + "."),
                             id: ref.id,
                             userData: db.doc(`/users/${user.uid}`),
@@ -161,6 +167,7 @@ const Chat = () => {
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 message: input,
                 id: ref.id,
+                isCodeMessage,
                 userData: db.doc(`/users/${user.uid}`),
                 userUid: user.uid
             })
@@ -193,7 +200,7 @@ const Chat = () => {
                         <AnimatePresence>
                             {messages.length > 0 && messages.map((
                                 { message: messageM, user: userM,
-                                    imagename, filename, id: idM, fileurl, imageurl, edited, timestamp, userData, userUid
+                                    imagename, filename, id: idM, fileurl, imageurl, edited, timestamp, userData, userUid, isCodeMessage: hasCode
                                 }, index) => {
                                 if (searchtext) {
                                     if (
@@ -209,6 +216,7 @@ const Chat = () => {
                                                 edited={edited}
                                                 userUid={userUid}
                                                 userData={userData}
+                                                hasCode={hasCode}
                                                 imageurl={imageurl} key={idM} message={messageM}
                                                 timestamp={timestamp} user={userM} imagename={imagename}
                                                 searched
@@ -235,6 +243,7 @@ const Chat = () => {
                                             edited={edited}
                                             userUid={userUid}
                                             userData={userData}
+                                            hasCode={hasCode}
                                             imageurl={imageurl} key={idM} message={messageM}
                                             timestamp={timestamp} user={userM} imagename={imagename}
                                         />
@@ -256,33 +265,54 @@ const Chat = () => {
                     </div>
                     <div style={{ overflowX: "hidden" }}></div>
                 </Scrollbars>
-                {image && (
-                    <Grow in={Boolean(image)}>
-                        <div className="chat__filediv">
-                            <Tooltip title={image.name}>
-                                {image?.type.includes("image") ? (
-                                    <ImageIcon style={{ cursor: "default" }} />
-                                ) : (<AttachmentIcon style={{ cursor: "default" }} />)}
-                            </Tooltip>
-                            <Tooltip title={language === "hu" ? ("Fájl törlése") : ("Delete file")} placement="right">
-                                <IconButton onClick={() => {
-                                    setimage(null)
-                                    dispatch(setsnackbar({
-                                        snackbar: {
-                                            open: true,
-                                            type: "info",
-                                            hu: `${image?.type.includes("image") ? ("Fénykép") : ("Fájl")} törölve.`,
-                                            en: `${image?.type.includes("image") ? ("Photo") : ("File")} deleted.`
-                                        }
-                                    }))
 
-                                }}>
-                                    <DeleteIcon style={{ color: "lightgray" }} />
-                                </IconButton>
-                            </Tooltip>
-                        </div>
-                    </Grow>
-                )}
+                <div className="chat__bottomactions">
+                    {chatBottomPopup && (
+                        <Grow in={Boolean(chatBottomPopup)}>
+                            <div className="chat__filediv">
+                                <Button onClick={() => hiddenFileInput.current.click()} style={{ fontWeight: "bold" }}>
+                                    {language === "en" ? ("File / Photo upload") : ("Fájl / Kép feltöltés")}
+                                </Button>
+
+                                <div className="divider" />
+
+                                <Button style={{ fontWeight: "bold" }}>
+                                    {language === "en" ? ("Upload code") : ("Kód feltöltés")}
+                                </Button>
+                                <Checkbox color="primary" checked={isCodeMessage} onChange={() => setIsCodeMessage(!isCodeMessage)} />
+                            </div>
+                        </Grow>
+                    )}
+
+                    {image && (
+                        <Grow in={Boolean(image)}>
+                            <div className="chat__filediv">
+                                <Tooltip title={image.name}>
+                                    {image?.type.includes("image") ? (
+                                        <ImageIcon style={{ cursor: "default" }} />
+                                    ) : (<AttachmentIcon style={{ cursor: "default" }} />)}
+                                </Tooltip>
+                                <Tooltip title={language === "hu" ? ("Fájl törlése") : ("Delete file")} placement="right">
+                                    <IconButton onClick={() => {
+                                        setimage(null)
+                                        dispatch(setsnackbar({
+                                            snackbar: {
+                                                open: true,
+                                                type: "info",
+                                                hu: `${image?.type.includes("image") ? ("Fénykép") : ("Fájl")} törölve.`,
+                                                en: `${image?.type.includes("image") ? ("Photo") : ("File")} deleted.`
+                                            }
+                                        }))
+
+                                    }}>
+                                        <DeleteIcon style={{ color: "lightgray" }} />
+                                    </IconButton>
+                                </Tooltip>
+                            </div>
+                        </Grow>
+                    )}
+                </div>
+
 
                 <FileDrop
                     onDragOver={(file) => setfiledroptext(language === "en" ? ("Drop the file here to upload!") : ("Húzza ide a fájlt a feltöltéshez!"))}
@@ -295,39 +325,69 @@ const Chat = () => {
                     }}
                 >
                     <div className="chat__input">
-                        <Tooltip title={language === "hu" ? image ? ("Fájl lecserélése") : ("Fájl hozzáadása") : image ? ("Replace file") : ("Add file")}
-                            disableHoverListener={!channelId}
-                            disableFocusListener={!channelId}
-                            disableTouchListener={!channelId}
-                            placement="top"
-                        >
+                        {chatBottomPopup ? (
+                            <CancelIcon style={{ marginLeft: "5px" }} className={channelId ? ("chat__inputfilebutton") : ("chat__disabledsendbtn")}
+                                fontSize="large" onClick={() => setChatBottomPopup(!chatBottomPopup)} />
+                        ) : (
                             <AddCircleIcon style={{ marginLeft: "5px" }} className={channelId ? ("chat__inputfilebutton") : ("chat__disabledsendbtn")}
-                                fontSize="large" onClick={() => hiddenFileInput.current.click()} />
-                        </Tooltip>
+                                fontSize="large" onClick={() => setChatBottomPopup(!chatBottomPopup)}
+                            />
+                        )}
+
                         <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage() } }}>
-                            <input aria-label={language === "en" ? ("Chat message input") : ("Chat beviteli mező")}
-                                value={input} autoFocus ref={chatMessageInput}
-                                type="text"
-                                onPaste={(e) => {
-                                    if (e.clipboardData.files[0] && window.innerWidth > 768)
-                                        if (e.clipboardData.files[0].size < 52428800) {
-                                            setimage(e.clipboardData.files[0])
-                                        }
-                                        else
-                                            dispatch(setsnackbar({
-                                                snackbar: {
-                                                    open: true,
-                                                    type: "error",
-                                                    filesizeerror: true,
-                                                    hu: `A fájl mérete ${formatBytes(e.clipboardData.files[0].size)}, amely meghaladja a maximális méretet! (50 MB)`,
-                                                    en: `File size is ${formatBytes(e.clipboardData.files[0].size)}, which exceeds the maximum size! (50 MB)`,
-                                                }
-                                            }))
-                                }}
-                                placeholder={filedroptext ? (filedroptext) : image ? (image.name) : channelId ?
-                                    language === "hu" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
-                                    language === "hu" ? ("Válassz csatornát") : ("Select a channel")}
-                                disabled={!channelId} onChange={(e) => setinput(e.target.value)} />
+                            {isCodeMessage ? (
+                                <TextareaAutosize aria-label={language === "en" ? ("Chat message input") : ("Chat beviteli mező")}
+                                    value={input} autoFocus ref={chatMessageInput}
+                                    onPaste={(e) => {
+                                        if (e.clipboardData.files[0] && window.innerWidth > 768)
+                                            if (e.clipboardData.files[0].size < 52428800) {
+                                                setimage(e.clipboardData.files[0])
+                                            }
+                                            else
+                                                dispatch(setsnackbar({
+                                                    snackbar: {
+                                                        open: true,
+                                                        type: "error",
+                                                        filesizeerror: true,
+                                                        hu: `A fájl mérete ${formatBytes(e.clipboardData.files[0].size)}, amely meghaladja a maximális méretet! (50 MB)`,
+                                                        en: `File size is ${formatBytes(e.clipboardData.files[0].size)}, which exceeds the maximum size! (50 MB)`,
+                                                    }
+                                                }))
+                                    }}
+                                    placeholder={filedroptext ? (filedroptext) : image ? (image.name) : isCodeMessage ? ("Programkód: #" + channelname) : channelId ?
+                                        language === "hu" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
+                                        language === "hu" ? ("Válassz csatornát") : ("Select a channel")}
+                                    disabled={!channelId} onChange={(e) => setinput(e.target.value)}
+                                />
+                            ) : (
+                                <input aria-label={language === "en" ? ("Chat message input") : ("Chat beviteli mező")}
+                                    value={input} autoFocus ref={chatMessageInput}
+                                    onPaste={(e) => {
+                                        if (e.clipboardData.files[0] && window.innerWidth > 768)
+                                            if (e.clipboardData.files[0].size < 52428800) {
+                                                setimage(e.clipboardData.files[0])
+                                            }
+                                            else
+                                                dispatch(setsnackbar({
+                                                    snackbar: {
+                                                        open: true,
+                                                        type: "error",
+                                                        filesizeerror: true,
+                                                        hu: `A fájl mérete ${formatBytes(e.clipboardData.files[0].size)}, amely meghaladja a maximális méretet! (50 MB)`,
+                                                        en: `File size is ${formatBytes(e.clipboardData.files[0].size)}, which exceeds the maximum size! (50 MB)`,
+                                                    }
+                                                }))
+                                    }}
+                                    placeholder={filedroptext ? (filedroptext) : image ? (image.name) : isCodeMessage ? ("Programkód: #" + channelname) : channelId ?
+                                        language === "hu" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
+                                        language === "hu" ? ("Válassz csatornát") : ("Select a channel")}
+                                    disabled={!channelId} onChange={(e) => setinput(e.target.value)}
+                                />
+                            )}
+
+
+
+
                             <input disabled={!channelId} type="file"
                                 ref={hiddenFileInput} onChange={(e) => {
                                     if (e.target.files[0]) {
