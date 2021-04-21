@@ -74,6 +74,18 @@ const Theme = createMuiTheme({
                 borderRadius: "0.5rem",
             }
         },
+        MuiCheckbox: {
+            root: {
+                color: "gray !important"
+            }
+        },
+        MuiPaper: {
+            root: {
+                backgroundColor: "rgba(32, 32, 32, 1)",
+                color: "rgb(212, 212, 212)",
+                borderRadius: "0.5rem",
+            }
+        },
         MuiSnackbarContent: {
             root: {
                 borderRadius: "0.6rem",

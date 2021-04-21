@@ -452,6 +452,25 @@
     }
 }
 
+pre::-webkit-scrollbar {
+    background-color: #31353a;
+    height: 5px;
+}
+
+pre::-webkit-scrollbar-thumb {
+    border-radius: 0.2rem;
+    background-color: grey;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(143, 143, 143);
+}
+
+.MuiAutocompletePopper::-webkit-scrollbar {
+    background-color: #31353a !important;
+    width: 5px !important;
+}
+
 //FSLIGHTBOX
 
 @media (max-width: 768px) {

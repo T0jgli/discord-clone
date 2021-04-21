@@ -6,7 +6,7 @@ import SendRoundedIcon from '@material-ui/icons/SendRounded'
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton, Tooltip, Grow, Button, Checkbox, TextareaAutosize } from '@material-ui/core'
+import { IconButton, Tooltip, Grow, Button, Checkbox, TextareaAutosize, Select, MenuItem, TextField, FormControlLabel } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 import AttachmentIcon from '@material-ui/icons/Attachment';
 import ImageIcon from '@material-ui/icons/Image';
@@ -30,6 +30,8 @@ import { formatBytes } from '../../lib/FormatBytes'
 import { AnimatePresence, motion } from 'framer-motion';
 import { messageAnimation } from '../Animation';
 import CancelIcon from '@material-ui/icons/Cancel';
+import { languages } from '../../lib/syntaxHighlighterLanguages.json'
+import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -56,7 +58,6 @@ const Chat = () => {
 
     const classes = useStyles();
 
-
     const [input, setinput] = useState("");
     const [messages, setmessages] = useState([]);
     const [image, setimage] = useState(null);
@@ -67,7 +68,9 @@ const Chat = () => {
     const [emojidialog, setemojidialog] = useState(false)
     const [chatBottomPopup, setChatBottomPopup] = useState(false)
     const [isCodeMessage, setIsCodeMessage] = useState(false)
+    const [selectedProgrammingLanguageArray, setselectedProgrammingLanguageArray] = useState(null)
 
+    console.log(selectedProgrammingLanguageArray)
 
     const [searchtext, setsearchtext] = useState("")
     const [lightbox, setlightbox] = useState({
@@ -111,6 +114,18 @@ const Chat = () => {
     }, [messages, dispatch])
 
     const sendmessage = () => {
+        if (isCodeMessage && !Boolean(selectedProgrammingLanguageArray)) {
+            setChatBottomPopup(true)
+            return dispatch(setsnackbar({
+                snackbar: {
+                    open: true,
+                    type: "info",
+                    hu: "Ha kódot akarsz feltölteni válaszd ki milyen nyelven!",
+                    en: "If you want to upload a code select the language"
+                }
+            }))
+        }
+
 
         if (image) {
             const today = new Date().toLocaleString("hu-HU").replace(/\s/g, '').split('.').join("").split(':').join("")
@@ -126,7 +141,7 @@ const Chat = () => {
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
                             imageurl: url,
-                            isCodeMessage,
+                            isCodeMessage: selectedProgrammingLanguageArray || false,
                             imagename: replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + "."),
                             id: ref.id,
                             userData: db.doc(`/users/${user.uid}`),
@@ -149,7 +164,7 @@ const Chat = () => {
                             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                             message: input,
                             fileurl: url,
-                            isCodeMessage,
+                            isCodeMessage: selectedProgrammingLanguageArray || false,
                             filename: replaceAt(image.name, image?.name.toString().lastIndexOf("."), "__" + today + "."),
                             id: ref.id,
                             userData: db.doc(`/users/${user.uid}`),
@@ -167,7 +182,7 @@ const Chat = () => {
                 timestamp: firebase.firestore.FieldValue.serverTimestamp(),
                 message: input,
                 id: ref.id,
-                isCodeMessage,
+                isCodeMessage: selectedProgrammingLanguageArray || false,
                 userData: db.doc(`/users/${user.uid}`),
                 userUid: user.uid
             })
@@ -269,18 +284,41 @@ const Chat = () => {
                 <div className="chat__bottomactions">
                     {chatBottomPopup && (
                         <Grow in={Boolean(chatBottomPopup)}>
-                            <div className="chat__filediv">
-                                <Button onClick={() => hiddenFileInput.current.click()} style={{ fontWeight: "bold" }}>
-                                    {language === "en" ? ("File / Photo upload") : ("Fájl / Kép feltöltés")}
-                                </Button>
+                            <>
+                                <div className="chat__filediv">
+                                    <Button onClick={() => hiddenFileInput.current.click()} style={{ fontWeight: "bold" }}>
+                                        {language === "en" ? ("File / Photo upload") : ("Fájl / Kép feltöltés")}
+                                    </Button>
 
-                                <div className="divider" />
+                                    <div className="divider" />
 
-                                <Button style={{ fontWeight: "bold" }}>
-                                    {language === "en" ? ("Upload code") : ("Kód feltöltés")}
-                                </Button>
-                                <Checkbox color="primary" checked={isCodeMessage} onChange={() => setIsCodeMessage(!isCodeMessage)} />
-                            </div>
+
+                                    <FormControlLabel
+                                        control={<Checkbox color="primary" checked={isCodeMessage} onChange={() => {
+                                            setIsCodeMessage(!isCodeMessage)
+                                            setselectedProgrammingLanguageArray(null)
+                                        }} />}
+                                        label={language === "en" ? ("Upload code") : ("Kód feltöltés")}
+                                        style={{ fontWeight: "bold" }}
+                                    />
+
+                                </div>
+                                {isCodeMessage && (
+                                    <Autocomplete
+                                        options={languages}
+                                        style={{ width: 300 }}
+                                        value={selectedProgrammingLanguageArray}
+
+                                        onChange={(_, newInputValue) => {
+                                            setselectedProgrammingLanguageArray(newInputValue);
+                                        }}
+
+                                        renderInput={(params) => <TextField variant="outlined" {...params}
+                                            label={language === "en" ? ("Programming language") : ("Programnyelv")}
+                                        />}
+                                    />
+                                )}
+                            </>
                         </Grow>
                     )}
 
@@ -327,15 +365,21 @@ const Chat = () => {
                     <div className="chat__input">
                         {chatBottomPopup ? (
                             <CancelIcon style={{ marginLeft: "5px" }} className={channelId ? ("chat__inputfilebutton") : ("chat__disabledsendbtn")}
-                                fontSize="large" onClick={() => setChatBottomPopup(!chatBottomPopup)} />
+                                fontSize="large" onClick={() => {
+                                    if (channelId)
+                                        setChatBottomPopup(!chatBottomPopup)
+                                }} />
                         ) : (
                             <AddCircleIcon style={{ marginLeft: "5px" }} className={channelId ? ("chat__inputfilebutton") : ("chat__disabledsendbtn")}
-                                fontSize="large" onClick={() => setChatBottomPopup(!chatBottomPopup)}
+                                fontSize="large" onClick={() => {
+                                    if (channelId)
+                                        setChatBottomPopup(!chatBottomPopup)
+                                }}
                             />
                         )}
 
                         <form onSubmit={(e) => { e.preventDefault(); if (input || image) { sendmessage() } }}>
-                            {isCodeMessage ? (
+                            {Boolean(selectedProgrammingLanguageArray) ? (
                                 <TextareaAutosize aria-label={language === "en" ? ("Chat message input") : ("Chat beviteli mező")}
                                     value={input} autoFocus ref={chatMessageInput}
                                     onPaste={(e) => {
@@ -354,9 +398,7 @@ const Chat = () => {
                                                     }
                                                 }))
                                     }}
-                                    placeholder={filedroptext ? (filedroptext) : image ? (image.name) : isCodeMessage ? ("Programkód: #" + channelname) : channelId ?
-                                        language === "hu" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
-                                        language === "hu" ? ("Válassz csatornát") : ("Select a channel")}
+                                    placeholder={filedroptext ? (filedroptext) : image ? (image.name) : Boolean(selectedProgrammingLanguageArray) && (`Programkód (${selectedProgrammingLanguageArray}): #` + channelname)}
                                     disabled={!channelId} onChange={(e) => setinput(e.target.value)}
                                 />
                             ) : (
@@ -378,15 +420,12 @@ const Chat = () => {
                                                     }
                                                 }))
                                     }}
-                                    placeholder={filedroptext ? (filedroptext) : image ? (image.name) : isCodeMessage ? ("Programkód: #" + channelname) : channelId ?
+                                    placeholder={filedroptext ? (filedroptext) : image ? (image.name) : channelId ?
                                         language === "hu" ? ("Üzenet: #" + channelname) : ("Message: #" + channelname) :
                                         language === "hu" ? ("Válassz csatornát") : ("Select a channel")}
                                     disabled={!channelId} onChange={(e) => setinput(e.target.value)}
                                 />
                             )}
-
-
-
 
                             <input disabled={!channelId} type="file"
                                 ref={hiddenFileInput} onChange={(e) => {

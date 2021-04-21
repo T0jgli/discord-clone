@@ -236,8 +236,8 @@ const Message = ({ timestamp, userUid,
 
                         )}
                     </h4>
-                    {!edit ? hasCode ? (
-                        <SyntaxHighlighter customStyle={{ borderRadius: "0.6rem" }} wrapLines={true} language="qml" style={vs2015}>
+                    {!edit ? Boolean(hasCode) ? (
+                        <SyntaxHighlighter customStyle={{ borderRadius: "0.6rem" }} wrapLines={true} language={hasCode} style={vs2015}>
                             {message}
                         </SyntaxHighlighter>
                     ) : (
