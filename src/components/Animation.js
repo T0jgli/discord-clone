@@ -7,10 +7,10 @@ export const pageVariants = {
             duration: 1,
             /*             ease: [0.6, -0.05, 0.01, 0.99],
              */
-            ease: [0.46, 0, 0.6, 1.22]
+            ease: [0.46, 0, 0.6, 1.22],
         },
     },
-}
+};
 
 export const loginLogo = {
     initial: { opacity: 0, y: -100 },
@@ -23,7 +23,7 @@ export const loginLogo = {
             ease: [0.6, -0.05, 0.01, 0.99],
         },
     },
-}
+};
 
 export const messageAnimation = {
     initial: { scale: 0, opacity: 0 },
@@ -32,20 +32,19 @@ export const messageAnimation = {
         opacity: 1,
         transition: {
             opacity: {
-                duration: 0.3
+                duration: 0.3,
             },
             scale: {
                 duration: 0.1,
             },
             ease: [0.45, 0.25, 0.55, 1],
-
         },
     },
     exit: {
         opacity: 0,
-        scale: 0.5
-    }
-}
+        scale: 0.5,
+    },
+};
 
 export const loginLanguageAnimation = {
     initialHu: { opacity: 0, x: 100 },
@@ -55,7 +54,7 @@ export const loginLanguageAnimation = {
         x: 0,
         transition: {
             duration: 1,
-            ease: "easeIn"
+            ease: "easeIn",
         },
     },
-}
+};

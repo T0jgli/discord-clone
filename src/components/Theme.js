@@ -1,7 +1,7 @@
-import { createMuiTheme } from '@material-ui/core/styles';
-import green from '@material-ui/core/colors/green';
-import grey from '@material-ui/core/colors/grey';
-import red from '@material-ui/core/colors/red';
+import { createMuiTheme } from "@material-ui/core/styles";
+import green from "@material-ui/core/colors/green";
+import grey from "@material-ui/core/colors/grey";
+import red from "@material-ui/core/colors/red";
 
 const Theme = createMuiTheme({
     palette: {
@@ -14,24 +14,24 @@ const Theme = createMuiTheme({
     overrides: {
         MuiButton: {
             root: {
-                color: 'white',
-                borderRadius: "0.8rem"
+                color: "white",
+                borderRadius: "0.8rem",
             },
         },
         MuiFormLabel: {
             root: {
-                color: "gray"
-            }
+                color: "gray",
+            },
         },
         MuiInputBase: {
             input: {
-                color: "white"
-            }
+                color: "white",
+            },
         },
         MuiTab: {
             root: {
-                borderRadius: "0.8rem"
-            }
+                borderRadius: "0.8rem",
+            },
         },
         MuiDialog: {
             container: {
@@ -46,45 +46,45 @@ const Theme = createMuiTheme({
         },
         MuiDialogContent: {
             root: {
-                paddingBottom: "20px"
-            }
+                paddingBottom: "20px",
+            },
         },
         MuiDialogActions: {
             root: {
-                backgroundColor: "#292a2e !important"
-            }
+                backgroundColor: "#292a2e !important",
+            },
         },
         MuiMenu: {
             paper: {
                 backgroundColor: "rgb(32, 32, 32) !important",
                 color: "rgb(212, 212, 212) !important",
                 borderRadius: "0.5rem",
-            }
+            },
         },
         MuiListItem: {
             root: {
                 paddingTop: "10px !important",
-                paddingBottom: "10px !important"
-            }
+                paddingBottom: "10px !important",
+            },
         },
         MuiPopover: {
             paper: {
                 backgroundColor: "rgba(32, 32, 32, 1) !important",
                 color: "rgb(212, 212, 212) !important",
                 borderRadius: "0.5rem",
-            }
+            },
         },
         MuiCheckbox: {
             root: {
-                color: "gray !important"
-            }
+                color: "gray !important",
+            },
         },
         MuiPaper: {
             root: {
                 backgroundColor: "rgba(32, 32, 32, 1)",
                 color: "rgb(212, 212, 212)",
                 borderRadius: "0.5rem",
-            }
+            },
         },
         MuiSnackbarContent: {
             root: {
@@ -93,14 +93,14 @@ const Theme = createMuiTheme({
                 justifyContent: "center",
                 fontSize: "1rem",
                 fontWeight: "500",
-            }
+            },
         },
         MuiTypography: {
             body1: {
-                color: "rgba(255, 255, 255, 0.85) !important"
-            }
-        }
+                color: "rgba(255, 255, 255, 0.85) !important",
+            },
+        },
     },
 });
 
-export default Theme
+export default Theme;

@@ -1,0 +1,84 @@
+@use '../Theme';
+
+.rightsidebar {
+    height: 100vh;
+    flex: 0.13;
+    display: flex;
+    flex-direction: column;
+    background-color: #2f3135;
+    transition: all 0.5s ease-in-out;
+
+    @media (max-width: 768px) {
+        &.sidebar-right__mobileopen {
+            opacity: 1;
+            visibility: visible;
+            position: fixed;
+            z-index: 10;
+            right: 0;
+            width: 50%;
+        }
+
+        &.sidebar-right__mobile {
+            position: fixed;
+            right: -1000px;
+            top: 0;
+        }
+    }
+
+    .rightsidebar__top {
+        padding: 1.7rem;
+        @extend %d-flex-center;
+        justify-content: center;
+        background-color: #2f3135;
+        color: white;
+        border-bottom: 3px solid #26282c;
+        transition: 0.3s;
+
+        &:hover {
+            background-color: Theme.$lighter-background-color;
+        }
+
+        h3 {
+            color: white;
+        }
+    }
+
+    .users {
+        flex: 1;
+        margin-top: 5px;
+
+        .userdialog__div {
+            @extend %d-flex-center;
+            padding: 10px 0;
+
+            &:hover {
+                background-color: Theme.$lighter-background-color;
+            }
+        }
+
+        .userdialog__text {
+            transition: 0.3s ease-in-out;
+
+            p {
+                cursor: pointer !important;
+            }
+
+            &:hover {
+                transition: 0.3s ease-in-out;
+                opacity: 0.6;
+            }
+        }
+
+        .userdialog__avatar {
+            padding-right: 25px;
+            padding-left: 20px;
+        }
+    }
+}
+
+.userdialog-badge {
+    .MuiBadge-badge {
+        right: 0;
+        bottom: 30%;
+    }
+}

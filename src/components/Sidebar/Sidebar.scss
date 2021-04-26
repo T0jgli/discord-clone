@@ -1,33 +1,28 @@
 @use '../Theme';
 
-@media (max-width: 768px) {
-    .sidebar__mobileopen {
-        opacity: 1;
-        visibility: visible;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        width: 60%;
-    }
-
-    .sidebar__mobile {
-        position: fixed;
-        left: -1000px;
-        top: 0;
-    }
-}
-
-.sidebar__div {
-    flex: 0.25 !important;
-    transition: all 0.5s ease-in-out;
-}
-
 .sidebar {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    flex: 0.25;
+    flex: 0.22;
+    transition: all 0.5s ease-in-out;
     background-color: Theme.$main-background-color;
+
+    @media (max-width: 768px) {
+        &.sidebar__mobileopen {
+            visibility: visible;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            width: 50%;
+        }
+
+        &.sidebar__mobile {
+            position: fixed;
+            left: -1000px;
+            top: 0;
+        }
+    }
 
     .sidebar__menuicon {
         transition: transform 0.3s;
@@ -68,6 +63,7 @@
 
     .sidebar__channels {
         flex: 1;
+        margin-top: 5px;
         overflow-x: hidden;
 
         .sidebar__channelsheader {
@@ -177,34 +173,8 @@
     .MuiPaper-root {
         top: 8% !important;
         left: 0% !important;
-        width: 25% !important;
+        width: 22% !important;
         min-width: 250px !important;
-    }
-}
-
-.userdialog__div {
-    display: flex;
-    align-items: center;
-    margin: 15px auto;
-
-    .userdialog__text {
-        flex: 1;
-        transition: 0.3s ease-in-out;
-
-        p {
-            cursor: pointer !important;
-        }
-
-        &:hover {
-            transition: 0.3s ease-in-out;
-            opacity: 0.6;
-        }
-    }
-
-    .userdialog__avatar {
-        border-right: 1px solid #ffffff;
-        margin-right: 15px;
-        padding-right: 15px;
     }
 }
 

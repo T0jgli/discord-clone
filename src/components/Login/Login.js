@@ -1,65 +1,68 @@
-import React, { useState } from 'react'
-import { selectlanguage, setlanguage, setsnackbar } from "../../lib/AppSlice"
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useState } from "react";
+import { selectlanguage, setlanguage, setsnackbar } from "../../lib/redux/AppSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip, Grow } from '@material-ui/core'
+import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip, Grow } from "@material-ui/core";
 
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from "@material-ui/core/Snackbar";
 
-import { auth, googleprovider } from "../../lib/firebase"
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import useNewGif from './useNewGif';
-import { motion } from 'framer-motion';
-import { loginLogo, loginLanguageAnimation } from '../Animation';
-import GitHubIcon from '@material-ui/icons/GitHub';
+import { auth, googleprovider } from "../../lib/firebase";
+import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import useNewGif from "../../lib/hooks/useNewGif";
+import { motion } from "framer-motion";
+import { loginLogo, loginLanguageAnimation } from "../Animation";
+import GitHubIcon from "@material-ui/icons/GitHub";
 
 const Login = () => {
-    const dispatch = useDispatch()
-    const gif = useNewGif("funny dog")
-    const language = useSelector(selectlanguage)
-    const [langtoast, setlangtoast] = useState(false)
-    const [open, setopen] = useState(false)
-    const [logindata, setlogindata] = useState({ email: "", password: "" })
+    const dispatch = useDispatch();
+    const gif = useNewGif("funny dog");
+    const language = useSelector(selectlanguage);
+    const [langtoast, setlangtoast] = useState(false);
+    const [open, setopen] = useState(false);
+    const [logindata, setlogindata] = useState({ email: "", password: "" });
 
     const signinwithgoogle = async () => {
         try {
-            await auth.signInWithPopup(googleprovider)
-            dispatch(setsnackbar({
-                snackbar: {
-                    open: true,
-                    type: "success",
-                    hu: "Sikeres bejelentkezés!",
-                    en: "Successful login!"
-                }
-            }))
-        } catch (error) {
-            alert(error.message)
-        }
-    }
-
-    const signin = () => {
-        auth.signInWithEmailAndPassword(logindata.email, logindata.password).then(() => {
-            setlogindata({ email: "", password: "" })
-        })
-            .catch(error => {
-                dispatch(setsnackbar({
+            await auth.signInWithPopup(googleprovider);
+            dispatch(
+                setsnackbar({
                     snackbar: {
                         open: true,
-                        type: "error",
-                        hu: error.message,
-                        en: error.message
-                    }
-                }))
+                        type: "success",
+                        hu: "Sikeres bejelentkezés!",
+                        en: "Successful login!",
+                    },
+                })
+            );
+        } catch (error) {
+            alert(error.message);
+        }
+    };
 
+    const signin = () => {
+        auth.signInWithEmailAndPassword(logindata.email, logindata.password)
+            .then(() => {
+                setlogindata({ email: "", password: "" });
             })
-    }
+            .catch((error) => {
+                dispatch(
+                    setsnackbar({
+                        snackbar: {
+                            open: true,
+                            type: "error",
+                            hu: error.message,
+                            en: error.message,
+                        },
+                    })
+                );
+            });
+    };
 
     return (
         <>
             <div className="login">
                 <motion.div variants={loginLogo} initial="initial" animate="animate" className="login__logo">
                     <img src="/img/dclogo.png" alt="" />
-
                 </motion.div>
                 <div className="loginlogo__gifdiv">
                     <div className="gif">
@@ -68,79 +71,124 @@ const Login = () => {
                         </Grow>
                     </div>
                 </div>
-                <Button onClick={() => setopen(true)}>{language === "hu" ? ("Bejelentkezés") : ("Sign In")}</Button>
+                <Button onClick={() => setopen(true)}>{language === "hu" ? "Bejelentkezés" : "Sign In"}</Button>
 
-                <Snackbar open={langtoast} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    autoHideDuration={3000} onClose={(event, reason) => { if (reason === "clickaway") { return; }; setlangtoast(false) }}>
-                    <SnackbarContent message={language === "hu" ? ("Nyelv sikeresen beállítva") : ("Language set")}
-                    />
+                <Snackbar
+                    open={langtoast}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    autoHideDuration={3000}
+                    onClose={(event, reason) => {
+                        if (reason === "clickaway") {
+                            return;
+                        }
+                        setlangtoast(false);
+                    }}
+                >
+                    <SnackbarContent message={language === "hu" ? "Nyelv sikeresen beállítva" : "Language set"} />
                 </Snackbar>
-
             </div>
 
             <div className="login__language">
-                <motion.img variants={loginLanguageAnimation} initial="initialHu" animate="animate" src="/img/hu.svg"
-                    className={language === "hu" ? ("login__language__languageactive huicon") : ("huicon")}
+                <motion.img
+                    variants={loginLanguageAnimation}
+                    initial="initialHu"
+                    animate="animate"
+                    src="/img/hu.svg"
+                    className={language === "hu" ? "login__language__languageactive huicon" : "huicon"}
                     onClick={() => {
                         if (language === "en") {
                             localStorage.removeItem("language");
                             setlangtoast(true);
-                            dispatch(setlanguage({
-                                language: "hu"
-                            }))
+                            dispatch(
+                                setlanguage({
+                                    language: "hu",
+                                })
+                            );
                         }
-                    }} alt="huimage" />
-                <motion.img variants={loginLanguageAnimation} initial="initialEn" animate="animate" src="/img/uk.svg"
-                    className={language !== "hu" ? ("login__language__languageactive enicon") : ("enicon")}
+                    }}
+                    alt="huimage"
+                />
+                <motion.img
+                    variants={loginLanguageAnimation}
+                    initial="initialEn"
+                    animate="animate"
+                    src="/img/uk.svg"
+                    className={language !== "hu" ? "login__language__languageactive enicon" : "enicon"}
                     onClick={() => {
                         if (language === "hu") {
                             localStorage.setItem("language", "en", 365);
                             setlangtoast(true);
-                            dispatch(setlanguage({
-                                language: "en"
-                            }))
+                            dispatch(
+                                setlanguage({
+                                    language: "en",
+                                })
+                            );
                         }
-                    }} alt="ukimage" />
-
+                    }}
+                    alt="ukimage"
+                />
             </div>
 
             <div className="login__githublink">
                 <a href="https://github.com/T0jgli/discord-clone" rel="noopener noreferrer" target="_blank">
                     GitHub
-                <GitHubIcon fontSize="small" />
+                    <GitHubIcon fontSize="small" />
                 </a>
             </div>
 
             <Dialog open={open} onClose={() => setopen(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "10px", fontWeight: "bold", fontSize: "larger" }}>
-                        {language === "hu" ? ("Bejelentkezés") : ("Sign In!")}
+                        {language === "hu" ? "Bejelentkezés" : "Sign In!"}
                     </DialogTitle>
                     <ArrowDropDownIcon />
-                    <form onKeyPress={(e) => { if (e.key === "Enter") { signin() } }}>
-                        <TextField variant="filled" autoFocus style={{ margin: "10px" }}
-                            value={logindata.email} fullWidth type="email" name="email"
-                            onChange={(e) => setlogindata({ ...logindata, email: e.target.value })} label={language === "hu" ? ("Email cím") : ("Email address")} />
-                        <TextField variant="filled" style={{ margin: "10px" }}
-                            value={logindata.password} fullWidth type="password" name="password"
-                            onChange={(e) => setlogindata({ ...logindata, password: e.target.value })} label={language === "hu" ? ("Jelszó") : ("Password")} />
+                    <form
+                        onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                                signin();
+                            }
+                        }}
+                    >
+                        <TextField
+                            variant="filled"
+                            autoFocus
+                            style={{ margin: "10px" }}
+                            value={logindata.email}
+                            fullWidth
+                            type="email"
+                            name="email"
+                            onChange={(e) => setlogindata({ ...logindata, email: e.target.value })}
+                            label={language === "hu" ? "Email cím" : "Email address"}
+                        />
+                        <TextField
+                            variant="filled"
+                            style={{ margin: "10px" }}
+                            value={logindata.password}
+                            fullWidth
+                            type="password"
+                            name="password"
+                            onChange={(e) => setlogindata({ ...logindata, password: e.target.value })}
+                            label={language === "hu" ? "Jelszó" : "Password"}
+                        />
                     </form>
                 </DialogContent>
                 <div className={"login__googlelogindiv"}>
-                    <Tooltip arrow title={language === "hu" ? ("Bejelentkezés Google-vel") : ("Sign in with Google")}>
+                    <Tooltip arrow title={language === "hu" ? "Bejelentkezés Google-vel" : "Sign in with Google"}>
                         <img alt="googleicon" onClick={signinwithgoogle} src="/img/googleicon.png" />
                     </Tooltip>
                 </div>
 
                 <DialogActions>
-                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }}
-                        onClick={() => setopen(false)}>{language === "hu" ? ("Mégse") : ("Cancel")}</Button>
-                    <Button onClick={signin} style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}
-                    >{language === "hu" ? ("Mehet") : ("Let's go")}</Button>
+                    <Button style={{ color: "rgb(255, 255, 255, 0.5)", fontWeight: "bolder" }} onClick={() => setopen(false)}>
+                        {language === "hu" ? "Mégse" : "Cancel"}
+                    </Button>
+                    <Button onClick={signin} style={{ color: "rgb(255, 255, 255, 1)", fontWeight: "bolder" }}>
+                        {language === "hu" ? "Mehet" : "Let's go"}
+                    </Button>
                 </DialogActions>
             </Dialog>
         </>
-    )
-}
+    );
+};
 
-export default Login
+export default Login;
