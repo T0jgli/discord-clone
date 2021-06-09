@@ -85,38 +85,39 @@ const Message = ({
         );
     };
 
-    const deletefunc = () => {
-        if (userUid !== userloggedin.uid)
+    const deletefunc = async () => {
+        try {
+            if (imageurl) {
+                let ref = storage.ref().child(`images/${imagename}`);
+                ref.delete();
+            }
+            if (fileurl) {
+                let ref = storage.ref().child(`files/${filename}`);
+                ref.delete();
+            }
+            await db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc(id).delete();
+            dispatch(
+                setsnackbar({
+                    snackbar: {
+                        open: true,
+                        type: "success",
+                        hu: "Üzenet sikeresen törölve!",
+                        en: "Message deleted!",
+                    },
+                })
+            );
+        } catch (e) {
             return dispatch(
                 setsnackbar({
                     snackbar: {
                         open: true,
                         type: "error",
-                        hu: "Nincs jogod ehhez!",
-                        en: "You are not authorized to do that!",
+                        hu: e,
+                        en: e,
                     },
                 })
             );
-
-        if (imageurl) {
-            let ref = storage.ref().child(`images/${imagename}`);
-            ref.delete();
         }
-        if (fileurl) {
-            let ref = storage.ref().child(`files/${filename}`);
-            ref.delete();
-        }
-        db.collection("categories").doc(categorieid).collection("channels").doc(channelid).collection("messages").doc(id).delete();
-        dispatch(
-            setsnackbar({
-                snackbar: {
-                    open: true,
-                    type: "success",
-                    hu: "Üzenet sikeresen törölve!",
-                    en: "Message deleted!",
-                },
-            })
-        );
     };
 
     const editfunc = () => {

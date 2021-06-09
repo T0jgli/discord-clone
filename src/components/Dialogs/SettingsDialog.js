@@ -148,7 +148,6 @@ const SettingsDialog = ({ setsettingsdialog, settingsdialog, setconfirmprompt })
                                         );
                                     if (e.target.files[0]?.size < 52428800) {
                                         const img = await ImageResizer(e.target.files[0]);
-                                        console.log(img);
                                         setnewimage(img);
                                     } else
                                         dispatch(

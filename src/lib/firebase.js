@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 import "firebase/storage";
+import "firebase/analytics";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -16,8 +17,9 @@ const firebaseConfig = {
 
 const firebaseapp = !firebase.apps.length ? firebase.initializeApp(firebaseConfig) : firebase.app();
 const db = firebaseapp.firestore();
-export const storage = firebase.storage();
-export const auth = firebase.auth();
+export const storage = firebaseapp.storage();
+export const auth = firebaseapp.auth();
+export const analytics = firebaseapp.analytics();
 export const googleprovider = new firebase.auth.GoogleAuthProvider();
 
 export default db;

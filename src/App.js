@@ -12,7 +12,7 @@ import firebase from "firebase/app";
 
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, login, logout } from "./lib/redux/userSlice";
-import { selectlanguage, setOnlineUsers } from "./lib/redux/AppSlice";
+import { selectlanguage, setOnlineUsers, setsnackbar } from "./lib/redux/AppSlice";
 import { ThemeProvider } from "@material-ui/core";
 import { motion } from "framer-motion";
 import { pageVariants } from "./components/Animation";
@@ -30,6 +30,17 @@ const App = () => {
     useEffect(() => {
         const cleanup = auth.onAuthStateChanged((authuser) => {
             if (authuser) {
+                if (!authuser.emailVerified)
+                    return dispatch(
+                        setsnackbar({
+                            snackbar: {
+                                open: true,
+                                type: "error",
+                                hu: "Előbb erősítsd meg az email címed!",
+                                en: "The passwords does not match!",
+                            },
+                        })
+                    );
                 let dname = authuser.displayName;
                 if (!authuser.displayName) {
                     dname = authuser.email;

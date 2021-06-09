@@ -163,7 +163,12 @@
             padding: 1rem;
 
             h3 {
+                max-width: 125px;
+
                 color: white;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
         }
     }

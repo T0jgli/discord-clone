@@ -43,20 +43,14 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
     const [onlyMeCanWrite, setonlyMeCanWrite] = useState(false);
 
     const deletefunc = () => {
-        if (user.uid !== channel.createdby)
-            return dispatch(
-                setsnackbar({
-                    snackbar: {
-                        open: true,
-                        type: "error",
-                        hu: "Nincs jogod ehhez!",
-                        en: "You are not authorized to do that!",
-                    },
-                })
-            );
-
         const docref = db.collection("categories").doc(categorieid).collection("channels").doc(id);
 
+        docref
+            .collection("messages")
+            .get()
+            .then((res) => res.forEach((el) => el.ref.delete()));
+
+        docref.delete();
         filenamesinchannel.forEach((file) => {
             let ref = storage.ref().child("files/" + file);
             ref.delete();
@@ -65,23 +59,7 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
             let ref = storage.ref().child("images/" + file);
             ref.delete();
         });
-
-        docref
-            .collection("messages")
-            .get()
-            .then((res) => res.forEach((el) => el.ref.delete()));
-        docref.delete();
         dispatch(
-            setChannelInfo({
-                channelId: null,
-                channelName: null,
-                categorieid: null,
-                channelDesc: null,
-            }),
-            setfilenamesinchannel({
-                filenamesinchannel: [],
-                imagenamesinchannel: [],
-            }),
             setsnackbar({
                 snackbar: {
                     open: true,
@@ -89,6 +67,20 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
                     hu: "Csatorna sikeresen törölve!",
                     en: "Channel deleted!",
                 },
+            })
+        );
+        dispatch(
+            setChannelInfo({
+                channelId: null,
+                channelName: null,
+                categorieid: null,
+                channelDesc: null,
+            })
+        );
+        dispatch(
+            setfilenamesinchannel({
+                filenamesinchannel: [],
+                imagenamesinchannel: [],
             })
         );
     };

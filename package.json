@@ -1,6 +1,6 @@
 {
     "name": "discord-cloneee-by-tojgleeee",
-    "version": "0.9.1",
+    "version": "1.0.0",
     "homepage": ".",
     "dependencies": {
         "@material-ui/core": "^4.11.3",
@@ -22,6 +22,7 @@
         "react-scripts": "^4.0.3",
         "react-syntax-highlighter": "^15.4.3",
         "sass": "^1.32.5",
+        "serve": "^11.3.2",
         "socket.io-client": "^4.0.1",
         "timeago-react": "^3.0.1",
         "timeago.js": "^4.0.2",
@@ -33,9 +34,8 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "build": "react-scripts build && firebase deploy",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "build-deploy": "react-scripts build && firebase deploy",
+        "build": "react-scripts build"
     },
     "browserslist": {
         "production": [

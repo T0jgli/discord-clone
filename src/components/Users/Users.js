@@ -11,7 +11,7 @@ const Users = () => {
     const dispatch = useDispatch();
     const language = useSelector(selectlanguage);
     const sidebarmobileright = useSelector(selectsidebarmobileright);
-    const [mobile] = useState(window.innerWidth < 768);
+    const [mobile, setmobile] = useState(window.innerWidth < 768);
 
     const [users, setusers] = useState([]);
     const [dialog, setdialog] = useState({
@@ -33,6 +33,15 @@ const Users = () => {
             });
 
         return () => cleanup();
+    }, []);
+
+    useEffect(() => {
+        const resize = () => {
+            if (window.innerWidth < 768 && !mobile) setmobile(true);
+            else if (mobile) setmobile(false);
+        };
+        window.addEventListener("resize", resize);
+        return () => window.removeEventListener("resize", resize);
     }, []);
 
     return (
@@ -78,7 +87,7 @@ const Users = () => {
                                                 color: "whitesmoke",
                                             }}
                                         >
-                                            {user.displayname}
+                                            {user.newusername || user.displayname}
                                         </p>
                                     </div>
                                 </div>

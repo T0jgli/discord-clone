@@ -16,8 +16,8 @@
         align-items: center;
         img {
             object-fit: contain;
-            width: 600px;
-            max-width: 80vw;
+            width: 300px;
+            max-width: 50vw;
         }
     }
 
@@ -26,7 +26,7 @@
         div {
             text-align: center;
             img {
-                width: 300px;
+                width: 250px;
                 max-width: 50vw;
                 object-fit: contain;
                 box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
@@ -40,19 +40,36 @@
         }
     }
 
-    button {
-        background-color: Theme.$discord-color;
-        color: #eff2f5;
-        font-weight: 800;
-        margin-bottom: 20px;
-        transition: 0.3s;
-        padding: 10px;
-        padding-left: 20px;
-        padding-right: 20px;
+    .login__buttons {
+        display: flex;
+        justify-content: space-around;
 
-        &:hover {
-            background-color: white;
-            color: Theme.$discord-color;
+        @media (min-width: 768px) {
+            width: 25vw;
+            min-width: 500px;
+        }
+
+        @media (max-width: 768px) {
+            flex-direction: column;
+        }
+        button {
+            background-color: Theme.$discord-color;
+            color: #eff2f5;
+            font-weight: 800;
+            margin-bottom: 20px;
+            transition: 0.3s;
+            padding: 10px;
+            padding-left: 20px;
+            padding-right: 20px;
+
+            &.register {
+                color: rgba(255, 255, 255, 0.5);
+            }
+
+            &:hover {
+                background-color: white;
+                color: Theme.$discord-color;
+            }
         }
     }
 }
@@ -122,13 +139,8 @@
 }
 
 //Login Dialog
-
 .login__googlelogindiv {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     img {
-        width: 8%;
         transition: 0.3s;
         margin-top: 20px;
         margin-bottom: 20px;
