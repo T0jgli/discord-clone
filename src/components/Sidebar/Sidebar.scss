@@ -1,4 +1,4 @@
-@use '../Theme';
+@use "../Theme";
 
 .sidebar {
     display: flex;
@@ -24,11 +24,11 @@
         }
     }
 
-    .sidebar__menuicon {
+    .sidebar__MdMenu {
         transition: transform 0.3s;
     }
 
-    .sidebar__menuiconshowed {
+    .sidebar__MdMenushowed {
         transform: rotate(90deg);
 
         @media (max-width: 768px) {
@@ -154,7 +154,7 @@
         -moz-box-shadow: 0px -2px 0px 0px rgba(0, 0, 0, 0.75);
         box-shadow: 0px -2px 0px 0px rgba(0, 0, 0, 0.75);
 
-        .MuiSvgIcon-root {
+        svg {
             margin: 0.5rem;
         }
 

@@ -1,9 +1,9 @@
-@use './components/Theme';
-@use './components/Chat/Chat';
-@use './components/Loading/Loading';
-@use './components/Login/Login';
-@use './components/Sidebar/Sidebar';
-@use './components/Users/Users';
+@use "./components/Theme";
+@use "./components/Chat/Chat";
+@use "./components/Loading/Loading";
+@use "./components/Login/Login";
+@use "./components/Sidebar/Sidebar";
+@use "./components/Users/Users";
 
 * {
     margin: 0;
@@ -69,7 +69,7 @@ body {
             justify-content: flex-end;
 
             button {
-                span {
+                svg {
                     color: rgba(235, 235, 235, 0.95);
                 }
             }
@@ -77,10 +77,14 @@ body {
     }
 }
 
-div > .MuiSvgIcon-root {
+svg {
+    font-size: 1.5rem;
+}
+
+div > svg {
     transition: 0.3s !important;
 }
-div > .MuiSvgIcon-root:hover {
+div > svg:hover {
     color: white;
     cursor: pointer;
 }

@@ -2,16 +2,17 @@ import React, { useState } from "react";
 import { selectlanguage, setlanguage, setsnackbar } from "../../lib/redux/AppSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip, Grow } from "@material-ui/core";
+import { SnackbarContent, Button, Dialog, DialogContent, DialogActions, DialogTitle, TextField, Tooltip, Grow } from "@mui/material";
 
-import Snackbar from "@material-ui/core/Snackbar";
+import Snackbar from "@mui/material/Snackbar";
 
 import { auth, googleprovider } from "../../lib/firebase";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import { MdArrowDropDown } from "react-icons/md";
 import useNewGif from "../../lib/hooks/useNewGif";
 import { motion } from "framer-motion";
 import { loginLogo, loginLanguageAnimation } from "../Animation";
-import GitHubIcon from "@material-ui/icons/GitHub";
+import { FaGithub } from "react-icons/fa";
+
 import { selectUser } from "../../lib/redux/userSlice";
 
 const initialRegData = {
@@ -205,7 +206,7 @@ const Login = () => {
             <div className="login__githublink">
                 <a href="https://github.com/T0jgli/discord-clone" rel="noopener noreferrer" target="_blank">
                     GitHub
-                    <GitHubIcon fontSize="small" />
+                    <FaGithub fontSize="small" />
                 </a>
             </div>
 
@@ -214,7 +215,7 @@ const Login = () => {
                     <DialogTitle style={{ margin: "10px", fontWeight: "bold", fontSize: "larger" }}>
                         {language === "hu" ? "Bejelentkezés" : "Sign In!"}
                     </DialogTitle>
-                    <ArrowDropDownIcon />
+                    <MdArrowDropDown />
                     <form
                         onKeyPress={(e) => {
                             if (e.key === "Enter") {
@@ -266,7 +267,7 @@ const Login = () => {
                     <DialogTitle style={{ margin: "10px", fontWeight: "bold", fontSize: "larger" }}>
                         {language === "hu" ? "Regisztráció" : "Registration!"}
                     </DialogTitle>
-                    <ArrowDropDownIcon />
+                    <MdArrowDropDown />
                     <form
                         onKeyPress={(e) => {
                             if (e.key === "Enter") {

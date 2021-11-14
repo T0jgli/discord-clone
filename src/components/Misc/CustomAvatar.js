@@ -1,4 +1,6 @@
-import { Avatar, Badge, withStyles } from "@material-ui/core";
+import { withStyles } from "@mui/styles";
+import { Avatar, Badge } from "@mui/material";
+
 import React from "react";
 import useThisUserOnline from "../../lib/hooks/useThisUserOnline";
 
@@ -38,7 +40,7 @@ const CustomAvatar = ({ src, displayname, alt, onClick, thisUser }) => {
         return (
             <StyledBadge
                 color="secondary"
-                overlap="circle"
+                overlap="circular"
                 anchorOrigin={{
                     vertical: "bottom",
                     horizontal: "right",

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grow, TextField } from "@material-ui/core";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grow, TextField } from "@mui/material";
+import { MdArrowDropDown } from "react-icons/md";
 import db from "../../lib/firebase";
 import { selectlanguage, setChannelInfo, setsnackbar } from "../../lib/redux/AppSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -90,7 +90,7 @@ const CreatechannelDialog = ({ promptstate, setpromptstate, categorieid, onlyMeC
         >
             <DialogContent>
                 <DialogTitle style={{ margin: "5px" }}>{language === "hu" ? "Csatorna létrehozása" : "Create a channel!"}</DialogTitle>
-                <ArrowDropDownIcon />
+                <MdArrowDropDown />
                 <form
                     style={{ margin: "10px" }}
                     onSubmit={(e) => {

@@ -1,5 +1,5 @@
 //CHAT
-@use '../Theme';
+@use "../Theme";
 
 .chat {
     display: flex;
@@ -109,7 +109,7 @@
             justify-content: space-between;
             flex: 0.2;
 
-            .MuiSvgIcon-root {
+            svg {
                 margin: 10px;
             }
 
@@ -120,7 +120,7 @@
                 border-radius: 3px;
                 padding: 3px;
 
-                .MuiSvgIcon-root {
+                svg {
                     margin: 0;
                     padding-right: 1px;
                 }
@@ -432,7 +432,7 @@
             .chat__inputicons {
                 @extend %d-flex-center;
 
-                .MuiSvgIcon-root {
+                svg {
                     padding: 5px 10px 5px 10px;
                 }
             }
@@ -533,7 +533,7 @@ pre::-webkit-scrollbar-thumb:hover {
         border-radius: 0.6rem !important;
     }
 
-    .editicon {
+    .MdModeEdit {
         position: absolute;
         top: 0;
         right: 0;

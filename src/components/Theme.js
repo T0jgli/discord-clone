@@ -1,9 +1,9 @@
-import { createMuiTheme } from "@material-ui/core/styles";
-import green from "@material-ui/core/colors/green";
-import grey from "@material-ui/core/colors/grey";
-import red from "@material-ui/core/colors/red";
+import { createTheme } from "@mui/material/styles";
+import green from "@mui/material/colors/green";
+import grey from "@mui/material/colors/grey";
+import red from "@mui/material/colors/red";
 
-const Theme = createMuiTheme({
+let theme = createTheme({
     palette: {
         primary: grey,
         secondary: green,
@@ -11,93 +11,132 @@ const Theme = createMuiTheme({
         contrastThreshold: 3,
         tonalOffset: 0.2,
     },
-    overrides: {
+});
+
+const Theme = createTheme(theme, {
+    components: {
         MuiButton: {
-            root: {
-                color: "white",
-                borderRadius: "0.8rem",
+            styleOverrides: {
+                root: {
+                    color: "white",
+                    borderRadius: "0.8rem",
+                },
             },
         },
         MuiFormLabel: {
-            root: {
-                color: "gray",
+            styleOverrides: {
+                root: {
+                    color: "gray",
+                },
             },
         },
         MuiInputBase: {
-            input: {
-                color: "white",
+            styleOverrides: {
+                input: {
+                    color: "white !important",
+                },
             },
         },
         MuiTab: {
-            root: {
-                borderRadius: "0.8rem",
+            styleOverrides: {
+                root: {
+                    borderRadius: "0.8rem",
+                    color: "white !important",
+                },
             },
         },
         MuiDialog: {
-            container: {
-                backdropFilter: "brightness(75%)",
+            styleOverrides: {
+                container: {
+                    backdropFilter: "brightness(75%)",
+                },
+                paper: {
+                    borderRadius: "0.8rem",
+                    textAlign: "center",
+                    backgroundColor: "#40434a",
+                    color: "white",
+                },
             },
-            paper: {
-                borderRadius: "0.8rem",
-                textAlign: "center",
-                backgroundColor: "#40434a",
-                color: "white",
+        },
+        MuiLink: {
+            styleOverrides: {
+                root: {
+                    textDecoration: "none",
+                },
             },
         },
         MuiDialogContent: {
-            root: {
-                paddingBottom: "20px",
+            styleOverrides: {
+                root: {
+                    paddingBottom: "20px",
+                },
             },
         },
         MuiDialogActions: {
-            root: {
-                backgroundColor: "#292a2e !important",
+            styleOverrides: {
+                root: {
+                    backgroundColor: "#292a2e !important",
+                },
             },
         },
         MuiMenu: {
-            paper: {
-                backgroundColor: "rgb(32, 32, 32) !important",
-                color: "rgb(212, 212, 212) !important",
-                borderRadius: "0.5rem",
+            styleOverrides: {
+                paper: {
+                    backgroundColor: "rgb(32, 32, 32) !important",
+                    color: "rgb(212, 212, 212) !important",
+                    borderRadius: "0.5rem",
+                },
             },
         },
         MuiListItem: {
-            root: {
-                paddingTop: "10px !important",
-                paddingBottom: "10px !important",
+            styleOverrides: {
+                root: {
+                    paddingTop: "10px !important",
+                    paddingBottom: "10px !important",
+                },
             },
         },
         MuiPopover: {
-            paper: {
-                backgroundColor: "rgba(32, 32, 32, 1) !important",
-                color: "rgb(212, 212, 212) !important",
-                borderRadius: "0.5rem",
+            styleOverrides: {
+                paper: {
+                    backgroundColor: "rgba(32, 32, 32, 1) !important",
+                    color: "rgb(212, 212, 212) !important",
+                    borderRadius: "0.5rem",
+                },
             },
         },
         MuiCheckbox: {
-            root: {
-                color: "gray !important",
+            styleOverrides: {
+                root: {
+                    color: "gray !important",
+                },
             },
         },
         MuiPaper: {
-            root: {
-                backgroundColor: "rgba(32, 32, 32, 1)",
-                color: "rgb(212, 212, 212)",
-                borderRadius: "0.5rem",
+            styleOverrides: {
+                root: {
+                    backgroundColor: "rgba(32, 32, 32, 1)",
+                    color: "rgb(212, 212, 212)",
+                    borderRadius: "0.5rem",
+                },
             },
         },
         MuiSnackbarContent: {
-            root: {
-                borderRadius: "0.6rem",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-                justifyContent: "center",
-                fontSize: "1rem",
-                fontWeight: "500",
+            styleOverrides: {
+                root: {
+                    borderRadius: "0.6rem",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    justifyContent: "center",
+                    fontSize: "1rem",
+                    fontWeight: "500",
+                },
             },
         },
         MuiTypography: {
-            body1: {
-                color: "rgba(255, 255, 255, 0.85) !important",
+            styleOverrides: {
+                body1: {
+                    color: "rgba(255, 255, 255, 0.85) !important",
+                },
             },
         },
     },

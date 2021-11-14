@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectlanguage } from "../../lib/redux/AppSlice";
 
-import CloseIcon from "@material-ui/icons/Close";
-import Link from "@material-ui/core/Link";
-import { IconButton, Dialog, DialogContent, DialogContentText, DialogTitle, Grow, Fade, Avatar } from "@material-ui/core";
+import { MdClose } from "react-icons/md";
+import Link from "@mui/material/Link";
+import { IconButton, Dialog, DialogContent, DialogContentText, DialogTitle, Grow, Fade, Avatar } from "@mui/material";
 import TimeAgo from "timeago-react";
 import * as timeago from "timeago.js";
 import hu from "timeago.js/lib/lang/hu";
@@ -90,7 +90,7 @@ function Userdialog({ dialog, setdialog, avatar, categorieid, channelid, sidebar
                             <StyledBadge
                                 color="secondary"
                                 className="userdialog-badge"
-                                overlap="circle"
+                                overlap="circular"
                                 anchorOrigin={{
                                     vertical: "bottom",
                                     horizontal: "right",
@@ -130,7 +130,7 @@ function Userdialog({ dialog, setdialog, avatar, categorieid, channelid, sidebar
             </DialogContent>
             <div className="dialog__closeicon">
                 <IconButton onClick={() => setdialog({ ...dialog, open: false })}>
-                    <CloseIcon />
+                    <MdClose />
                 </IconButton>
             </div>
         </Dialog>

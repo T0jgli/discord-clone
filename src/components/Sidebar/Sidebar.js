@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import SettingsIcon from "@material-ui/icons/Settings";
-import { Avatar, LinearProgress } from "@material-ui/core";
+import { MdExpandMore } from "react-icons/md";
+import { MdSettings } from "react-icons/md";
+import { Avatar, LinearProgress } from "@mui/material";
 import { selectUser } from "../../lib/redux/userSlice";
 import { selectsidebarmobile } from "../../lib/redux/AppSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -84,7 +84,7 @@ const Sidebar = () => {
                     }}
                 >
                     <h3 style={{ cursor: "pointer" }}>Discord CLoNe by tojglEE</h3>
-                    <ExpandMoreIcon className={Boolean(menu) ? "sidebar__menuiconshowed sidebar__menuicon" : "sidebar__menuicon"} />
+                    <MdExpandMore className={Boolean(menu) ? "sidebar__MdMenushowed sidebar__MdMenu" : "sidebar__MdMenu"} />
                     <Navbar menu={menu} setmenu={setmenu} setcategoriemenu={setcategoriemenu} />
                 </div>
                 <div className="sidebar__channels">
@@ -132,7 +132,7 @@ const Sidebar = () => {
                         <p>#{user.uid.substring(0, 5)}</p>
                     </div>
                     <div className="sidebar__profileicons">
-                        <SettingsIcon onClick={() => setsettingsdialog(true)} />
+                        <MdSettings onClick={() => setsettingsdialog(true)} />
                     </div>
                 </div>
             </div>

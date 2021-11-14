@@ -1,13 +1,13 @@
-import { Button, Grow, IconButton, TextField, Tooltip } from "@material-ui/core";
-import { Autocomplete, ToggleButton } from "@material-ui/lab";
+import { Button, Grow, IconButton, TextField, Tooltip } from "@mui/material";
+import { Autocomplete, ToggleButton } from "@mui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import { selectlanguage, setsnackbar } from "../../lib/redux/AppSlice";
 import { languages } from "../../lib/syntaxHighlighterLanguages.json";
-import CodeIcon from "@material-ui/icons/Code";
-import AttachFileIcon from "@material-ui/icons/AttachFile";
-import DeleteIcon from "@material-ui/icons/Delete";
-import AttachmentIcon from "@material-ui/icons/Attachment";
-import ImageIcon from "@material-ui/icons/Image";
+import { MdOutlineCode } from "react-icons/md";
+import { MdOutlineAttachFile } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { MdAttachment } from "react-icons/md";
+import { MdImage } from "react-icons/md";
 
 const ChatBottomActions = ({
     chatBottomPopup,
@@ -30,7 +30,7 @@ const ChatBottomActions = ({
                         <div className="chat__filediv">
                             <Button onClick={() => hiddenFileInput.current.click()} style={{ fontWeight: "bold", padding: "11px" }}>
                                 {language === "en" ? "File / Photo upload" : "Fájl / Kép feltöltés"}
-                                <AttachFileIcon style={{ paddingLeft: "5px" }} />
+                                <MdOutlineAttachFile style={{ paddingLeft: "5px" }} />
                             </Button>
 
                             <div className="divider" />
@@ -45,7 +45,7 @@ const ChatBottomActions = ({
                             >
                                 {language === "en" ? "Upload code" : "Kód feltöltése"}
 
-                                <CodeIcon style={{ paddingLeft: "5px" }} />
+                                <MdOutlineCode style={{ paddingLeft: "5px" }} />
                             </ToggleButton>
                         </div>
                     </Grow>
@@ -72,9 +72,9 @@ const ChatBottomActions = ({
                     <div className="chat__filediv" style={{ paddingRight: "0" }}>
                         <Tooltip title={image.name}>
                             {image?.type.includes("image") ? (
-                                <ImageIcon style={{ cursor: "default" }} />
+                                <MdImage style={{ cursor: "default" }} />
                             ) : (
-                                <AttachmentIcon style={{ cursor: "default" }} />
+                                <MdAttachment style={{ cursor: "default" }} />
                             )}
                         </Tooltip>
                         <Tooltip title={language === "hu" ? "Fájl törlése" : "Delete file"} placement="right">
@@ -93,7 +93,7 @@ const ChatBottomActions = ({
                                     );
                                 }}
                             >
-                                <DeleteIcon style={{ color: "lightgray" }} />
+                                <MdDelete style={{ color: "lightgray" }} />
                             </IconButton>
                         </Tooltip>
                     </div>

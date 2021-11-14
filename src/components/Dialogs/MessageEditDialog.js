@@ -1,9 +1,9 @@
-import { IconButton, Paper, Popover, Tooltip } from "@material-ui/core";
+import { IconButton, Paper, Popover, Tooltip } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import { selectlanguage } from "../../lib/redux/AppSlice";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
+import { MdDelete } from "react-icons/md";
+import { MdModeEdit } from "react-icons/md";
 
 const MessageEditDialog = ({ editpopper, seteditpopper, deletefunc, video, setedit, edit, setconfirmprompt }) => {
     const language = useSelector(selectlanguage);
@@ -32,7 +32,7 @@ const MessageEditDialog = ({ editpopper, seteditpopper, deletefunc, video, seted
                                 seteditpopper(null);
                             }}
                         >
-                            <EditIcon style={{ color: "grey" }} />
+                            <MdModeEdit style={{ color: "grey" }} />
                         </IconButton>
                     </Tooltip>
                 )}
@@ -48,7 +48,7 @@ const MessageEditDialog = ({ editpopper, seteditpopper, deletefunc, video, seted
                             });
                         }}
                     >
-                        <DeleteIcon style={{ color: "grey" }} />
+                        <MdDelete style={{ color: "grey" }} />
                     </IconButton>
                 </Tooltip>
             </Paper>

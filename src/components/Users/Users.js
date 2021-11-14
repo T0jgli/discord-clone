@@ -1,4 +1,4 @@
-import { LinearProgress } from "@material-ui/core";
+import { LinearProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Scrollbars from "react-custom-scrollbars";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import db from "../../lib/firebase";
 import { selectlanguage, selectsidebarmobileright, setsidebarmobileright } from "../../lib/redux/AppSlice";
 import Userdialog from "../Dialogs/UserDialog";
 import CustomAvatar from "../Misc/CustomAvatar";
-import PeopleIcon from "@material-ui/icons/People";
+import { MdPeople } from "react-icons/md";
 const Users = () => {
     const dispatch = useDispatch();
     const language = useSelector(selectlanguage);
@@ -49,7 +49,7 @@ const Users = () => {
             <div className={`${mobile && sidebarmobileright ? "sidebar-right__mobile" : "sidebar-right__mobileopen"} rightsidebar`}>
                 <div className="rightsidebar__top">
                     <h3>{language === "en" ? "Users" : "Felhasználók"}</h3>
-                    <PeopleIcon style={{ paddingLeft: "10px", cursor: "default" }} />
+                    <MdPeople style={{ paddingLeft: "10px", cursor: "default" }} />
                 </div>
                 {users.length > 0 ? (
                     <div className="users">

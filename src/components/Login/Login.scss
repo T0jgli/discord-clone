@@ -1,4 +1,4 @@
-@use '../Theme';
+@use "../Theme";
 
 //Base
 
@@ -123,13 +123,13 @@
         &:hover {
             transition: 0.3s ease-in-out !important;
             color: rgb(190, 190, 190) !important;
-            .MuiSvgIcon-root {
+            svg {
                 transition: 0.3s ease-in-out !important;
                 color: rgb(190, 190, 190) !important;
             }
         }
 
-        .MuiSvgIcon-root {
+        svg {
             margin-left: 10px;
             color: gray !important;
             cursor: default !important;
@@ -144,6 +144,7 @@
         transition: 0.3s;
         margin-top: 20px;
         margin-bottom: 20px;
+        max-width: 50px;
 
         &:hover {
             cursor: pointer;

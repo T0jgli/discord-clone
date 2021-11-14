@@ -13,14 +13,15 @@ import {
 } from "../../lib/redux/AppSlice";
 import { useDispatch, useSelector } from "react-redux";
 
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import NotificationsOffIcon from "@material-ui/icons/NotificationsOff";
-import SearchRoundedIcon from "@material-ui/icons/SearchRounded";
-import HelpRoundedIcon from "@material-ui/icons/HelpRounded";
-import CloseIcon from "@material-ui/icons/Close";
-import { Fade } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import PeopleIcon from "@material-ui/icons/People";
+import { MdNotifications } from "react-icons/md";
+import { MdNotificationsNone } from "react-icons/md";
+import { MdOutlineSearch } from "react-icons/md";
+import { MdHelp } from "react-icons/md";
+import { MdClose } from "react-icons/md";
+
+import { Fade } from "@mui/material";
+import { MdMenu } from "react-icons/md";
+import { MdPeople } from "react-icons/md";
 
 const ChatHeader = ({ searchtext, setsearchtext }) => {
     const dispatch = useDispatch();
@@ -65,8 +66,8 @@ const ChatHeader = ({ searchtext, setsearchtext }) => {
     return (
         <>
             <div className="chatheader__sidebarbtn">
-                <MenuIcon
-                    fontSize="large"
+                <MdMenu
+                    size="2.1875rem"
                     onClick={() => {
                         dispatch(
                             setsidebarmobile({
@@ -77,8 +78,8 @@ const ChatHeader = ({ searchtext, setsearchtext }) => {
                 />
             </div>
             <div className="chatheader__sidebarbtn users">
-                <PeopleIcon
-                    fontSize="large"
+                <MdPeople
+                    size="2.1875rem"
                     onClick={() => {
                         dispatch(
                             setsidebarmobileright({
@@ -114,30 +115,30 @@ const ChatHeader = ({ searchtext, setsearchtext }) => {
                                     placeholder={language === "hu" ? "Keresés" : "Search"}
                                 />
                                 {searchtext ? (
-                                    <CloseIcon
+                                    <MdClose
                                         style={{ cursor: "default", opacity: "0.5" }}
-                                        className="search__closeicon"
+                                        className="search__MdClose"
                                         onClick={() => setsearchtext("")}
                                     />
                                 ) : (
-                                    <SearchRoundedIcon style={{ opacity: "0.5", cursor: "default" }} />
+                                    <MdOutlineSearch style={{ opacity: "0.5", cursor: "default" }} />
                                 )}
                             </div>
                             {mutedchannels?.includes(channelid) ? (
-                                <NotificationsOffIcon
+                                <MdNotificationsNone
                                     onClick={() => {
                                         setUnMutedChannels();
                                     }}
                                 />
                             ) : (
-                                <NotificationsIcon
+                                <MdNotifications
                                     onClick={() => {
                                         setMutedChannels();
                                     }}
                                 />
                             )}
 
-                            <HelpRoundedIcon onClick={() => window.open("https://support.discord.com/hc/en-us", "_blank")} />
+                            <MdHelp onClick={() => window.open("https://support.discord.com/hc/en-us", "_blank")} />
                         </div>
                     </Fade>
                 )}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import DeleteIcon from "@material-ui/icons/Delete";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import { MdDelete } from "react-icons/md";
+import { MdArrowDropDown } from "react-icons/md";
 import {
     Button,
     IconButton,
@@ -16,8 +16,8 @@ import {
     InputLabel,
     Switch,
     FormControlLabel,
-} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
+} from "@mui/material";
+import TextField from "@mui/material/TextField";
 import { useDispatch, useSelector } from "react-redux";
 import {
     selectfilenamesinchannel,
@@ -141,7 +141,7 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
         >
             <DialogContent>
                 <DialogTitle>{language === "hu" ? "Csatorna szerkesztése" : "Channel edit"}</DialogTitle>
-                <ArrowDropDownIcon />
+                <MdArrowDropDown />
                 <form
                     onSubmit={(e) => {
                         e.preventDefault();
@@ -188,7 +188,7 @@ const EditchannelDialog = ({ channel, dialog, setdialog, id, categorieid, setcon
                             color: "rgb(225, 225, 225)",
                         }}
                     >
-                        <DeleteIcon />
+                        <MdDelete />
                     </IconButton>
                 </Tooltip>
             </DialogContent>

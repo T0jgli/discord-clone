@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import EditIcon from "@material-ui/icons/Edit";
-import { IconButton } from "@material-ui/core";
+import { MdModeEdit } from "react-icons/md";
+import { IconButton } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setChannelInfo, selectmutedchannels, selectChannelId, setsidebarmobile, selectsidebarmobile } from "../../lib/redux/AppSlice";
@@ -76,7 +76,7 @@ const SideBarChannel = ({ id, channel, categorieid }) => {
                 </h4>
                 {delbutton && channel.createdby === user.uid ? (
                     <IconButton onClick={() => setdialog(true)} className="delicon" style={{ color: "gray" }}>
-                        <EditIcon />
+                        <MdModeEdit />
                     </IconButton>
                 ) : null}
             </div>

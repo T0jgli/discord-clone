@@ -9,20 +9,19 @@ import {
     IconButton,
     Tooltip,
     Grow,
-    Avatar,
-    makeStyles,
     Backdrop,
     CircularProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import { selectlanguage, setsnackbar } from "../../lib/redux/AppSlice";
 import { selectUser } from "../../lib/redux/userSlice";
 import db, { storage } from "../../lib/firebase";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import DeleteIcon from "@material-ui/icons/Delete";
+import { MdArrowDropDown } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import firebase from "firebase/app";
 import { useDispatch, useSelector } from "react-redux";
-import EditIcon from "@material-ui/icons/Edit";
+import { MdModeEdit } from "react-icons/md";
 import ImageResizer from "../../lib/helpers/ImageResizer";
+import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
     backdrop: {
@@ -120,11 +119,11 @@ const SettingsDialog = ({ setsettingsdialog, settingsdialog, setconfirmprompt })
             <Dialog TransitionComponent={Grow} open={settingsdialog} onClose={() => setsettingsdialog(false)}>
                 <DialogContent>
                     <DialogTitle style={{ margin: "5px" }}>{language === "hu" ? "Beállítások" : "Settings"}</DialogTitle>
-                    <ArrowDropDownIcon />
+                    <MdArrowDropDown />
                     <div className="settingsdialog__avatardiv">
                         <img src={newimage ? URL.createObjectURL(newimage) : user.photo} className="settingsdialog__avatar" />
-                        <div className="editicon">
-                            <EditIcon onClick={() => photoChangeRef.current.click()} />
+                        <div className="MdModeEdit">
+                            <MdModeEdit onClick={() => photoChangeRef.current.click()} />
                         </div>
 
                         <input
@@ -203,7 +202,7 @@ const SettingsDialog = ({ setsettingsdialog, settingsdialog, setconfirmprompt })
                                 color: "rgb(225, 225, 225)",
                             }}
                         >
-                            <DeleteIcon />
+                            <MdDelete />
                         </IconButton>
                     </Tooltip>
                 </DialogContent>

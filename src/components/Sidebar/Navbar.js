@@ -1,10 +1,10 @@
-import { Menu, MenuItem } from "@material-ui/core";
+import { Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { auth } from "../../lib/firebase";
 import { selectlanguage, setChannelInfo, setsnackbar } from "../../lib/redux/AppSlice";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import { MdOutlineExitToApp } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import FolderIcon from "@material-ui/icons/Folder";
+import { MdFolder } from "react-icons/md";
 
 const Navbar = ({ menu, setmenu, setcategoriemenu }) => {
     const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const Navbar = ({ menu, setmenu, setcategoriemenu }) => {
                 }}
             >
                 <div className="menu__text">{language === "hu" ? "Kategóriák" : "Categories"}</div>
-                <FolderIcon />
+                <MdFolder />
             </MenuItem>
             <MenuItem
                 className="menu__itemflex"
@@ -55,7 +55,7 @@ const Navbar = ({ menu, setmenu, setcategoriemenu }) => {
                 }}
             >
                 <div className="menu__text">{language === "hu" ? "Kijelentkezés" : "Sign out"}</div>
-                <ExitToAppIcon />
+                <MdOutlineExitToApp />
             </MenuItem>
         </Menu>
     );

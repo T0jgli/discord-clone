@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import EmojiEmotionsIcon from "@material-ui/icons/EmojiEmotions";
-import SendRoundedIcon from "@material-ui/icons/SendRounded";
-import { TextareaAutosize } from "@material-ui/core";
+import { MdAddCircle } from "react-icons/md";
+import { MdEmojiEmotions } from "react-icons/md";
+import { MdSend } from "react-icons/md";
+import { TextareaAutosize } from "@mui/material";
 
 import { selectUser } from "../../lib/redux/userSlice";
 import {
@@ -31,7 +31,7 @@ import { FileDrop } from "react-file-drop";
 import { formatBytes } from "../../lib/helpers/FormatBytes";
 import { AnimatePresence, motion } from "framer-motion";
 import { messageAnimation } from "../Animation";
-import CancelIcon from "@material-ui/icons/Cancel";
+import { MdCancel } from "react-icons/md";
 import UploadLoading from "../Loading/UploadLoading";
 import ChannelFiles from "../../lib/helpers/ChannelFiles";
 import ChatBottomActions from "../Dialogs/ChatBottomActionsDialog";
@@ -368,19 +368,19 @@ const Chat = () => {
                 >
                     <div className="chat__input">
                         {chatBottomPopup ? (
-                            <CancelIcon
+                            <MdCancel
                                 style={{ marginLeft: "5px" }}
                                 className={channelId ? "chat__inputfilebutton" : "chat__disabledsendbtn"}
-                                fontSize="large"
+                                size="2.1875rem"
                                 onClick={() => {
                                     if (channelId) setChatBottomPopup(!chatBottomPopup);
                                 }}
                             />
                         ) : (
-                            <AddCircleIcon
+                            <MdAddCircle
                                 style={{ marginLeft: "5px" }}
                                 className={channelId ? "chat__inputfilebutton" : "chat__disabledsendbtn"}
-                                fontSize="large"
+                                size="2.1875rem"
                                 onClick={() => {
                                     if (channelId) setChatBottomPopup(!chatBottomPopup);
                                 }}
@@ -508,7 +508,7 @@ const Chat = () => {
                             />
                         </form>
                         <div className="chat__inputicons">
-                            <SendRoundedIcon
+                            <MdSend
                                 className={input || image ? "" : "chat__disabledsendbtn"}
                                 onClick={(e) => {
                                     if (input || image) {
@@ -516,9 +516,9 @@ const Chat = () => {
                                     }
                                 }}
                             />
-                            <EmojiEmotionsIcon
+                            <MdEmojiEmotions
                                 className={channelname ? "" : "chat__disabledsendbtn"}
-                                fontSize="large"
+                                size="2.1875rem"
                                 onClick={() => {
                                     if (channelId) setemojidialog(true);
                                 }}

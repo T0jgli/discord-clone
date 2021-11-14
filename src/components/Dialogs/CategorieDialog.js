@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
-import LockIcon from "@material-ui/icons/Lock";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import EditIcon from "@material-ui/icons/Edit";
+import { MdLock } from "react-icons/md";
+import { MdLockOpen } from "react-icons/md";
+import { MdAddCircle } from "react-icons/md";
+import { MdModeEdit } from "react-icons/md";
 import {
     Button,
     Dialog,
@@ -18,17 +18,17 @@ import {
     IconButton,
     Tooltip,
     Grow,
-} from "@material-ui/core";
+} from "@mui/material";
 import { a11yProps, TabPanel } from "../../lib/helpers/Tabhelper";
 import { useDispatch, useSelector } from "react-redux";
 import { selectlanguage, setsnackbar } from "../../lib/redux/AppSlice";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
+import { MdArrowDropDown } from "react-icons/md";
 import { selectUser } from "../../lib/redux/userSlice";
-import DeleteIcon from "@material-ui/icons/Delete";
+import { MdDelete } from "react-icons/md";
 import db from "../../lib/firebase";
 import firebase from "firebase/app";
-import PeopleIcon from "@material-ui/icons/People";
-import PersonIcon from "@material-ui/icons/Person";
+import { MdPeople } from "react-icons/md";
+import { MdPerson } from "react-icons/md";
 
 const CategorieDialog = ({ categoriemenu, confirmprompt, setconfirmprompt, categories, setcategoriemenu }) => {
     const dispatch = useDispatch();
@@ -195,10 +195,12 @@ const CategorieDialog = ({ categoriemenu, confirmprompt, setconfirmprompt, categ
 
     return (
         <Dialog
-            onEntered={() => {
-                if (tabAction.current) {
-                    tabAction.current.updateIndicator();
-                }
+            TransitionProps={{
+                onEntered: () => {
+                    if (tabAction.current) {
+                        tabAction.current.updateIndicator();
+                    }
+                },
             }}
             TransitionComponent={Grow}
             open={categoriemenu}
@@ -207,14 +209,14 @@ const CategorieDialog = ({ categoriemenu, confirmprompt, setconfirmprompt, categ
             <DialogContent>
                 <Paper>
                     <Tabs action={tabAction} variant="fullWidth" value={tab} onChange={(e, val) => settab(val)} aria-label="simple tabs example">
-                        <Tab icon={<AddCircleIcon />} label={language === "hu" ? "Létrehozás" : "Create"} {...a11yProps(0)} />
-                        <Tab icon={<EditIcon />} label={language === "hu" ? "Szerkesztés" : "Edit"} {...a11yProps(1)} />
+                        <Tab icon={<MdAddCircle />} label={language === "hu" ? "Létrehozás" : "Create"} {...a11yProps(0)} />
+                        <Tab icon={<MdModeEdit />} label={language === "hu" ? "Szerkesztés" : "Edit"} {...a11yProps(1)} />
                     </Tabs>
                 </Paper>
             </DialogContent>
             <TabPanel value={tab} index={0}>
                 <DialogTitle style={{ margin: "5px" }}>{language === "hu" ? "Kategória létrehozása" : "Create a channel categorie"}</DialogTitle>
-                <ArrowDropDownIcon />
+                <MdArrowDropDown />
                 <form
                     style={{ margin: "10px" }}
                     onSubmit={(e) => {
@@ -240,7 +242,7 @@ const CategorieDialog = ({ categoriemenu, confirmprompt, setconfirmprompt, categ
 
             <TabPanel value={tab} index={1}>
                 <DialogTitle style={{ margin: "5px" }}>{language === "hu" ? "Kategóriák szerkesztése" : "Edit categories"}</DialogTitle>
-                <ArrowDropDownIcon />
+                <MdArrowDropDown />
                 {categories.map((categorie, index) => {
                     const { id: idC, categoriename: cName, createdby, private: privateC, onlyMeCanCreateChannel } = categorie?.categorie || {};
                     if (idC && user.uid === createdby) {
@@ -269,7 +271,7 @@ const CategorieDialog = ({ categoriemenu, confirmprompt, setconfirmprompt, categ
                                         }}
                                         style={{ color: "white", opacity: "0.5" }}
                                     >
-                                        {onlyMeCanCreateChannel ? <LockIcon /> : <LockOpenIcon />}
+                                        {onlyMeCanCreateChannel ? <MdLock /> : <MdLockOpen />}
                                     </IconButton>
 
                                     <Tooltip
@@ -283,7 +285,7 @@ const CategorieDialog = ({ categoriemenu, confirmprompt, setconfirmprompt, categ
                                             }}
                                             style={{ color: "white", opacity: "0.5" }}
                                         >
-                                            {privateC ? <PersonIcon /> : <PeopleIcon />}
+                                            {privateC ? <MdPerson /> : <MdPeople />}
                                         </IconButton>
                                     </Tooltip>
 
@@ -300,7 +302,7 @@ const CategorieDialog = ({ categoriemenu, confirmprompt, setconfirmprompt, categ
                                                 });
                                             }}
                                         >
-                                            <DeleteIcon />
+                                            <MdDelete />
                                         </IconButton>
                                     </Tooltip>
                                 </div>

@@ -1,17 +1,17 @@
 import React, { useRef, useState } from "react";
 
-import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
-import FileCopyIcon from "@material-ui/icons/FileCopy";
-import DescriptionIcon from "@material-ui/icons/Description";
-import { Button, IconButton, Tooltip, TextareaAutosize } from "@material-ui/core";
+import { MdInsertDriveFile } from "react-icons/md";
+import { MdFileCopy } from "react-icons/md";
+import { MdDescription } from "react-icons/md";
+import { Button, IconButton, Tooltip, TextareaAutosize } from "@mui/material";
 
 import { selectcategorieid, selectChannelId, selectlanguage, setsnackbar } from "../../lib/redux/AppSlice";
 import db, { storage } from "../../lib/firebase";
 import { useDispatch, useSelector } from "react-redux";
-import MoreVertIcon from "@material-ui/icons/MoreVert";
+import { MdMoreVert } from "react-icons/md";
 import Userdialog from "../Dialogs/UserDialog";
 import { selectUser } from "../../lib/redux/userSlice";
-import DoneIcon from "@material-ui/icons/Done";
+import { MdDone } from "react-icons/md";
 import firebase from "firebase/app";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import { motion } from "framer-motion";
@@ -244,7 +244,7 @@ const Message = ({
                                     }}
                                 />
                                 <IconButton type="submit" size="small">
-                                    <DoneIcon />
+                                    <MdDone />
                                 </IconButton>
                             </form>
                         </>
@@ -270,9 +270,9 @@ const Message = ({
                             <a href={fileurl} rel="noreferrer" target={filename.split(".").slice(-1)[0] === "pdf" ? "_blank" : undefined} download>
                                 <Button className="message__button" variant="contained">
                                     {filename.split(".").slice(-1)[0] === "pdf" ? (
-                                        <DescriptionIcon fontSize="small" style={{ marginRight: "5px" }} />
+                                        <MdDescription fontSize="small" style={{ marginRight: "5px" }} />
                                     ) : (
-                                        <InsertDriveFileIcon fontSize="small" style={{ marginRight: "5px" }} />
+                                        <MdInsertDriveFile fontSize="small" style={{ marginRight: "5px" }} />
                                     )}
                                     {filename.split("__")[0] + "." + filename.split(".").slice(-1)[0]}
                                 </Button>
@@ -287,7 +287,7 @@ const Message = ({
                                     color="default"
                                     onClick={copy}
                                 >
-                                    <FileCopyIcon />
+                                    <MdFileCopy />
                                 </IconButton>
                             </Tooltip>
                         </>
@@ -300,7 +300,7 @@ const Message = ({
                                 seteditpopper(e.currentTarget);
                             }}
                         >
-                            <MoreVertIcon style={{ color: "grey" }} />
+                            <MdMoreVert style={{ color: "grey" }} />
                         </IconButton>
                     </div>
                 )}

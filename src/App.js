@@ -13,7 +13,7 @@ import firebase from "firebase/app";
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, login, logout } from "./lib/redux/userSlice";
 import { selectlanguage, setOnlineUsers, setsnackbar } from "./lib/redux/AppSlice";
-import { ThemeProvider } from "@material-ui/core";
+import { ThemeProvider } from "@mui/material";
 import { motion } from "framer-motion";
 import { pageVariants } from "./components/Animation";
 import socketIOClient from "socket.io-client";
@@ -69,6 +69,7 @@ const App = () => {
 
             socket.emit("onlineUser", {
                 details: user.uid,
+                isMobile: window.matchMedia && window.matchMedia("(max-width: 768px)").matches,
             });
 
             socket.on("usersChanged", ({ onlineUsers }) => {
