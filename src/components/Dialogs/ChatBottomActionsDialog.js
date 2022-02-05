@@ -2,7 +2,7 @@ import { Button, Grow, IconButton, TextField, Tooltip } from "@mui/material";
 import { Autocomplete, ToggleButton } from "@mui/lab";
 import { useDispatch, useSelector } from "react-redux";
 import { selectlanguage, setsnackbar } from "../../lib/redux/AppSlice";
-import { languages } from "../../lib/syntaxHighlighterLanguages.json";
+import languages from "../../lib/syntaxHighlighterLanguages.json";
 import { MdOutlineCode } from "react-icons/md";
 import { MdOutlineAttachFile } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
@@ -52,7 +52,7 @@ const ChatBottomActions = ({
                     {isCodeMessage && (
                         <Grow in={Boolean(isCodeMessage)}>
                             <Autocomplete
-                                options={languages}
+                                options={languages.languages}
                                 style={{ width: 300 }}
                                 value={selectedProgrammingLanguageArray}
                                 onChange={(_, newInputValue) => {

@@ -36,12 +36,12 @@ const Users = () => {
     }, []);
 
     useEffect(() => {
-        const resize = () => {
-            if (window.innerWidth < 768 && !mobile) setmobile(true);
-            else if (mobile) setmobile(false);
-        };
-        window.addEventListener("resize", resize);
-        return () => window.removeEventListener("resize", resize);
+        // const resize = () => {
+        //     if (window.innerWidth < 768 && !mobile) setmobile(true);
+        //     else if (mobile) setmobile(false);
+        // };
+        // window.addEventListener("resize", resize);
+        // return () => window.removeEventListener("resize", resize);
     }, []);
 
     return (
