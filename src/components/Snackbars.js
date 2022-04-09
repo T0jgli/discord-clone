@@ -1,6 +1,6 @@
 import React from "react";
 import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/lab/Alert";
+import MuiAlert from "@mui/material/Alert";
 import { selectlanguage, selectsnackbar, setsnackbar } from "../lib/redux/AppSlice";
 import { useDispatch, useSelector } from "react-redux";
 
