@@ -28,7 +28,7 @@
         "socket.io-client": "^4.4.1",
         "timeago-react": "^3.0.4",
         "timeago.js": "^4.0.2",
-        "workbox-core": "^6.5.2",
+        "workbox-core": "^6.5.4",
         "workbox-expiration": "^6.5.2",
         "workbox-precaching": "^6.5.2",
         "workbox-routing": "^6.5.2",
