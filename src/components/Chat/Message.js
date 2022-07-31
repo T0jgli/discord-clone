@@ -12,7 +12,7 @@ import { MdMoreVert } from "react-icons/md";
 import Userdialog from "../Dialogs/UserDialog";
 import { selectUser } from "../../lib/redux/userSlice";
 import { MdDone } from "react-icons/md";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import ConfirmDialog from "../Dialogs/ConfirmDialog";
 import { motion } from "framer-motion";
 import { messageAnimation } from "../Animation";

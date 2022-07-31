@@ -450,9 +450,10 @@
 
     .close {
         position: absolute;
-        bottom: 20px;
-        left: 10px;
+        bottom: 17px;
+        left: 55px;
         color: grey;
+        z-index: 100;
     }
 
     .emoji-mart {

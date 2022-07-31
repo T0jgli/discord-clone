@@ -8,7 +8,7 @@ const Snackbars = lazy(() => import("./components/Snackbars"));
 
 import Loading from "./components/Loading/Loading";
 import Theme from "./components/Theme";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { useDispatch, useSelector } from "react-redux";
 import { selectUser, login, logout } from "./lib/redux/userSlice";

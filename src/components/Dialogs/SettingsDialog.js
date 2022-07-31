@@ -17,7 +17,7 @@ import { selectUser } from "../../lib/redux/userSlice";
 import db, { storage } from "../../lib/firebase";
 import { MdArrowDropDown } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { useDispatch, useSelector } from "react-redux";
 import { MdModeEdit } from "react-icons/md";
 import ImageResizer from "../../lib/helpers/ImageResizer";

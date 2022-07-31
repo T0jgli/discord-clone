@@ -26,7 +26,7 @@ import { MdArrowDropDown } from "react-icons/md";
 import { selectUser } from "../../lib/redux/userSlice";
 import { MdDelete } from "react-icons/md";
 import db from "../../lib/firebase";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { MdPeople } from "react-icons/md";
 import { MdPerson } from "react-icons/md";
 

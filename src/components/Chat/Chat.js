@@ -20,7 +20,7 @@ import {
 } from "../../lib/redux/AppSlice";
 import { useSelector, useDispatch } from "react-redux";
 import db, { storage } from "../../lib/firebase";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { Scrollbars } from "react-custom-scrollbars";
 
 import ChatHeader from "./ChatHeader";

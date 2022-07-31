@@ -1,7 +1,6 @@
 import React from "react";
-import "emoji-mart/css/emoji-mart.css";
-
-import { Picker } from "emoji-mart";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import { selectlanguage } from "../../lib/redux/AppSlice";
 import { useSelector } from "react-redux";
 import { Grow } from "@mui/material";
@@ -9,25 +8,25 @@ import { MdClose } from "react-icons/md";
 
 const HungarianLang = {
     search: "Keresés",
-    clear: "Törlés",
-    notfound: "Nincs ilyen emoji",
-    skintext: "Válaszd ki a neked megfelelő bőrszínt",
+    search_no_results_1: "Jaj ne!",
+    search_no_results_2: "Nincs ilyen emoji",
+    pick: "",
+    add_custom: "Egyedi emoji",
     categories: {
-        search: "Keresés eredménye",
-        recent: "Gyakran használt",
-        smileys: "Mosoly & Érzelmek",
-        people: "Arcok & Emberek",
-        nature: "Állatok & Természet",
-        foods: "Étel & Ital",
         activity: "Aktivitás",
-        places: "Utazás & Helyek",
-        objects: "Tárgyak",
-        symbols: "Szimbólumok",
+        custom: "Egyedi",
         flags: "Zászlók",
-        custom: "Egyéni",
+        foods: "Étel & ital",
+        frequent: "Gyakran használt",
+        nature: "Állatok & természet",
+        objects: "Tárgyak",
+        people: "Smileyk & emberek",
+        places: "Utazás és helyek",
+        search: "Keresés eredménye",
+        symbols: "Szimbólumok",
     },
-    categorieslabel: "Emoji kategóriák",
-    skintones: {
+    skins: {
+        choose: "Válaszd ki az alapértelmezett bőrszínt",
         1: "Alapértelmezett bőrszín",
         2: "Világos bőrszín",
         3: "Közepesen-világos bőrszín",
@@ -43,13 +42,11 @@ const Emoji = ({ input, setinput, fade, setemojidialog }) => {
         <Grow in={fade} timeout={200}>
             <div className="emoji__div">
                 <Picker
-                    onSelect={(emoji) => {
+                    onEmojiSelect={(emoji) => {
                         setinput(input + emoji.native);
                     }}
-                    theme="dark"
-                    emoji=""
-                    native
-                    title=""
+                    data={data}
+                    set="native"
                     i18n={language === "hu" ? HungarianLang : {}}
                 />
                 <div className="close">

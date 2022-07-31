@@ -4,7 +4,7 @@ import { MdArrowDropDown } from "react-icons/md";
 import db from "../../lib/firebase";
 import { selectlanguage, setChannelInfo, setsnackbar } from "../../lib/redux/AppSlice";
 import { useDispatch, useSelector } from "react-redux";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { selectUser } from "../../lib/redux/userSlice";
 
 const CreatechannelDialog = ({ promptstate, setpromptstate, categorieid, onlyMeCanCreateChannel, createdby }) => {
