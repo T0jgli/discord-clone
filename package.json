@@ -26,7 +26,7 @@
         "react-redux": "^7.2.8",
         "react-scripts": "^5.0.1",
         "react-syntax-highlighter": "^15.5.0",
-        "sass": "^1.54.0",
+        "sass": "^1.55.0",
         "socket.io-client": "^4.5.1",
         "timeago-react": "^3.0.5",
         "timeago.js": "^4.0.2",
