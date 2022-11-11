@@ -21,6 +21,7 @@ import firebase from "firebase/compat/app";
 import { useDispatch, useSelector } from "react-redux";
 import { MdModeEdit } from "react-icons/md";
 import ImageResizer from "../../lib/helpers/ImageResizer";
+import { formatBytes } from "../../lib/helpers/FormatBytes";
 import { makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme) => ({
