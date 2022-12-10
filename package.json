@@ -11,7 +11,7 @@
         "@mui/material": "^5.10.13",
         "@mui/styles": "^5.10.16",
         "@reduxjs/toolkit": "^1.9.0",
-        "emoji-mart": "^5.3.2",
+        "emoji-mart": "^5.3.3",
         "firebase": "^9.14.0",
         "framer-motion": "^6.5.1",
         "plyr-react": "^5.1.0",
